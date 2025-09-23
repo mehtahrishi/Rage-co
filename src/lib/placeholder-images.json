@@ -1,3 +1,112 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "A stylish model in a futuristic outfit posing against a minimalist background.",
+      "imageUrl": "https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmYXNoaW9uJTIwbW9kZWx8ZW58MHx8fHwxNzU4NTk0MDY5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fashion model"
+    },
+    {
+      "id": "collection-men",
+      "description": "A male model wearing a modern, dark outfit.",
+      "imageUrl": "https://images.unsplash.com/photo-1656147842766-202fa2e8182e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYWxlJTIwZmFzaGlvbnxlbnwwfHx8fDE3NTg2MDQ2NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "male fashion"
+    },
+    {
+      "id": "collection-women",
+      "description": "A female model in an elegant, edgy dress.",
+      "imageUrl": "https://images.unsplash.com/photo-1717674796213-b2d6a50f0268?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmZW1hbGUlMjBmYXNoaW9ufGVufDB8fHx8MTc1ODY1NjE3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "female fashion"
+    },
+    {
+      "id": "collection-accessories",
+      "description": "A close-up of a unique, modern accessory like a bag or sunglasses.",
+      "imageUrl": "https://images.unsplash.com/photo-1687253946687-a3713aa25b2f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmYXNoaW9uJTIwYWNjZXNzb3J5fGVufDB8fHx8MTc1ODYwOTIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fashion accessory"
+    },
+    {
+      "id": "men-jacket-1",
+      "description": "Front view of a black techwear jacket.",
+      "imageUrl": "https://images.unsplash.com/photo-1673042949295-e931c9f76126?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxibGFjayUyMGphY2tldHxlbnwwfHx8fDE3NTg2NTYxNzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black jacket"
+    },
+    {
+      "id": "men-jacket-2",
+      "description": "Back view of a black techwear jacket.",
+      "imageUrl": "https://images.unsplash.com/photo-1638834756500-7f472c0acee7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxqYWNrZXQlMjBiYWNrfGVufDB8fHx8MTc1ODY1MDg3M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jacket back"
+    },
+    {
+      "id": "men-pants-1",
+      "description": "Front view of futuristic cargo pants.",
+      "imageUrl": "https://images.unsplash.com/photo-1584302052153-623ee529b70c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYXJnbyUyMHBhbnRzfGVufDB8fHx8MTc1ODYwMjAwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cargo pants"
+    },
+    {
+      "id": "men-shirt-1",
+      "description": "Asymmetrical black t-shirt on a mannequin.",
+      "imageUrl": "https://images.unsplash.com/photo-1618354691551-44de113f0164?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxibGFjayUyMHQtc2hpcnR8ZW58MHx8fHwxNzU4NjI4ODI2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black t-shirt"
+    },
+    {
+      "id": "men-hoodie-1",
+      "description": "A dark grey hoodie with a unique cut.",
+      "imageUrl": "https://images.unsplash.com/photo-1620780327051-f7ad06f5b1e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxncmV5JTIwaG9vZGllfGVufDB8fHx8MTc1ODYwMTUwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "grey hoodie"
+    },
+    {
+      "id": "women-dress-1",
+      "description": "Front view of a sleek, black midi dress.",
+      "imageUrl": "https://images.unsplash.com/photo-1614786269829-d24616faf56d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxibGFjayUyMGRyZXNzfGVufDB8fHx8MTc1ODYwNTYzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black dress"
+    },
+    {
+      "id": "women-dress-2",
+      "description": "Side view of a sleek, black midi dress showing texture.",
+      "imageUrl": "https://images.unsplash.com/photo-1590507673164-6c6d319f9b84?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZHJlc3MlMjB0ZXh0dXJlfGVufDB8fHx8MTc1ODY1NjE3OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dress texture"
+    },
+    {
+      "id": "women-top-1",
+      "description": "A white structured blouse.",
+      "imageUrl": "https://images.unsplash.com/photo-1685278463552-51396b0a6287?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3aGl0ZSUyMGJsb3VzZXxlbnwwfHx8fDE3NTg2MDIyNDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "white blouse"
+    },
+    {
+      "id": "women-skirt-1",
+      "description": "A futuristic pleated silver skirt.",
+      "imageUrl": "https://images.unsplash.com/photo-1628098568971-057a89c18b85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lsdmVyJTIwc2tpcnR8ZW58MHx8fHwxNzU4NjU2MTc4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "silver skirt"
+    },
+    {
+      "id": "women-coat-1",
+      "description": "A long, black trench coat with modern details.",
+      "imageUrl": "https://images.unsplash.com/photo-1601571218346-195a052bd80e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0cmVuY2glMjBjb2F0fGVufDB8fHx8MTc1ODYwNDY2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "trench coat"
+    },
+    {
+      "id": "accessory-bag-1",
+      "description": "A minimalist black leather tote bag.",
+      "imageUrl": "https://images.unsplash.com/photo-1621466550398-ac8062907657?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0b3RlJTIwYmFnfGVufDB8fHx8MTc1ODU4NjA5N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tote bag"
+    },
+    {
+      "id": "accessory-sunglasses-1",
+      "description": "Angular, futuristic sunglasses on a flat surface.",
+      "imageUrl": "https://images.unsplash.com/photo-1681147767903-9011e9bf9e83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzdW5nbGFzc2VzJTIwZmFzaGlvbnxlbnwwfHx8fDE3NTg1ODY5ODZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sunglasses fashion"
+    },
+    {
+      "id": "accessory-belt-1",
+      "description": "A black leather belt with a unique metallic buckle.",
+      "imageUrl": "https://images.unsplash.com/photo-1664286074176-5206ee5dc878?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWF0aGVyJTIwYmVsdHxlbnwwfHx8fDE3NTg2MDI1Mjl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "leather belt"
+    },
+    {
+      "id": "accessory-hat-1",
+      "description": "A black bucket hat made of technical fabric.",
+      "imageUrl": "https://images.unsplash.com/photo-1627681828965-048a32cdf16f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxidWNrZXQlMjBoYXR8ZW58MHx8fHwxNzU4NjI4ODI2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bucket hat"
+    }
+  ]
 }
