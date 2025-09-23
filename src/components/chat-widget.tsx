@@ -1,21 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, Send, Bot, User, Loader2 } from 'lucide-react';
+import { MessageSquare, Send, Bot, User, Loader2, X, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogDescription,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { supportChatbot } from '@/ai/flows/ai-support-chatbot';
 import { cn } from '@/lib/utils';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 
 type Message = {
   id: number;
@@ -29,6 +22,12 @@ export function ChatWidget() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setMessages([{ id: Date.now(), role: 'bot', text: 'Hello! How can I help you today?' }]);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -64,81 +63,92 @@ export function ChatWidget() {
 
   return (
     <>
-      <Button
-        className="fixed bottom-4 right-4 h-14 w-14 rounded-full shadow-lg"
-        onClick={() => setIsOpen(true)}
-        aria-label="Open support chat"
-      >
-        <MessageSquare className="h-7 w-7" />
-      </Button>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[425px] grid-rows-[auto,1fr,auto] p-0 max-h-[90vh]">
-          <DialogHeader className="p-6 pb-2">
-            <DialogTitle className="font-headline">Support Chat</DialogTitle>
-            <DialogDescription>
-              Ask me about your order, our return policy, or anything else.
-            </DialogDescription>
-          </DialogHeader>
-          <ScrollArea className="h-[50vh] px-6">
-            <div className="flex flex-col gap-4 py-4" ref={scrollAreaRef}>
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={cn(
-                    'flex items-start gap-3',
-                    message.role === 'user' ? 'justify-end' : 'justify-start'
-                  )}
-                >
-                  {message.role === 'bot' && (
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback><Bot className="h-5 w-5"/></AvatarFallback>
-                    </Avatar>
-                  )}
-                  <div
-                    className={cn(
-                      'max-w-[75%] rounded-lg px-3 py-2 text-sm',
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
-                    )}
-                  >
-                    {message.text}
-                  </div>
-                  {message.role === 'user' && (
-                     <Avatar className="h-8 w-8">
-                      <AvatarFallback><User className="h-5 w-5"/></AvatarFallback>
-                    </Avatar>
-                  )}
-                </div>
-              ))}
-              {isLoading && (
-                 <div className="flex items-start gap-3 justify-start">
-                    <Avatar className="h-8 w-8">
-                        <AvatarFallback><Bot className="h-5 w-5"/></AvatarFallback>
-                    </Avatar>
-                    <div className="bg-muted rounded-lg px-3 py-2 text-sm flex items-center">
-                        <Loader2 className="h-4 w-4 animate-spin"/>
-                    </div>
-                </div>
-              )}
-            </div>
-          </ScrollArea>
-          <DialogFooter className="p-6 pt-2">
-            <form onSubmit={handleSendMessage} className="flex w-full items-center gap-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
-                disabled={isLoading}
-              />
-              <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
-                <Send className="h-4 w-4" />
-                <span className="sr-only">Send</span>
+      <div className="fixed bottom-4 right-4 z-50">
+        {!isOpen && (
+           <Button
+            className="h-14 w-14 rounded-full shadow-lg"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open support chat"
+          >
+            <MessageSquare className="h-7 w-7" />
+          </Button>
+        )}
+        {isOpen && (
+          <Card className="w-[350px] shadow-2xl rounded-lg flex flex-col h-[500px]">
+            <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
+              <div className='flex items-center gap-2'>
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback><Bot className="h-5 w-5"/></AvatarFallback>
+                </Avatar>
+                <h3 className="font-semibold font-headline">Support Chat</h3>
+              </div>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsOpen(false)}>
+                <X className="h-4 w-4" />
               </Button>
-            </form>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </CardHeader>
+            <CardContent className="flex-1 p-0">
+              <ScrollArea className="h-full px-4">
+                <div className="flex flex-col gap-4 py-4" ref={scrollAreaRef}>
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={cn(
+                        'flex items-start gap-3',
+                        message.role === 'user' ? 'justify-end' : 'justify-start'
+                      )}
+                    >
+                      {message.role === 'bot' && (
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback><Bot className="h-5 w-5"/></AvatarFallback>
+                        </Avatar>
+                      )}
+                      <div
+                        className={cn(
+                          'max-w-[75%] rounded-lg px-3 py-2 text-sm',
+                          message.role === 'user'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted'
+                        )}
+                      >
+                        {message.text}
+                      </div>
+                      {message.role === 'user' && (
+                         <Avatar className="h-8 w-8">
+                          <AvatarFallback><User className="h-5 w-5"/></AvatarFallback>
+                        </Avatar>
+                      )}
+                    </div>
+                  ))}
+                  {isLoading && (
+                     <div className="flex items-start gap-3 justify-start">
+                        <Avatar className="h-8 w-8">
+                            <AvatarFallback><Bot className="h-5 w-5"/></AvatarFallback>
+                        </Avatar>
+                        <div className="bg-muted rounded-lg px-3 py-2 text-sm flex items-center">
+                            <Loader2 className="h-4 w-4 animate-spin"/>
+                        </div>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </CardContent>
+            <CardFooter className="p-4 border-t">
+              <form onSubmit={handleSendMessage} className="flex w-full items-center gap-2">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type your message..."
+                  disabled={isLoading}
+                />
+                <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
+                  <Send className="h-4 w-4" />
+                  <span className="sr-only">Send</span>
+                </Button>
+              </form>
+            </CardFooter>
+          </Card>
+        )}
+      </div>
     </>
   );
 }
