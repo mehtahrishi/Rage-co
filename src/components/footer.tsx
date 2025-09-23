@@ -2,13 +2,17 @@ import Link from 'next/link';
 import { Twitter, Instagram, Facebook } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { BrandIcon } from './brand-icon';
 
 export function SiteFooter() {
   return (
     <footer className="w-full border-t bg-background">
       <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 md:grid-cols-4">
         <div className="md:col-span-1">
-          <h3 className="font-headline text-lg font-bold">RAGE</h3>
+          <div className='flex items-center gap-2'>
+            <BrandIcon />
+            <h3 className="font-headline text-lg font-bold">RAGE</h3>
+          </div>
           <p className="mt-2 text-sm text-muted-foreground">Next-Gen Style</p>
           <div className="mt-4 flex space-x-4">
             <Link href="#" aria-label="Twitter">

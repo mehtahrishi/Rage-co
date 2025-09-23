@@ -6,6 +6,7 @@ import { Menu, Search, ShoppingCart, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useCart } from '@/hooks/use-cart';
+import { BrandIcon } from './brand-icon';
 
 const navLinks = [
   { href: '/products?category=Men', label: 'Men' },
@@ -22,6 +23,7 @@ export function SiteHeader() {
       <div className="container flex h-16 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
+            <BrandIcon />
             <span className="font-bold sm:inline-block font-headline text-lg">RAGE</span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
@@ -46,7 +48,8 @@ export function SiteHeader() {
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] sm:w-[400px]">
             <nav className="flex flex-col gap-4">
-              <Link href="/" className="mb-4">
+              <Link href="/" className="mb-4 flex items-center gap-2">
+                <BrandIcon />
                 <span className="font-bold font-headline text-lg">RAGE</span>
               </Link>
               {navLinks.map((link, index) => (

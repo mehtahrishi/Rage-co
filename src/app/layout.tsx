@@ -23,6 +23,9 @@ const playfairDisplay = Playfair_Display({
 export const metadata: Metadata = {
   title: 'RAGE: Next-Gen Style',
   description: 'The future of fashion is here. Discover next-gen style with RAGE.',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
