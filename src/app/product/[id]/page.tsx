@@ -87,7 +87,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           </div>
 
           <div className="flex items-center gap-4">
-            <p className="font-sans text-3xl font-bold">${product.price.toFixed(2)}</p>
+            <p className="font-sans text-3xl font-bold">₹{product.price.toFixed(2)}</p>
             <div className="flex items-center gap-1">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
@@ -178,7 +178,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             <AccordionItem value="shipping">
               <AccordionTrigger>Shipping & Returns</AccordionTrigger>
               <AccordionContent>
-                Free shipping on orders over $50. We offer a 30-day return policy for a full refund or exchange.
+                Free shipping on orders over ₹5000. We offer a 30-day return policy for a full refund or exchange.
               </AccordionContent>
             </AccordionItem>
           </Accordion>

@@ -37,7 +37,7 @@ export default function TermsOfServicePage() {
           
            <h2 className="text-foreground font-headline text-2xl mt-8">5. Governing Law</h2>
           <p>
-            These Terms of Service and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the laws of the land.
+            These Terms of Service and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the laws of India.
           </p>
         </div>
       </div>

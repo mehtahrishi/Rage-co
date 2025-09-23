@@ -45,11 +45,11 @@ export function ProductCard({ product }: ProductCardProps) {
                 onSale && 'text-destructive'
               )}
             >
-              ${product.price.toFixed(2)}
+              ₹{product.price.toFixed(2)}
             </p>
             {onSale && (
               <p className="text-muted-foreground line-through">
-                ${product.originalPrice?.toFixed(2)}
+                ₹{product.originalPrice?.toFixed(2)}
               </p>
             )}
           </div>

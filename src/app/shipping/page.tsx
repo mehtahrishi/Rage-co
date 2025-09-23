@@ -19,8 +19,8 @@ export default function ShippingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div className="flex flex-col items-center p-6 bg-muted/30 rounded-lg">
                     <Truck className="h-10 w-10 text-primary mb-4" />
-                    <h3 className="font-bold text-lg">Free US Shipping</h3>
-                    <p className="text-sm text-muted-foreground">On all orders over $50.</p>
+                    <h3 className="font-bold text-lg">Free India Shipping</h3>
+                    <p className="text-sm text-muted-foreground">On all orders over ₹5000.</p>
                 </div>
                  <div className="flex flex-col items-center p-6 bg-muted/30 rounded-lg">
                     <Package className="h-10 w-10 text-primary mb-4" />
@@ -34,9 +34,9 @@ export default function ShippingPage() {
                 </div>
             </div>
           <div className="prose prose-stone dark:prose-invert max-w-none text-muted-foreground mx-auto">
-            <h2 className="text-foreground font-headline text-2xl">Domestic Shipping (USA)</h2>
+            <h2 className="text-foreground font-headline text-2xl">Domestic Shipping (India)</h2>
             <p>
-              We offer free standard shipping on all domestic orders over $50. For orders under $50, a flat rate of $5 applies. Expedited shipping options are available at checkout for an additional fee.
+              We offer free standard shipping on all domestic orders over ₹5000. For orders under ₹5000, a flat rate of ₹100 applies. Expedited shipping options are available at checkout for an additional fee.
             </p>
             <ul className="list-disc pl-5">
               <li><strong>Standard Shipping:</strong> 3-7 business days</li>

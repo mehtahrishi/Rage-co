@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
           
           <h2 className="text-foreground font-headline text-2xl mt-8">Your Rights</h2>
           <p>
-            If you are a European resident, you have the right to access personal information we hold about you and to ask that your personal information be corrected, updated, or deleted. If you would like to exercise this right, please contact us through the contact information below.
+            You may have the right to access personal information we hold about you and to ask that your personal information be corrected, updated, or deleted. If you would like to exercise this right, please contact us through the contact information below.
           </p>
           
           <h2 className="text-foreground font-headline text-2xl mt-8">Changes to this Policy</h2>

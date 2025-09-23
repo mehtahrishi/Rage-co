@@ -11,14 +11,14 @@ const orders = [
     id: 'ORD-001',
     date: 'June 1, 2024',
     status: 'Delivered',
-    total: 219.98,
+    total: 21998.00,
     items: [products[0], products[2]],
   },
   {
     id: 'ORD-002',
     date: 'May 15, 2024',
     status: 'Delivered',
-    total: 349.99,
+    total: 34999.00,
     items: [products[4]],
   },
 ];
@@ -27,13 +27,13 @@ const addresses = [
     {
         id: '1',
         name: 'Home',
-        address: '123 Main St, Anytown, USA 12345',
+        address: '123 Main St, Anytown, India 12345',
         isDefault: true,
     },
     {
         id: '2',
         name: 'Work',
-        address: '456 Business Ave, Workville, USA 54321',
+        address: '456 Business Ave, Workville, India 54321',
         isDefault: false,
     }
 ]
@@ -74,7 +74,7 @@ export default function ProfilePage() {
                                 <p className="text-sm text-muted-foreground">Date: {order.date}</p>
                             </div>
                              <div>
-                                <p className="font-semibold">Total: ${order.total.toFixed(2)}</p>
+                                <p className="font-semibold">Total: ₹{order.total.toFixed(2)}</p>
                                 <p className="text-sm text-right text-green-600 font-medium">{order.status}</p>
                             </div>
                         </div>
@@ -83,7 +83,7 @@ export default function ProfilePage() {
                              {order.items.map(item => (
                                 <div key={item.id} className="flex justify-between items-center text-sm">
                                     <span className="text-muted-foreground">{item.name}</span>
-                                    <span>${item.price.toFixed(2)}</span>
+                                    <span>₹{item.price.toFixed(2)}</span>
                                 </div>
                              ))}
                         </div>

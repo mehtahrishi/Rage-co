@@ -48,7 +48,7 @@ export default function CartPage() {
                         <p className="text-sm text-muted-foreground">
                           {item.size} / {item.color}
                         </p>
-                         <p className="text-sm font-semibold mt-2 sm:hidden">${(item.product.price * item.quantity).toFixed(2)}</p>
+                         <p className="text-sm font-semibold mt-2 sm:hidden">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center border rounded-md">
@@ -60,7 +60,7 @@ export default function CartPage() {
                             <Plus className="h-4 w-4" />
                           </Button>
                         </div>
-                        <p className="font-semibold w-20 text-right hidden sm:block">${(item.product.price * item.quantity).toFixed(2)}</p>
+                        <p className="font-semibold w-20 text-right hidden sm:block">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                         <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)}>
                           <Trash2 className="h-4 w-4 text-muted-foreground" />
                         </Button>
@@ -78,7 +78,7 @@ export default function CartPage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                  <span>₹{totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
@@ -92,7 +92,7 @@ export default function CartPage() {
               <div className="border-t my-4"></div>
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span>${totalPrice.toFixed(2)}</span>
+                <span>₹{totalPrice.toFixed(2)}</span>
               </div>
               <Button asChild size="lg" className="w-full mt-6">
                 <Link href="/checkout">Proceed to Checkout</Link>

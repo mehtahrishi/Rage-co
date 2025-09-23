@@ -33,7 +33,7 @@ const prompt = ai.definePrompt({
 
   Use the following policies and FAQs to answer the question.
 
-  Policies: We have a 30-day return policy. Shipping is free on orders over $50.
+  Policies: We have a 30-day return policy. Shipping is free on orders over ₹5000.
   FAQs: How do I track my order? Go to our website and enter your order number. What is your size guide? We have a size guide on our website.
 
   Question: {{{query}}}`,

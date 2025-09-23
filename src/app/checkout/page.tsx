@@ -38,7 +38,7 @@ export default function CheckoutPage() {
         address: '',
         apartment: '',
         city: '',
-        country: 'United States',
+        country: 'India',
         postalCode: '',
     },
   });
@@ -107,13 +107,13 @@ export default function CheckoutPage() {
                 )}/>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                     <FormField control={form.control} name="city" render={({ field }) => (
-                        <FormItem><FormLabel>City</FormLabel><FormControl><Input placeholder="New York" {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>City</FormLabel><FormControl><Input placeholder="Mumbai" {...field} /></FormControl><FormMessage /></FormItem>
                     )}/>
                     <FormField control={form.control} name="country" render={({ field }) => (
-                        <FormItem><FormLabel>Country</FormLabel><FormControl><Input disabled placeholder="United States" {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Country</FormLabel><FormControl><Input disabled placeholder="India" {...field} /></FormControl><FormMessage /></FormItem>
                     )}/>
                     <FormField control={form.control} name="postalCode" render={({ field }) => (
-                        <FormItem><FormLabel>Postal Code</FormLabel><FormControl><Input placeholder="10001" {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Postal Code</FormLabel><FormControl><Input placeholder="400001" {...field} /></FormControl><FormMessage /></FormItem>
                     )}/>
                 </div>
               </div>
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
                             <p className="font-semibold">{item.product.name}</p>
                             <p className="text-sm text-muted-foreground">{item.size} / {item.color}</p>
                         </div>
-                        <p className="font-semibold">${(item.product.price * item.quantity).toFixed(2)}</p>
+                        <p className="font-semibold">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                     </div>
                 )
             })}
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
           <div className="space-y-2">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Subtotal</span>
-              <span>${totalPrice.toFixed(2)}</span>
+              <span>₹{totalPrice.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Shipping</span>
@@ -160,7 +160,7 @@ export default function CheckoutPage() {
           <Separator className="my-6" />
           <div className="flex justify-between font-bold text-lg">
             <span>Total</span>
-            <span>${totalPrice.toFixed(2)}</span>
+            <span>₹{totalPrice.toFixed(2)}</span>
           </div>
         </div>
       </div>
