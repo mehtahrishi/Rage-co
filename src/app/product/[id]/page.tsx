@@ -25,11 +25,13 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | undefined>();
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
-  const [activeImageId, setActiveImageId] = useState<string | undefined>(product?.imageIds[0]);
-
+  
   if (!product) {
     notFound();
   }
+  
+  const [activeImageId, setActiveImageId] = useState<string | undefined>(product.imageIds[0]);
+
 
   const handleAddToCart = () => {
     if (selectedSize && selectedColor) {
@@ -41,7 +43,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   const productImages = product.imageIds
     .map((id) => PlaceHolderImages.find((img) => img.id === id))
-    .filter(Boolean);
+    .filter(Boolean) as (typeof PlaceHolderImages[0])[];
     
   const activeImage = PlaceHolderImages.find((img) => img.id === activeImageId);
   const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
@@ -52,7 +54,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         {/* Image Gallery */}
         <div className="flex flex-col-reverse md:flex-row gap-4">
             <div className="flex md:flex-col gap-2">
-                {productImages.map((image) => image && (
+                {productImages.map((image) => (
                     <button key={image.id} className={cn("relative h-20 w-20 md:h-24 md:w-24 overflow-hidden rounded-md border-2", activeImageId === image.id ? 'border-primary' : 'border-transparent')} onClick={() => setActiveImageId(image.id)}>
                         <Image
                             src={image.imageUrl}
