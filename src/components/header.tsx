@@ -65,18 +65,13 @@ export function SiteHeader() {
           </SheetContent>
         </Sheet>
 
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+        <div className="flex flex-1 items-center justify-end space-x-2">
           <div className="w-full flex-1 md:w-auto md:flex-none">
             {/* Can be a DialogTrigger for a search modal */}
           </div>
           <nav className="flex items-center">
             <Button variant="ghost" size="icon" aria-label="Search">
               <Search className="h-5 w-5" />
-            </Button>
-            <Button asChild variant="ghost" size="icon" aria-label="User Profile">
-              <Link href="/profile">
-                <User className="h-5 w-5" />
-              </Link>
             </Button>
             <Button asChild variant="ghost" size="icon" className="relative" aria-label="Shopping Cart">
               <Link href="/cart">
@@ -86,6 +81,11 @@ export function SiteHeader() {
                     {totalItems}
                   </span>
                 )}
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" size="icon" aria-label="User Profile">
+              <Link href="/profile">
+                <User className="h-5 w-5" />
               </Link>
             </Button>
           </nav>
