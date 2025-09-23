@@ -39,10 +39,10 @@ export function SiteFooter() {
         <div>
           <h4 className="font-semibold uppercase tracking-wider text-foreground/80">Support</h4>
           <ul className="mt-4 space-y-2 text-sm">
-            <li><Link href="#" className="text-muted-foreground hover:text-foreground">Contact Us</Link></li>
-            <li><Link href="#" className="text-muted-foreground hover:text-foreground">FAQs</Link></li>
-            <li><Link href="#" className="text-muted-foreground hover:text-foreground">Returns</Link></li>
-            <li><Link href="#" className="text-muted-foreground hover:text-foreground">Shipping</Link></li>
+            <li><Link href="/contact" className="text-muted-foreground hover:text-foreground">Contact Us</Link></li>
+            <li><Link href="/faq" className="text-muted-foreground hover:text-foreground">FAQs</Link></li>
+            <li><Link href="/returns" className="text-muted-foreground hover:text-foreground">Returns</Link></li>
+            <li><Link href="/shipping" className="text-muted-foreground hover:text-foreground">Shipping</Link></li>
           </ul>
         </div>
 
@@ -59,8 +59,8 @@ export function SiteFooter() {
         <div className="container mx-auto flex flex-wrap items-center justify-between px-4 py-6 text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} RAGE. All rights reserved.</p>
           <div className="flex space-x-4">
-            <Link href="#" className="hover:text-foreground">Privacy Policy</Link>
-            <Link href="#" className="hover:text-foreground">Terms of Service</Link>
+            <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>
           </div>
         </div>
       </div>
