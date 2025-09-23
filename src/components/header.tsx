@@ -1,13 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Search, ShoppingCart, User } from 'lucide-react';
+import { Menu, ShoppingCart, User } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useCart } from '@/hooks/use-cart';
 import { BrandIcon } from './brand-icon';
 import { ThemeToggle } from './theme-toggle';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const navLinks = [
   { href: '/products?category=Men', label: 'Men' },
@@ -71,9 +79,6 @@ export function SiteHeader() {
             {/* Can be a DialogTrigger for a search modal */}
           </div>
           <nav className="flex items-center">
-            <Button variant="ghost" size="icon" aria-label="Search">
-              <Search className="h-5 w-5" />
-            </Button>
             <Button asChild variant="ghost" size="icon" className="relative" aria-label="Shopping Cart">
               <Link href="/cart">
                 <ShoppingCart className="h-5 w-5" />
@@ -85,12 +90,22 @@ export function SiteHeader() {
               </Link>
             </Button>
             <ThemeToggle />
-             <div className="flex flex-1 items-center justify-end space-x-2">
-              <Button asChild variant="ghost" size="icon" aria-label="User Profile">
-                <Link href="/profile">
-                  <User className="h-5 w-5" />
-                </Link>
-              </Button>
+            <div className="flex flex-1 items-center justify-end space-x-2">
+               <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" aria-label="User Profile">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild><Link href="/profile">My Profile</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link href="/profile">My Orders</Link></DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </nav>
         </div>
