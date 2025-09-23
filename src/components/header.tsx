@@ -83,11 +83,13 @@ export function SiteHeader() {
                 )}
               </Link>
             </Button>
-            <Button asChild variant="ghost" size="icon" aria-label="User Profile">
-              <Link href="/profile">
-                <User className="h-5 w-5" />
-              </Link>
-            </Button>
+             <div className="flex flex-1 items-center justify-end space-x-2">
+              <Button asChild variant="ghost" size="icon" aria-label="User Profile">
+                <Link href="/profile">
+                  <User className="h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
           </nav>
         </div>
       </div>

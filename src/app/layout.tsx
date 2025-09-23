@@ -35,6 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
+      <head>
+        <link rel="icon" href="/favicon.svg" sizes="any" />
+      </head>
       <body
         className={cn(
           'relative h-full font-body antialiased',
