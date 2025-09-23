@@ -7,6 +7,7 @@ import { SiteFooter } from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { CartProvider } from '@/context/cart-provider';
 import { ChatWidget } from '@/components/chat-widget';
+import { ThemeProvider } from '@/context/theme-provider';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -34,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" sizes="any" />
       </head>
@@ -45,15 +46,22 @@ export default function RootLayout({
           playfairDisplay.variable
         )}
       >
-        <CartProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <SiteHeader />
-            <main className="flex-1 pb-24">{children}</main>
-            <SiteFooter />
-          </div>
-          <ChatWidget />
-          <Toaster />
-        </CartProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <CartProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <SiteHeader />
+              <main className="flex-1 pb-24">{children}</main>
+              <SiteFooter />
+            </div>
+            <ChatWidget />
+            <Toaster />
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

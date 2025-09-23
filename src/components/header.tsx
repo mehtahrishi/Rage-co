@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useCart } from '@/hooks/use-cart';
 import { BrandIcon } from './brand-icon';
+import { ThemeToggle } from './theme-toggle';
 
 const navLinks = [
   { href: '/products?category=Men', label: 'Men' },
@@ -83,6 +84,7 @@ export function SiteHeader() {
                 )}
               </Link>
             </Button>
+            <ThemeToggle />
              <div className="flex flex-1 items-center justify-end space-x-2">
               <Button asChild variant="ghost" size="icon" aria-label="User Profile">
                 <Link href="/profile">
