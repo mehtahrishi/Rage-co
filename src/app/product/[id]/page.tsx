@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { Star, Plus, Minus } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 import { products } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
