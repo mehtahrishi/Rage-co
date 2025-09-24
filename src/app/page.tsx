@@ -19,6 +19,19 @@ const categories = [
   { name: "BABY TEE'S", href: '/products?category=baby-tees' },
 ];
 
+const PantsIcon = () => (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 100 100"
+      xmlns="http://www.w3.org/2000/svg"
+      className="inline-block mr-2"
+      fill="currentColor"
+    >
+      <path d="M25 10 L75 10 L80 90 L55 90 L55 50 Q 50 45 45 50 L45 90 L20 90 Z" />
+    </svg>
+  );
+
 export default function HomePage() {
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
   const [activeCategory, setActiveCategory] = useState(categories[0].name);
@@ -58,10 +71,11 @@ export default function HomePage() {
               href={category.href}
               onClick={() => setActiveCategory(category.name)}
               className={cn(
-                'relative block py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground',
+                'relative flex items-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground',
                 activeCategory === category.name && 'text-foreground'
               )}
             >
+              {activeCategory === category.name && category.name === "PANT'S" && <PantsIcon />}
               {category.name}
               {activeCategory === category.name && (
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></span>
