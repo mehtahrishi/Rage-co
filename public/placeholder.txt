@@ -1,0 +1,1 @@
+This folder is for your static assets. Please upload your hero-banner.jpg file here.

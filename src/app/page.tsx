@@ -10,7 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 export default function HomePage() {
-  const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-1');
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
   const featuredCollections = collections.slice(0, 3);
 
@@ -18,16 +17,13 @@ export default function HomePage() {
     <div className="flex flex-col gap-16 md:gap-24">
       {/* Hero Section */}
       <section className="relative h-[60vh] w-full md:h-[80vh]">
-        {heroImage && (
-          <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill
-            className="object-cover grayscale"
-            data-ai-hint={heroImage.imageHint}
-            priority
-          />
-        )}
+        <Image
+          src="/hero-banner.jpg"
+          alt="Rage fashion banner"
+          fill
+          className="object-cover grayscale"
+          priority
+        />
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground">
           <h1 className="font-headline text-5xl font-bold uppercase md:text-7xl lg:text-8xl">
