@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Twitter, Instagram, Facebook } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { BrandIcon } from './brand-icon';
+import { BrandText } from './brand-text';
 
 export function SiteFooter() {
   return (
@@ -10,8 +10,7 @@ export function SiteFooter() {
       <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 md:grid-cols-4">
         <div className="md:col-span-1">
           <div className='flex items-center gap-2'>
-            <BrandIcon />
-            <h3 className="font-headline text-lg font-bold">RAGE</h3>
+            <BrandText />
           </div>
           <p className="mt-2 text-sm text-muted-foreground">Next-Gen Style</p>
           <div className="mt-4 flex space-x-4">

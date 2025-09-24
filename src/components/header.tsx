@@ -1,7 +1,10 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu, ShoppingCart, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
@@ -16,6 +19,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
+import { BrandText } from './brand-text';
 
 const navLinks = [
   { href: '/products?category=Men', label: 'Men' },
@@ -25,14 +30,43 @@ const navLinks = [
 export function SiteHeader() {
   const { items } = useCart();
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
+  const pathname = usePathname();
+  
+  const [isScrolled, setIsScrolled] = useState(false);
+  
+  const isHomePage = pathname === '/';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    
+    if (isHomePage) {
+      window.addEventListener('scroll', handleScroll);
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }
+  }, [isHomePage]);
+
+  const showTextLogo = !isHomePage || isScrolled;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <BrandIcon />
-            <span className="font-bold sm:inline-block font-headline text-lg">RAGE</span>
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                key={showTextLogo ? 'text' : 'icon'}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {showTextLogo ? <BrandText /> : <BrandIcon />}
+              </motion.div>
+            </AnimatePresence>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             {navLinks.map((link) => (
@@ -58,8 +92,7 @@ export function SiteHeader() {
             <SheetHeader>
               <SheetTitle asChild>
                 <Link href="/" className="flex items-center gap-2">
-                  <BrandIcon />
-                  <span className="font-bold font-headline text-lg">RAGE</span>
+                  <BrandText />
                 </Link>
               </SheetTitle>
             </SheetHeader>
@@ -76,11 +109,26 @@ export function SiteHeader() {
             </nav>
           </SheetContent>
         </Sheet>
+        
+        {/* Mobile Logo */}
+        <div className="flex justify-center flex-1 md:hidden">
+            <Link href="/" className="flex items-center space-x-2">
+                 <AnimatePresence initial={false} mode="wait">
+                    <motion.div
+                        key={showTextLogo ? 'text' : 'icon'}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {showTextLogo ? <BrandText /> : <BrandIcon />}
+                    </motion.div>
+                </AnimatePresence>
+            </Link>
+        </div>
 
-        <div className="flex flex-1 items-center justify-end space-x-2">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Can be a DialogTrigger for a search modal */}
-          </div>
+
+        <div className="flex items-center justify-end space-x-2 md:flex-1">
           <nav className="flex items-center">
             <Button asChild variant="ghost" size="icon" className="relative" aria-label="Shopping Cart">
               <Link href="/cart">
@@ -93,7 +141,7 @@ export function SiteHeader() {
               </Link>
             </Button>
             <ThemeToggle />
-            <div className="flex flex-1 items-center justify-end space-x-2">
+            <div className="flex items-center justify-end space-x-2">
                <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" aria-label="User Profile">
