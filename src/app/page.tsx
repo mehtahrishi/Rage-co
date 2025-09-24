@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -26,17 +27,21 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground">
-          <h1 className="font-headline text-5xl font-bold uppercase md:text-7xl lg:text-8xl">
-            Rage: Next-Gen Style
-          </h1>
-          <p className="mt-4 max-w-lg text-lg text-primary-foreground/80 md:text-xl">
-            The future of fashion is here. Discover curated collections that define tomorrow.
-          </p>
-          <Button asChild size="lg" className="mt-8">
-            <Link href="/products">
-              Explore Now <ArrowRight className="ml-2" />
-            </Link>
-          </Button>
+          <div className='flex-1 flex flex-col items-center justify-center'>
+            <h1 className="font-headline text-5xl font-bold uppercase md:text-7xl">
+              Rage: Next-Gen Style
+            </h1>
+            <p className="mt-4 max-w-lg text-lg text-primary-foreground/80 md:text-xl">
+              The future of fashion is here. Discover curated collections that define tomorrow.
+            </p>
+          </div>
+          <div className="pb-8">
+            <Button asChild variant="ghost" size="lg" className="hover:bg-transparent">
+              <Link href="/products">
+                Explore <ArrowRight className="ml-2" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
