@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Menu, ShoppingCart, User } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
 import { useCart } from '@/hooks/use-cart';
 import { BrandIcon } from './brand-icon';
 import { ThemeToggle } from './theme-toggle';
@@ -55,7 +55,10 @@ export function SiteHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-            <nav className="flex flex-col gap-4">
+            <SheetHeader>
+              <SheetTitle>Navigation Menu</SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col gap-4 mt-6">
               <Link href="/" className="mb-4 flex items-center gap-2">
                 <BrandIcon />
                 <span className="font-bold font-headline text-lg">RAGE</span>

@@ -9,12 +9,18 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
-function ProductGrid() {
+function ProductsContent() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
+  
   const category = searchParams.get('category');
   const sizes = searchParams.getAll('size');
   const colors = searchParams.getAll('color');
   const maxPrice = searchParams.get('maxPrice');
+
+  const allSizes = [...new Set(products.flatMap(p => p.sizes))];
+  const allColors = [...new Set(products.flatMap(p => p.colors))];
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
@@ -25,23 +31,6 @@ function ProductGrid() {
       return categoryMatch && sizeMatch && colorMatch && priceMatch;
     });
   }, [category, sizes, colors, maxPrice]);
-
-  return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
-      {filteredProducts.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
-    </div>
-  );
-}
-
-export default function ProductsPage() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const allSizes = [...new Set(products.flatMap(p => p.sizes))];
-  const allColors = [...new Set(products.flatMap(p => p.colors))];
 
   const handleCategoryChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -106,7 +95,7 @@ export default function ProductsPage() {
             {/* Category Filter */}
             <div>
               <h3 className="font-semibold mb-4">Category</h3>
-              <RadioGroup value={selectedCategory} onValueChange={handleCategoryChange}>
+              <RadioGroup value={category || 'all'} onValueChange={handleCategoryChange}>
                   <div className="flex items-center space-x-2">
                       <RadioGroupItem value="all" id="cat-all"/>
                       <Label htmlFor="cat-all">All</Label>
@@ -128,7 +117,7 @@ export default function ProductsPage() {
               <div className="grid grid-cols-3 gap-2">
                 {allSizes.map(size => (
                   <div key={size} className="flex items-center space-x-2">
-                    <Checkbox id={`size-${size}`} checked={selectedSizes.includes(size)} onCheckedChange={(checked) => handleMultiCheckboxChange('size', size, !!checked)}/>
+                    <Checkbox id={`size-${size}`} checked={sizes.includes(size)} onCheckedChange={(checked) => handleMultiCheckboxChange('size', size, !!checked)}/>
                     <Label htmlFor={`size-${size}`}>{size}</Label>
                   </div>
                 ))}
@@ -141,7 +130,7 @@ export default function ProductsPage() {
               <div className="space-y-2">
                 {allColors.map(color => (
                   <div key={color} className="flex items-center space-x-2">
-                    <Checkbox id={`color-${color}`} checked={selectedColors.includes(color)} onCheckedChange={(checked) => handleMultiCheckboxChange('color', color, !!checked)} />
+                    <Checkbox id={`color-${color}`} checked={colors.includes(color)} onCheckedChange={(checked) => handleMultiCheckboxChange('color', color, !!checked)} />
                     <Label htmlFor={`color-${color}`}>{color}</Label>
                   </div>
                 ))}
@@ -151,10 +140,10 @@ export default function ProductsPage() {
             {/* Price Filter */}
             <div>
               <h3 className="font-semibold mb-4">Price Range</h3>
-              <Slider value={[currentMaxPrice]} max={maxProductPrice} step={100} onValueChange={handlePriceChange} />
+              <Slider value={[maxPrice ? Number(maxPrice) : maxProductPrice]} max={maxProductPrice} step={100} onValueChange={handlePriceChange} />
               <div className="flex justify-between text-sm text-muted-foreground mt-2">
                 <span>₹0</span>
-                <span>₹{currentMaxPrice}</span>
+                <span>₹{maxPrice ? Number(maxPrice) : maxProductPrice}</span>
               </div>
             </div>
           </div>
@@ -162,11 +151,21 @@ export default function ProductsPage() {
 
         {/* Products Grid */}
         <main className="lg:col-span-3">
-          <Suspense fallback={<div>Loading...</div>}>
-            <ProductGrid />
-          </Suspense>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
         </main>
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto px-4 py-12"><div className="text-center">Loading products...</div></div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }
