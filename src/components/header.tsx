@@ -69,7 +69,7 @@ export function SiteHeader() {
             className="mr-6 flex items-center space-x-2"
             aria-label="Rage Home"
           >
-            <div className="relative flex h-10 w-24 items-center justify-start">
+            <div className="relative flex h-10 w-24 items-center justify-center">
               <AnimatePresence initial={false} mode="wait">
                 <motion.div
                   key={showTextLogo ? 'text' : 'icon'}
