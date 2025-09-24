@@ -16,12 +16,12 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-16 md:gap-24">
       {/* Hero Section */}
-      <section className="relative h-[60vh] w-full md:h-[80vh]">
+      <section className="group relative h-[60vh] w-full md:h-[80vh]">
         <Image
           src="/hero-banner.jpg"
           alt="Rage fashion banner"
           fill
-          className="object-cover grayscale"
+          className="object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
           priority
         />
         <div className="absolute inset-0 bg-black/40" />
