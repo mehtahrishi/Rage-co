@@ -20,7 +20,6 @@ import {
 const navLinks = [
   { href: '/products?category=Men', label: 'Men' },
   { href: '/products?category=Women', label: 'Women' },
-  { href: '/products?category=Accessories', label: 'Accessories' },
 ];
 
 export function SiteHeader() {

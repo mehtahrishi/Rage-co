@@ -90,7 +90,7 @@ export default function ProductsPage() {
           All Products
         </h1>
         <p className="mt-2 max-w-2xl mx-auto text-muted-foreground">
-          Explore our entire collection of next-gen apparel and accessories.
+          Explore our entire collection of next-gen apparel.
         </p>
       </header>
 
@@ -118,10 +118,6 @@ export default function ProductsPage() {
                    <div className="flex items-center space-x-2">
                       <RadioGroupItem value="Women" id="cat-women"/>
                       <Label htmlFor="cat-women">Women</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Accessories" id="cat-accessories"/>
-                      <Label htmlFor="cat-accessories">Accessories</Label>
                   </div>
               </RadioGroup>
             </div>

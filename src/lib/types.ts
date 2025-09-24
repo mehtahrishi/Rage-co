@@ -3,7 +3,7 @@ import type { PlaceHolderImages } from "./placeholder-images";
 export type Product = {
   id: string;
   name: string;
-  category: 'Men' | 'Women' | 'Accessories';
+  category: 'Men' | 'Women';
   price: number;
   originalPrice?: number;
   rating: number;

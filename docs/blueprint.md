@@ -2,7 +2,7 @@
 
 ## Core Features:
 
-- Featured Collections & Categories: Homepage displaying featured collections and trending products, sortable by categories (Men, Women, Accessories).
+- Featured Collections & Categories: Homepage displaying featured collections and trending products, sortable by categories (Men, Women).
 - Product Listings with Filters: Display products with filters for size, color, price, and brand. Implemented with Algolia or ElasticSearch.
 - Detailed Product Pages: Show product images, descriptions, prices, size charts, and customer reviews on individual product pages.
 - AI Support Chatbot: Integrate a Gemini AI-powered chatbot tool trained on store policies and FAQs to answer customer inquiries (order status, size guide, returns, shipping).

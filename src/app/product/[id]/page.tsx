@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { Star } from 'lucide-react';
 
 import { products } from '@/lib/data';
@@ -20,8 +20,10 @@ import {
 import { useCart } from '@/hooks/use-cart';
 import { ProductCard } from '@/components/product-card';
 
-export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = products.find((p) => p.slug === params.id);
+export default function ProductPage() {
+  const params = useParams();
+  const id = params?.id as string;
+  const product = products.find((p) => p.slug === id);
   const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | undefined>();
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
@@ -43,7 +45,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   const productImages = product.imageIds
     .map((id) => PlaceHolderImages.find((img) => img.id === id))
-    .filter(Boolean) as (typeof PlaceHolderImages[0])[];
+    .filter(Boolean) as (typeof PlaceHolderImages)[0][];
     
   const activeImage = PlaceHolderImages.find((img) => img.id === activeImageId);
   const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
@@ -66,7 +68,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     </button>
                 ))}
             </div>
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg">
+          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg lg:aspect-[2/3]">
             {activeImage && (
               <Image
                 src={activeImage.imageUrl}
@@ -113,19 +115,20 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               className="flex flex-wrap gap-2"
             >
               {product.sizes.map((size) => (
-                <RadioGroupItem
-                  key={size}
-                  value={size}
-                  id={`size-${size}`}
-                  className="peer sr-only"
-                  aria-label={size}
-                />
-                <Label
-                  htmlFor={`size-${size}`}
-                  className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border text-sm transition-colors peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground hover:bg-accent hover:text-accent-foreground"
-                >
-                  {size}
-                </Label>
+                <div key={size}>
+                  <RadioGroupItem
+                    value={size}
+                    id={`size-${size}`}
+                    className="peer sr-only"
+                    aria-label={size}
+                  />
+                  <Label
+                    htmlFor={`size-${size}`}
+                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border text-sm transition-colors peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground hover:bg-accent hover:text-accent-foreground"
+                  >
+                    {size}
+                  </Label>
+                </div>
               ))}
             </RadioGroup>
           </div>
@@ -139,19 +142,20 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               className="flex flex-wrap gap-2"
             >
               {product.colors.map((color) => (
-                <RadioGroupItem
-                  key={color}
-                  value={color}
-                  id={`color-${color}`}
-                  className="peer sr-only"
-                  aria-label={color}
-                />
-                <Label
-                  htmlFor={`color-${color}`}
-                  className="cursor-pointer rounded-md border px-4 py-2 text-sm transition-colors peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground hover:bg-accent hover:text-accent-foreground"
-                >
-                  {color}
-                </Label>
+                <div key={color}>
+                  <RadioGroupItem
+                    value={color}
+                    id={`color-${color}`}
+                    className="peer sr-only"
+                    aria-label={color}
+                  />
+                  <Label
+                    htmlFor={`color-${color}`}
+                    className="cursor-pointer rounded-md border px-4 py-2 text-sm transition-colors peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground hover:bg-accent hover:text-accent-foreground"
+                  >
+                    {color}
+                  </Label>
+                </div>
               ))}
             </RadioGroup>
           </div>
