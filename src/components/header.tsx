@@ -7,7 +7,13 @@ import { Menu, ShoppingCart, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetHeader,
+} from '@/components/ui/sheet';
 import { useCart } from '@/hooks/use-cart';
 import { BrandIcon } from './brand-icon';
 import { ThemeToggle } from './theme-toggle';
@@ -31,23 +37,26 @@ export function SiteHeader() {
   const { items } = useCart();
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
   const pathname = usePathname();
-  
+
   const [isScrolled, setIsScrolled] = useState(false);
-  
+
   const isHomePage = pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
-    
+
     if (isHomePage) {
       window.addEventListener('scroll', handleScroll);
+      handleScroll(); // Set initial state
       return () => {
         window.removeEventListener('scroll', handleScroll);
       };
+    } else {
+      setIsScrolled(true);
     }
-  }, [isHomePage]);
+  }, [isHomePage, pathname]);
 
   const showTextLogo = !isHomePage || isScrolled;
 
@@ -55,18 +64,25 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <AnimatePresence initial={false} mode="wait">
-              <motion.div
-                key={showTextLogo ? 'text' : 'icon'}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.2 }}
-              >
-                {showTextLogo ? <BrandText /> : <BrandIcon />}
-              </motion.div>
-            </AnimatePresence>
+          <Link
+            href="/"
+            className="mr-6 flex items-center space-x-2"
+            aria-label="Rage Home"
+          >
+            <div className="relative flex h-10 w-24 items-center justify-start">
+              <AnimatePresence initial={false} mode="wait">
+                <motion.div
+                  key={showTextLogo ? 'text' : 'icon'}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute"
+                >
+                  {showTextLogo ? <BrandText /> : <BrandIcon />}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             {navLinks.map((link) => (
@@ -109,28 +125,40 @@ export function SiteHeader() {
             </nav>
           </SheetContent>
         </Sheet>
-        
+
         {/* Mobile Logo */}
         <div className="flex justify-center flex-1 md:hidden">
-            <Link href="/" className="flex items-center space-x-2">
-                 <AnimatePresence initial={false} mode="wait">
-                    <motion.div
-                        key={showTextLogo ? 'text' : 'icon'}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        {showTextLogo ? <BrandText /> : <BrandIcon />}
-                    </motion.div>
-                </AnimatePresence>
-            </Link>
+          <Link
+            href="/"
+            className="flex items-center space-x-2"
+            aria-label="Rage Home"
+          >
+            <div className="relative h-10 w-24 flex items-center justify-center">
+              <AnimatePresence initial={false} mode="wait">
+                <motion.div
+                  key={showTextLogo ? 'text' : 'icon'}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute"
+                >
+                  {showTextLogo ? <BrandText /> : <BrandIcon />}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </Link>
         </div>
-
 
         <div className="flex items-center justify-end space-x-2 md:flex-1">
           <nav className="flex items-center">
-            <Button asChild variant="ghost" size="icon" className="relative" aria-label="Shopping Cart">
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="relative"
+              aria-label="Shopping Cart"
+            >
               <Link href="/cart">
                 <ShoppingCart className="h-5 w-5" />
                 {totalItems > 0 && (
@@ -142,7 +170,7 @@ export function SiteHeader() {
             </Button>
             <ThemeToggle />
             <div className="flex items-center justify-end space-x-2">
-               <DropdownMenu>
+              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" aria-label="User Profile">
                     <User className="h-5 w-5" />
@@ -151,8 +179,12 @@ export function SiteHeader() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild><Link href="/profile">My Profile</Link></DropdownMenuItem>
-                  <DropdownMenuItem asChild><Link href="/profile">My Orders</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">My Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">My Orders</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
