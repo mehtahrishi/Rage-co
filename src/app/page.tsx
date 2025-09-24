@@ -28,15 +28,10 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground">
           <div className='flex-1 flex flex-col items-center justify-center'>
-            <h1 className="font-headline text-5xl font-bold uppercase md:text-7xl">
-              Rage: Next-Gen Style
-            </h1>
-            <p className="mt-4 max-w-lg text-lg text-primary-foreground/80 md:text-xl">
-              The future of fashion is here. Discover curated collections that define tomorrow.
-            </p>
+            {/* Content moved to announcement bar */}
           </div>
           <div className="pb-8">
-            <Button asChild variant="ghost" size="lg" className="hover:bg-transparent">
+            <Button asChild variant="ghost" size="lg" className="hover:bg-transparent text-white">
               <Link href="/products">
                 Explore <ArrowRight className="ml-2" />
               </Link>

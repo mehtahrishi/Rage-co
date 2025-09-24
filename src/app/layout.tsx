@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { CartProvider } from '@/context/cart-provider';
 import { ChatWidget } from '@/components/chat-widget';
 import { ThemeProvider } from '@/context/theme-provider';
+import { AnnouncementBar } from '@/components/announcement-bar';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -53,6 +54,7 @@ export default function RootLayout({
         >
           <CartProvider>
             <div className="relative flex min-h-screen flex-col">
+              <AnnouncementBar />
               <SiteHeader />
               <main className="flex-1 pb-24">{children}</main>
               <SiteFooter />
