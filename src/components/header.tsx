@@ -56,13 +56,14 @@ export function SiteHeader() {
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] sm:w-[400px]">
             <SheetHeader>
-              <SheetTitle>Navigation Menu</SheetTitle>
+              <SheetTitle asChild>
+                <Link href="/" className="flex items-center gap-2">
+                  <BrandIcon />
+                  <span className="font-bold font-headline text-lg">RAGE</span>
+                </Link>
+              </SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-4 mt-6">
-              <Link href="/" className="mb-4 flex items-center gap-2">
-                <BrandIcon />
-                <span className="font-bold font-headline text-lg">RAGE</span>
-              </Link>
               {navLinks.map((link, index) => (
                 <Link
                   key={index}
