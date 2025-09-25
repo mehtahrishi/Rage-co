@@ -11,7 +11,13 @@ import { products } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product-card';
 import { cn } from '@/lib/utils';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 
 const categories = [
   { name: "PANT'S", href: '/products?category=pants', key: 'Pants' },
@@ -211,16 +217,28 @@ export default function HomePage() {
                 className="overflow-hidden"
               >
                 <div className="py-8">
-                  <ScrollArea className="w-full whitespace-nowrap">
-                    <div className="flex w-max space-x-6 pb-4">
-                       {visibleProducts.map((product) => (
-                        <div key={product.id} className="w-64">
-                           <ProductCard product={product} />
-                        </div>
+                  <Carousel
+                    opts={{
+                      align: 'start',
+                      loop: false,
+                    }}
+                    className="w-full"
+                  >
+                    <CarouselContent>
+                      {visibleProducts.map((product) => (
+                        <CarouselItem
+                          key={product.id}
+                          className="basis-1/2 md:basis-1/3 lg:basis-1/4"
+                        >
+                          <div className="p-1">
+                            <ProductCard product={product} />
+                          </div>
+                        </CarouselItem>
                       ))}
-                    </div>
-                    <ScrollBar orientation="horizontal" />
-                  </ScrollArea>
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                  </Carousel>
                 </div>
               </motion.div>
             )}
@@ -247,3 +265,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    
