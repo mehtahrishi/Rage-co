@@ -174,7 +174,7 @@ export default function HomePage() {
           }}
         >
           <nav
-            className="flex justify-center items-center gap-8 md:gap-16 border-b"
+            className="flex justify-center items-center gap-4 md:gap-16 border-b"
           >
             {categories.map((category) => {
               const Icon = iconMap[category.name];
@@ -186,12 +186,19 @@ export default function HomePage() {
                   onMouseEnter={() => setHoveredCategory(category.name)}
                   onClick={() => setActiveCategory(category.name)}
                   className={cn(
-                    'relative flex items-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'
+                    'relative flex items-center justify-center md:justify-start py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'
                   )}
                 >
-                  <AnimatePresence>
-                    {isDisplaying && Icon && <Icon />}
-                  </AnimatePresence>
+                  <div className="md:hidden">
+                    <AnimatePresence>
+                      {Icon && <Icon />}
+                    </AnimatePresence>
+                  </div>
+                  <div className="hidden md:block">
+                     <AnimatePresence>
+                      {isDisplaying && Icon && <Icon />}
+                    </AnimatePresence>
+                  </div>
                   <span className="hidden md:inline">{category.name}</span>
                   {isDisplaying && (
                     <motion.span
@@ -216,7 +223,7 @@ export default function HomePage() {
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="overflow-hidden"
               >
-                <div className="py-8 px-12">
+                <div className="py-8 md:px-12">
                   <Carousel
                     opts={{
                       align: 'start',
@@ -236,8 +243,8 @@ export default function HomePage() {
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
+                    <CarouselPrevious className="hidden md:flex" />
+                    <CarouselNext className="hidden md:flex" />
                   </Carousel>
                 </div>
               </motion.div>
@@ -265,7 +272,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    
-
-    
