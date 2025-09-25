@@ -149,7 +149,7 @@ export default function HomePage() {
       {/* Category Navigation Section */}
       <section className="container mx-auto px-4">
         <nav
-          className="flex justify-center items-center gap-8 md:gap-12 border-b"
+          className="flex justify-center items-center gap-8 md:gap-16 border-b"
           onMouseLeave={() => setHoveredCategory(null)}
         >
           {categories.map((category) => {
