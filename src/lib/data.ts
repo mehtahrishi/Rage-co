@@ -64,6 +64,20 @@ export const products: Product[] = [
     description: 'Perfectly worn-in denim with authentic distressing.',
     details: ['100% Cotton Denim', 'Slim fit', '5-pocket styling'],
   },
+  {
+    id: 'p5',
+    name: 'Slim-Fit Chinos',
+    slug: 'slim-fit-chinos',
+    category: 'Pants',
+    price: 139.99,
+    rating: 4.6,
+    reviewCount: 110,
+    imageIds: ['men-pants-1'],
+    sizes: ['30', '32', '34', '36'],
+    colors: ['Khaki', 'Navy'],
+    description: 'Versatile slim-fit chinos for a smart-casual look.',
+    details: ['98% Cotton, 2% Spandex', 'Slim fit', 'Zip fly'],
+  },
   // Vests
   {
     id: 'v1',
