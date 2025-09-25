@@ -79,8 +79,8 @@ const LongSleeveIcon = () => (
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -10 }}
         transition={{ duration: 0.2 }}
-        width="16"
-        height="16"
+        width="20"
+        height="20"
         viewBox="0 0 250 200"
         xmlns="http://www.w3.org/2000/svg"
         className="inline-block mr-2"
