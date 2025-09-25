@@ -157,7 +157,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-16 md:gap-24">
       {/* Hero Section */}
-      <section className="group relative h-[40vh] w-full md:h-[60vh]">
+      <section className="group relative h-[40vh] w-full md:h-[60vh] md:mt-16">
         <Image
           src="/hero-banner.jpg"
           alt="Rage fashion banner"
