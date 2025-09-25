@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 
 import { products, collections } from '@/lib/data';
 import { Button } from '@/components/ui/button';
@@ -127,12 +127,42 @@ const iconMap: { [key: string]: React.ComponentType } = {
 
 const cardCollections = collections.slice(0, 6);
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.5, y: 50 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 10,
+    },
+  },
+};
+
+
 export default function HomePage() {
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
   const [activeCategory, setActiveCategory] = useState<string | null>("PANT'S");
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>()
   const [canScrollPrev, setCanScrollPrev] = useState(false)
+  
+  const animationRef = useRef(null);
+  const isInView = useInView(animationRef, { once: false, amount: 0.2 });
+
 
   useEffect(() => {
     if (!carouselApi) {
@@ -275,7 +305,7 @@ export default function HomePage() {
       </section>
 
       {/* Shop by Category Section */}
-      <section className="container mx-auto px-4 py-16 md:py-24">
+      <section ref={animationRef} className="container mx-auto px-4 py-16 md:py-24">
         <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Shop by Category
         </h2>
@@ -286,32 +316,41 @@ export default function HomePage() {
           }}
           className="w-full"
         >
-          <CarouselContent className="-ml-4">
-            {cardCollections.map((collection, i) => {
-              const image = PlaceHolderImages.find(img => img.id === collection.imageId);
-              return (
-                <CarouselItem key={collection.id} className="pl-4 basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <Link href={`/products?category=${collection.handle}`} className="group block w-full h-full">
-                    <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-primary/50">
-                      {image && (
-                        <Image
-                          src={image.imageUrl}
-                          alt={collection.title}
-                          fill
-                          className="object-cover grayscale group-hover:grayscale-0"
-                          data-ai-hint={image.imageHint}
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-4 left-4 text-white">
-                        <h3 className="font-headline text-2xl font-bold">{collection.title}</h3>
-                      </div>
-                    </div>
-                  </Link>
-                </CarouselItem>
-              )
-            })}
-          </CarouselContent>
+          <motion.div
+             className="flex -ml-4"
+             variants={containerVariants}
+             initial="hidden"
+             animate={isInView ? 'visible' : 'hidden'}
+          >
+            <CarouselContent className='p-0'>
+              {cardCollections.map((collection) => {
+                const image = PlaceHolderImages.find(img => img.id === collection.imageId);
+                return (
+                  <CarouselItem key={collection.id} className="pl-4 basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                    <motion.div variants={itemVariants}>
+                      <Link href={`/products?category=${collection.handle}`} className="group block w-full h-full">
+                        <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-primary/50">
+                          {image && (
+                            <Image
+                              src={image.imageUrl}
+                              alt={collection.title}
+                              fill
+                              className="object-cover grayscale group-hover:grayscale-0"
+                              data-ai-hint={image.imageHint}
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                          <div className="absolute bottom-4 left-4 text-white">
+                            <h3 className="font-headline text-2xl font-bold">{collection.title}</h3>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  </CarouselItem>
+                )
+              })}
+            </CarouselContent>
+          </motion.div>
         </Carousel>
       </section>
 
@@ -335,5 +374,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    
