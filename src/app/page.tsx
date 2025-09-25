@@ -14,11 +14,11 @@ import { cn } from '@/lib/utils';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 const categories = [
-  { name: "PANT'S", href: '/products?category=pants', key: 'pants' },
-  { name: "VEST'S", href: '/products?category=vests', key: 'vests' },
-  { name: "TSHIRT'S", href: '/products?category=tshirts', key: 'tshirts' },
-  { name: "LONG SLEEVE'S", href: '/products?category=long-sleeves', key: 'long-sleeves' },
-  { name: "BABY TEE'S", href: '/products?category=baby-tees', key: 'baby-tees' },
+  { name: "PANT'S", href: '/products?category=pants', key: 'Pants' },
+  { name: "VEST'S", href: '/products?category=vests', key: 'Vests' },
+  { name: "TSHIRT'S", href: '/products?category=tshirts', key: 'Tshirts' },
+  { name: "LONG SLEEVE'S", href: '/products?category=long-sleeves', key: 'Long-sleeves' },
+  { name: "BABY TEE'S", href: '/products?category=baby-tees', key: 'Baby-tees' },
 ];
 
 const PantsIcon = () => (
@@ -131,8 +131,7 @@ export default function HomePage() {
     const categoryKey = categories.find(c => c.name === displayCategory)?.key;
     if (!categoryKey) return [];
 
-    const searchKey = categoryKey.slice(0, -1);
-    return products.filter(p => p.category.toLowerCase().replace(/[\s-]/g, '') === searchKey);
+    return products.filter(p => p.category === categoryKey);
   }, [displayCategory]);
 
   return (
