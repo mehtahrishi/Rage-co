@@ -16,8 +16,8 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.slug}`} className="group">
-      <Card className="overflow-hidden h-full flex flex-col">
-        <CardContent className="relative aspect-[4/5] p-0">
+      <div className="overflow-hidden h-full flex flex-col">
+        <div className="relative aspect-[4/5] p-0">
           {firstImage && (
             <Image
               src={firstImage.imageUrl}
@@ -33,8 +33,8 @@ export function ProductCard({ product }: ProductCardProps) {
               Sale
             </Badge>
           )}
-        </CardContent>
-        <CardFooter className="flex-col items-start gap-2 p-4 flex-1 bg-card">
+        </div>
+        <div className="flex-col items-start gap-2 p-4 flex-1">
           <h3 className="font-semibold text-sm leading-tight group-hover:underline">
             {product.name}
           </h3>
@@ -53,8 +53,8 @@ export function ProductCard({ product }: ProductCardProps) {
               </p>
             )}
           </div>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </Link>
   );
 }
