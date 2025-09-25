@@ -42,7 +42,7 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          'relative h-full font-body antialiased',
+          'h-full font-body antialiased',
           poppins.variable,
           playfairDisplay.variable
         )}
@@ -53,12 +53,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <CartProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <AnnouncementBar />
-              <SiteHeader />
-              <main className="flex-1 pb-24">{children}</main>
-              <SiteFooter />
-            </div>
+            <AnnouncementBar />
+            <SiteHeader />
+            <main className="pb-24">{children}</main>
+            <SiteFooter />
             <ChatWidget />
             <Toaster />
           </CartProvider>
