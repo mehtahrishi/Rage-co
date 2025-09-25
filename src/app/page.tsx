@@ -157,19 +157,17 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-16 md:gap-24">
       {/* Hero Section */}
-      <section className="group relative h-[40vh] w-full md:h-[60vh] md:mt-16">
+      <section className="group relative w-full md:mt-16 block">
         <Image
           src="/hero-banner.jpg"
           alt="Rage fashion banner"
-          fill
-          className="object-contain grayscale transition-all duration-500 group-hover:grayscale-0"
+          width={1920}
+          height={800}
+          className="grayscale transition-all duration-500 group-hover:grayscale-0 w-full h-auto"
           priority
         />
         <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground">
-          <div className='flex-1 flex flex-col items-center justify-center'>
-            {/* Content moved to announcement bar */}
-          </div>
+        <div className="absolute inset-0 flex h-full flex-col items-center justify-end text-center text-primary-foreground">
           <div className="pb-8">
             <Button asChild variant="ghost" size="lg" className="hover:bg-transparent text-white">
               <Link href="/products">
