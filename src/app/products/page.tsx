@@ -14,8 +14,8 @@ function ProductsContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   
-  const category = searchParams.get('category');
-  const subCategory = searchParams.get('subCategory');
+  const categoryParam = searchParams.get('category');
+  const subCategoryParam = searchParams.get('subCategory');
   const sizes = searchParams.getAll('size');
   const colors = searchParams.getAll('color');
   const maxPrice = searchParams.get('maxPrice');
@@ -25,21 +25,23 @@ function ProductsContent() {
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
-      const categoryMatch = !category || category === 'all' || p.category === category;
-      const subCategoryMatch = !subCategory || subCategory === 'all' || p.subCategory === subCategory;
+      const categoryMatch = !categoryParam || categoryParam === 'all' || p.category === categoryParam || p.subCategory === categoryParam;
+      const subCategoryMatch = !subCategoryParam || subCategoryParam === 'all' || p.subCategory === subCategoryParam;
       const sizeMatch = sizes.length === 0 || p.sizes.some(s => sizes.includes(s));
       const colorMatch = colors.length === 0 || p.colors.some(c => colors.includes(c));
       const priceMatch = !maxPrice || p.price <= Number(maxPrice);
       return categoryMatch && subCategoryMatch && sizeMatch && colorMatch && priceMatch;
     });
-  }, [category, subCategory, sizes, colors, maxPrice]);
+  }, [categoryParam, subCategoryParam, sizes, colors, maxPrice]);
 
   const handleCategoryChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
     if (value === 'all') {
       params.delete('category');
+      params.delete('subCategory');
     } else {
       params.set('category', value);
+      params.delete('subCategory');
     }
     router.replace(`${pathname}?${params.toString()}`);
   };
@@ -71,6 +73,11 @@ function ProductsContent() {
   const maxProductPrice = useMemo(() => Math.max(...products.map(p => p.price)), []);
   const currentMaxPrice = Number(searchParams.get('maxPrice') || maxProductPrice);
 
+  const getCategoryValue = () => {
+    if(categoryParam === 'Tops' || categoryParam === 'Bottoms') return categoryParam;
+    return 'all';
+  }
+
   return (
     <div className="container mx-auto px-4 py-12">
       <header className="mb-12 text-center">
@@ -94,7 +101,7 @@ function ProductsContent() {
             {/* Category Filter */}
             <div>
               <h3 className="font-semibold mb-4">Category</h3>
-              <RadioGroup value={category || 'all'} onValueChange={handleCategoryChange}>
+              <RadioGroup value={getCategoryValue()} onValueChange={handleCategoryChange}>
                   <div className="flex items-center space-x-2">
                       <RadioGroupItem value="all" id="cat-all"/>
                       <Label htmlFor="cat-all">All</Label>
@@ -150,11 +157,19 @@ function ProductsContent() {
 
         {/* Products Grid */}
         <main className="lg:col-span-3">
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <h2 className="text-2xl font-semibold">No products found</h2>
+              <p className="mt-2 text-muted-foreground">Try adjusting your filters or check back later.</p>
+              <Button onClick={clearFilters} className="mt-6">Clear Filters</Button>
+            </div>
+          )}
         </main>
       </div>
     </div>
@@ -168,3 +183,5 @@ export default function ProductsPage() {
     </Suspense>
   );
 }
+
+    

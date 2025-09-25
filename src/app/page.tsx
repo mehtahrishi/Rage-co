@@ -127,26 +127,6 @@ const iconMap: { [key: string]: React.ComponentType } = {
 
 const cardCollections = collections.slice(0, 6);
 
-const cardVariants = {
-  hidden: { x: 0, opacity: 0 },
-  visible: (i: number) => {
-    const total = cardCollections.length;
-    const middle = (total - 1) / 2;
-    const x = (i - middle) * 110; // 110% to add some spacing between cards
-    return {
-      x: `${x}%`,
-      opacity: 1,
-      transition: {
-        delay: i * 0.1,
-        type: 'spring',
-        stiffness: 50,
-        damping: 12,
-      },
-    };
-  },
-};
-
-
 export default function HomePage() {
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
   const [activeCategory, setActiveCategory] = useState<string | null>("PANT'S");
@@ -295,51 +275,49 @@ export default function HomePage() {
       </section>
 
       {/* Shop by Category Section */}
-       <section className="container mx-auto px-4 py-16 md:py-24">
+      <section className="container mx-auto px-4 py-16 md:py-24">
         <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Shop by Category
         </h2>
-        <motion.div 
-          className="relative h-64 md:h-80 flex items-center justify-center"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
+        <Carousel
+          opts={{
+            align: 'start',
+            loop: false,
+          }}
+          className="w-full"
         >
-          {cardCollections.map((collection, i) => {
-             const image = PlaceHolderImages.find(img => img.id === collection.imageId);
-            return (
-              <motion.div
-                key={collection.id}
-                className="absolute w-40 md:w-56 aspect-[3/4]"
-                custom={i}
-                variants={cardVariants}
-              >
-                <Link href={`/products?category=${collection.handle}`} className="group block w-full h-full">
-                  <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-primary/50">
-                    {image && (
-                      <Image 
-                        src={image.imageUrl}
-                        alt={collection.title}
-                        fill
-                        className="object-cover grayscale group-hover:grayscale-0"
-                        data-ai-hint={image.imageHint}
-                      />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-4 left-4 text-white">
-                      <h3 className="font-headline text-2xl font-bold">{collection.title}</h3>
+          <CarouselContent className="-ml-4">
+            {cardCollections.map((collection, i) => {
+              const image = PlaceHolderImages.find(img => img.id === collection.imageId);
+              return (
+                <CarouselItem key={collection.id} className="pl-4 basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                  <Link href={`/products?category=${collection.handle}`} className="group block w-full h-full">
+                    <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-primary/50">
+                      {image && (
+                        <Image
+                          src={image.imageUrl}
+                          alt={collection.title}
+                          fill
+                          className="object-cover grayscale group-hover:grayscale-0"
+                          data-ai-hint={image.imageHint}
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute bottom-4 left-4 text-white">
+                        <h3 className="font-headline text-2xl font-bold">{collection.title}</h3>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
-            )
-          })}
-        </motion.div>
+                  </Link>
+                </CarouselItem>
+              )
+            })}
+          </CarouselContent>
+        </Carousel>
       </section>
 
 
       {/* Trending Products Section */}
-      <section className="container mx-auto px-4 mt-16 md:mt-24">
+      <section className="container mx-auto mt-16 md:mt-24 px-4">
         <h2 className="mb-8 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Trending Now
         </h2>
@@ -357,3 +335,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    
