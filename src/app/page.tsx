@@ -163,6 +163,44 @@ export default function HomePage() {
   const animationRef = useRef(null);
   const isInView = useInView(animationRef, { once: false, amount: 0.2 });
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsIntersecting(entry.isIntersecting);
+      },
+      { threshold: 0.5 }
+    );
+
+    if (videoContainerRef.current) {
+      observer.observe(videoContainerRef.current);
+    }
+
+    return () => {
+      if (videoContainerRef.current) {
+        observer.unobserve(videoContainerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isIntersecting) {
+      video.play().catch(error => {
+        console.error("Video autoplay failed:", error);
+        // Autoplay was prevented, which is common in browsers.
+        // You might want to show a play button here.
+      });
+    } else {
+      video.pause();
+    }
+  }, [isIntersecting]);
+
 
   useEffect(() => {
     if (!carouselApi) {
@@ -354,7 +392,7 @@ export default function HomePage() {
 
       {/* Trending Products Section */}
       <section className="container mx-auto px-4">
-        <h2 className="mt-12 mb-8 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
+        <h2 className="mt-8 mb-8 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Trending Now
         </h2>
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
@@ -362,12 +400,30 @@ export default function HomePage() {
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-        <div className="mt-12 text-center">
-          <Button asChild size="lg" variant="outline">
-            <Link href="/products">View All Products</Link>
-          </Button>
+      </section>
+      
+      {/* Video Section */}
+      <section ref={videoContainerRef} className="container mx-auto px-4 py-16">
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg shadow-lg">
+          <video
+            ref={videoRef}
+            src="video.mp4"
+            loop
+            muted
+            playsInline
+            className={cn(
+              "w-full h-full object-cover transition-all duration-500",
+              isIntersecting ? "grayscale-0" : "grayscale"
+            )}
+          />
         </div>
       </section>
+
+      <div className="mt-12 text-center">
+        <Button asChild size="lg" variant="outline">
+          <Link href="/products">View All Products</Link>
+        </Button>
+      </div>
     </div>
   );
 }
