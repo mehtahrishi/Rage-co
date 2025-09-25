@@ -354,7 +354,7 @@ export default function HomePage() {
 
       {/* Trending Products Section */}
       <section className="container mx-auto px-4">
-        <h2 className="mb-8 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
+        <h2 className="mt-12 mb-8 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Trending Now
         </h2>
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
