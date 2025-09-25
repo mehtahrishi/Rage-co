@@ -339,9 +339,6 @@ export default function HomePage() {
                             />
                           )}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                          <div className="absolute bottom-4 left-4 text-white">
-                            <h3 className="font-headline text-2xl font-bold">{collection.title}</h3>
-                          </div>
                         </div>
                       </Link>
                     </motion.div>
