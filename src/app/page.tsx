@@ -198,20 +198,29 @@ export default function HomePage() {
                   onMouseEnter={() => setHoveredCategory(category.name)}
                   onClick={() => setActiveCategory(category.name)}
                   className={cn(
-                    'relative flex items-center justify-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground md:justify-start'
+                    'relative flex flex-col items-center justify-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground md:flex-row md:justify-start'
                   )}
                 >
-                  <div className="md:hidden">
+                  <div className="relative">
                     <AnimatePresence>
                      {Icon && <Icon />}
                     </AnimatePresence>
                   </div>
-                  <div className="hidden md:block">
-                     <AnimatePresence>
-                      {isDisplaying && Icon && <Icon />}
-                    </AnimatePresence>
-                  </div>
                   <span className="hidden md:inline">{category.name}</span>
+
+                  <AnimatePresence>
+                    {isDisplaying && (
+                      <motion.div
+                        className="md:hidden text-xs text-foreground mt-1"
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                      >
+                        {category.name.replace(/'S/,'')}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                   {isDisplaying && (
                     <motion.span
                       layoutId="category-underline"
