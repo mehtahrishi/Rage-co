@@ -32,6 +32,34 @@ const PantsIcon = () => (
     </svg>
   );
 
+const VestIcon = () => (
+    <svg
+        width="16"
+        height="16"
+        viewBox="0 0 200 200"
+        xmlns="http://www.w3.org/2000/svg"
+        className="inline-block mr-2"
+    >
+        <g fill="currentColor">
+            <path d=" M60 20 Q70 10 100 10 Q130 10 140 20 L160 40 L160 180 L40 180 L40 40 L60 20 Z" />
+            <path d=" M80 20 Q100 60 120 20 Z" fill="var(--background)" />
+        </g>
+    </svg>
+);
+
+const TshirtIcon = () => (
+    <svg
+        width="16"
+        height="16"
+        viewBox="0 -64 640 640"
+        xmlns="http://www.w3.org/2000/svg"
+        className="inline-block mr-2"
+        fill="currentColor"
+    >
+        <path d="M631.2 96.5L436.5 0C416.4 27.8 371.9 47.2 320 47.2S223.6 27.8 203.5 0L8.8 96.5c-7.9 4-11.1 13.6-7.2 21.5l57.2 114.5c4 7.9 13.6 11.1 21.5 7.2l56.6-27.7c10.6-5.2 23 2.5 23 14.4V480c0 17.7 14.3 32 32 32h256c17.7 0 32-14.3 32-32V226.3c0-11.8 12.4-19.6 23-14.4l56.6 27.7c7.9 4 17.5.8 21.5-7.2L638.3 118c4-7.9.8-17.6-7.1-21.5z"/>
+    </svg>
+);
+
 export default function HomePage() {
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
   const [activeCategory, setActiveCategory] = useState(categories[0].name);
@@ -76,6 +104,8 @@ export default function HomePage() {
               )}
             >
               {activeCategory === category.name && category.name === "PANT'S" && <PantsIcon />}
+              {activeCategory === category.name && category.name === "VEST'S" && <VestIcon />}
+              {activeCategory === category.name && category.name === "TSHIRT'S" && <TshirtIcon />}
               {category.name}
               {activeCategory === category.name && (
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></span>
