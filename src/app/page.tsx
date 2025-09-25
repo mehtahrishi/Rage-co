@@ -305,7 +305,7 @@ export default function HomePage() {
       </section>
 
       {/* Shop by Category Section */}
-      <section ref={animationRef} className="container mx-auto px-4 pt-16">
+      <section ref={animationRef} className="container mx-auto px-4 pt-8">
         <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Shop by Category
         </h2>
