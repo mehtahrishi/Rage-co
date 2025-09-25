@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -11,13 +11,14 @@ import { products } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product-card';
 import { cn } from '@/lib/utils';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 const categories = [
-  { name: "PANT'S", href: '/products?category=pants' },
-  { name: "VEST'S", href: '/products?category=vests' },
-  { name: "TSHIRT'S", href: '/products?category=tshirts' },
-  { name: "LONG SLEEVE'S", href: '/products?category=long-sleeves' },
-  { name: "BABY TEE'S", href: '/products?category=baby-tees' },
+  { name: "PANT'S", href: '/products?category=pants', key: 'pants' },
+  { name: "VEST'S", href: '/products?category=vests', key: 'vests' },
+  { name: "TSHIRT'S", href: '/products?category=tshirts', key: 'tshirts' },
+  { name: "LONG SLEEVE'S", href: '/products?category=long-sleeves', key: 'long-sleeves' },
+  { name: "BABY TEE'S", href: '/products?category=baby-tees', key: 'baby-tees' },
 ];
 
 const PantsIcon = () => (
@@ -120,6 +121,17 @@ export default function HomePage() {
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
+  const hoveredProducts = useMemo(() => {
+    if (!hoveredCategory) return [];
+    
+    const categoryKey = categories.find(c => c.name === hoveredCategory)?.key;
+    if (!categoryKey) return [];
+
+    // This is a simplified logic. In a real app, you'd likely have a better mapping
+    // or the product data would include a more direct category key.
+    return products.filter(p => p.slug.includes(categoryKey.slice(0, -1)));
+  }, [hoveredCategory]);
+
   return (
     <div className="flex flex-col gap-16 md:gap-24">
       {/* Hero Section */}
@@ -148,38 +160,63 @@ export default function HomePage() {
 
       {/* Category Navigation Section */}
       <section className="container mx-auto px-4">
-        <nav
-          className="flex justify-center items-center gap-8 md:gap-16 border-b"
-          onMouseLeave={() => setHoveredCategory(null)}
-        >
-          {categories.map((category) => {
-            const Icon = iconMap[category.name];
-            return (
-              <Link
-                key={category.name}
-                href={category.href}
-                onMouseEnter={() => setHoveredCategory(category.name)}
-                className={cn(
-                  'relative flex items-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'
-                )}
+        <div onMouseLeave={() => setHoveredCategory(null)}>
+          <nav
+            className="flex justify-center items-center gap-16 md:gap-16 border-b"
+          >
+            {categories.map((category) => {
+              const Icon = iconMap[category.name];
+              return (
+                <Link
+                  key={category.name}
+                  href={category.href}
+                  onMouseEnter={() => setHoveredCategory(category.name)}
+                  className={cn(
+                    'relative flex items-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'
+                  )}
+                >
+                  <AnimatePresence>
+                    {hoveredCategory === category.name && Icon && <Icon />}
+                  </AnimatePresence>
+                  {category.name}
+                  {hoveredCategory === category.name && (
+                    <motion.span
+                      layoutId="category-underline"
+                      className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1, exit: { opacity: 0 } }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  )}
+                </Link>
+              )
+            })}
+          </nav>
+           <AnimatePresence>
+            {hoveredProducts.length > 0 && (
+               <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="overflow-hidden"
               >
-                <AnimatePresence>
-                  {hoveredCategory === category.name && Icon && <Icon />}
-                </AnimatePresence>
-                {category.name}
-                {hoveredCategory === category.name && (
-                  <motion.span
-                    layoutId="category-underline"
-                    className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1, exit: { opacity: 0 } }}
-                    transition={{ duration: 0.3 }}
-                  />
-                )}
-              </Link>
-            )
-          })}
-        </nav>
+                <div className="py-8">
+                  <ScrollArea className="w-full whitespace-nowrap">
+                    <div className="flex w-max space-x-6 pb-4">
+                       {hoveredProducts.map((product) => (
+                        <div key={product.id} className="w-64">
+                           <ProductCard product={product} />
+                        </div>
+                      ))}
+                    </div>
+                    <ScrollBar orientation="horizontal" />
+                  </ScrollArea>
+                </div>
+              </motion.div>
+            )}
+           </AnimatePresence>
+        </div>
       </section>
 
       {/* Trending Products Section */}
