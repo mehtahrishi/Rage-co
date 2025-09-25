@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -49,8 +49,9 @@ const VestIcon = () => (
     viewBox="0 0 200 200"
     xmlns="http://www.w3.org/2000/svg"
     className="inline-block mr-2"
+    fill="currentColor"
   >
-    <g fill="currentColor">
+    <g>
       <path d=" M60 20 Q70 10 100 10 Q130 10 140 20 L160 40 L160 180 L40 180 L40 40 L60 20 Z" />
       <path d=" M80 20 Q100 60 120 20 Z" fill="var(--background)" />
     </g>
@@ -119,18 +120,20 @@ const iconMap: { [key: string]: React.ComponentType } = {
 
 export default function HomePage() {
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
+  const [activeCategory, setActiveCategory] = useState<string | null>("PANT'S");
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
-  const hoveredProducts = useMemo(() => {
-    if (!hoveredCategory) return [];
+  const displayCategory = hoveredCategory || activeCategory;
+
+  const visibleProducts = useMemo(() => {
+    if (!displayCategory) return [];
     
-    const categoryKey = categories.find(c => c.name === hoveredCategory)?.key;
+    const categoryKey = categories.find(c => c.name === displayCategory)?.key;
     if (!categoryKey) return [];
 
-    // This is a simplified logic. In a real app, you'd likely have a better mapping
-    // or the product data would include a more direct category key.
-    return products.filter(p => p.slug.includes(categoryKey.slice(0, -1)));
-  }, [hoveredCategory]);
+    const searchKey = categoryKey.slice(0, -1);
+    return products.filter(p => p.category.toLowerCase().replace(/[\s-]/g, '') === searchKey);
+  }, [displayCategory]);
 
   return (
     <div className="flex flex-col gap-16 md:gap-24">
@@ -160,12 +163,20 @@ export default function HomePage() {
 
       {/* Category Navigation Section */}
       <section className="container mx-auto px-4">
-        <div onMouseLeave={() => setHoveredCategory(null)}>
+        <div 
+          onMouseLeave={() => {
+            setHoveredCategory(null);
+          }}
+          onClick={() => {
+            if(hoveredCategory) setActiveCategory(hoveredCategory);
+          }}
+        >
           <nav
             className="flex justify-center items-center gap-16 md:gap-16 border-b"
           >
             {categories.map((category) => {
               const Icon = iconMap[category.name];
+              const isDisplaying = displayCategory === category.name;
               return (
                 <Link
                   key={category.name}
@@ -176,10 +187,10 @@ export default function HomePage() {
                   )}
                 >
                   <AnimatePresence>
-                    {hoveredCategory === category.name && Icon && <Icon />}
+                    {isDisplaying && Icon && <Icon />}
                   </AnimatePresence>
                   {category.name}
-                  {hoveredCategory === category.name && (
+                  {isDisplaying && (
                     <motion.span
                       layoutId="category-underline"
                       className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"
@@ -193,8 +204,9 @@ export default function HomePage() {
             })}
           </nav>
            <AnimatePresence>
-            {hoveredProducts.length > 0 && (
+            {visibleProducts.length > 0 && (
                <motion.div
+                key={displayCategory}
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
@@ -204,7 +216,7 @@ export default function HomePage() {
                 <div className="py-8">
                   <ScrollArea className="w-full whitespace-nowrap">
                     <div className="flex w-max space-x-6 pb-4">
-                       {hoveredProducts.map((product) => (
+                       {visibleProducts.map((product) => (
                         <div key={product.id} className="w-64">
                            <ProductCard product={product} />
                         </div>
