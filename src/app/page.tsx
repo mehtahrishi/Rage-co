@@ -404,7 +404,7 @@ export default function HomePage() {
       
       {/* Video Section */}
       <section ref={videoContainerRef} className="container mx-auto px-4 py-16">
-        <div className="relative aspect-video w-full overflow-hidden rounded-lg shadow-lg">
+        <div className="relative aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg">
           <video
             ref={videoRef}
             src="video.mp4"
