@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -157,7 +156,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-16 md:gap-24">
       {/* Hero Section */}
-      <section className="group relative w-full md:mt-16 block">
+      <section className="group relative w-full block">
         <Image
           src="/hero-banner.jpg"
           alt="Rage fashion banner"
