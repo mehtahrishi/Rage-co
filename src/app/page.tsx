@@ -17,6 +17,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from '@/components/ui/carousel';
 
 const categories = [
@@ -37,7 +38,7 @@ const PantsIcon = () => (
     height="16"
     viewBox="0 0 100 100"
     xmlns="http://www.w3.org/2000/svg"
-    className="inline-block md:mr-2"
+    className="inline-block mr-2"
     fill="currentColor"
   >
     <path d="M25 10 L75 10 L80 90 L55 90 L55 50 Q 50 45 45 50 L45 90 L20 90 Z" />
@@ -54,7 +55,7 @@ const VestIcon = () => (
     height="16"
     viewBox="0 0 200 200"
     xmlns="http://www.w3.org/2000/svg"
-    className="inline-block md:mr-2"
+    className="inline-block mr-2"
     fill="currentColor"
   >
     <g>
@@ -74,7 +75,7 @@ const TshirtIcon = () => (
     height="16"
     viewBox="0 -64 640 640"
     xmlns="http://www.w3.org/2000/svg"
-    className="inline-block md:mr-2"
+    className="inline-block mr-2"
     fill="currentColor"
   >
     <path d="M631.2 96.5L436.5 0C416.4 27.8 371.9 47.2 320 47.2S223.6 27.8 203.5 0L8.8 96.5c-7.9 4-11.1 13.6-7.2 21.5l57.2 114.5c4 7.9 13.6 11.1 21.5 7.2l56.6-27.7c10.6-5.2 23 2.5 23 14.4V480c0 17.7 14.3 32 32 32h256c17.7 0 32-14.3 32-32V226.3c0-11.8 12.4-19.6 23-14.4l56.6 27.7c7.9 4 17.5.8 21.5-7.2L638.3 118c4-7.9.8-17.6-7.1-21.5z" />
@@ -91,7 +92,7 @@ const LongSleeveIcon = () => (
         height="20"
         viewBox="0 0 250 200"
         xmlns="http://www.w3.org/2000/svg"
-        className="inline-block md:mr-2"
+        className="inline-block mr-2"
         fill="currentColor"
     >
         <path d="M246.674,72.269c0.234,1.871-2.491,7.849-4.346,13.565c-0.386,1.18-0.756,2.328-1.11,3.427 c-1.844,5.722-4.493,12.162-6.744,12.129c-2.252-0.038-8.436-2.66-14.267-4.101l-39.64-9.763 c-5.831-1.441-10.563,2.263-10.568,8.273l-0.033,87.112c0,6.01-3.606,14.256-8.909,17.073c-16.79,8.926-37.921,8.072-37.921,8.072 c-18.118,0-29.996-4.101-37.122-7.903c-5.298-2.834-8.746-11.232-8.73-17.242l0.267-87.112c0.016-6.01-4.737-9.883-10.617-8.659 l-41.081,8.583c-5.88,1.235-12.254,3.345-14.533,3.78c-2.279,0.424-5.205-5.706-6.891-11.471l-0.25-0.87 C2.493,81.39,0.165,75.216,0.007,73.128c-0.158-2.083,2.295-4.068,4.036-4.634l3.155-1.023 c32.08-12.298,50.393-19.972,60.183-24.291c5.493-2.42,14.74-4.569,20.75-4.569h0.473c6.005,0,10.84,5.64,15.523,9.404 c6.891,5.548,19.01,5.809,19.01,5.809c9.203,0,14.669-2.627,17.916-5.684c4.368-4.134,9.605-9.529,15.616-9.529h1.942 c6.005,0,15.741,0.479,21.408,2.464c14.963,5.243,40.565,17.476,54.51,24.318C239.919,68.031,246.44,70.397,246.674,72.269z"/>
@@ -108,7 +109,7 @@ const BabyTeeIcon = () => (
         height="16"
         viewBox="0 0 330 330"
         xmlns="http://www.w3.org/2000/svg"
-        className="inline-block md:mr-2"
+        className="inline-block mr-2"
         fill="currentColor"
     >
         <path d="M315,10.013h-90.012c-8.284,0-15,6.716-15,15c0,24.799-20.183,44.974-44.99,44.974 c-24.808,0-44.99-20.175-44.99-44.974c0-8.284-6.716-15-15-15H15c-8.284,0-15,6.716-15,15v109.974c0,8.284,6.716,15,15,15h45v155 c0,8.284,6.716,15,15,15h180c8.284,0,15-6.716,15-15v-155h45c8.284,0,15-6.716,15-15V25.013C330,16.729,323.284,10.013,315,10.013z"/>
@@ -128,6 +129,18 @@ export default function HomePage() {
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
   const [activeCategory, setActiveCategory] = useState<string | null>("PANT'S");
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>()
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+
+  useEffect(() => {
+    if (!carouselApi) {
+      return
+    }
+
+    carouselApi.on("select", () => {
+      setCanScrollPrev(carouselApi.canScrollPrev())
+    })
+  }, [carouselApi])
 
   const displayCategory = hoveredCategory || activeCategory;
 
@@ -174,24 +187,23 @@ export default function HomePage() {
           }}
         >
           <nav
-            className="flex justify-center items-center gap-4 md:gap-16 border-b"
+            className="flex justify-center items-center gap-16 border-b"
           >
             {categories.map((category) => {
               const Icon = iconMap[category.name];
               const isDisplaying = displayCategory === category.name;
               return (
-                <Link
+                <button
                   key={category.name}
-                  href={category.href}
                   onMouseEnter={() => setHoveredCategory(category.name)}
                   onClick={() => setActiveCategory(category.name)}
                   className={cn(
-                    'relative flex items-center justify-center md:justify-start py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'
+                    'relative flex items-center justify-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground md:justify-start'
                   )}
                 >
                   <div className="md:hidden">
                     <AnimatePresence>
-                      {Icon && <Icon />}
+                     {Icon && <Icon />}
                     </AnimatePresence>
                   </div>
                   <div className="hidden md:block">
@@ -209,7 +221,7 @@ export default function HomePage() {
                       transition={{ duration: 0.3 }}
                     />
                   )}
-                </Link>
+                </button>
               )
             })}
           </nav>
@@ -225,6 +237,7 @@ export default function HomePage() {
               >
                 <div className="py-8 md:px-12">
                   <Carousel
+                    setApi={setCarouselApi}
                     opts={{
                       align: 'start',
                       loop: false,
@@ -243,7 +256,7 @@ export default function HomePage() {
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="hidden md:flex" />
+                    {canScrollPrev && <CarouselPrevious className="hidden md:flex" />}
                     <CarouselNext className="hidden md:flex" />
                   </Carousel>
                 </div>
