@@ -409,7 +409,6 @@ export default function HomePage() {
             ref={videoRef}
             src="video.mp4"
             loop
-            muted
             playsInline
             className={cn(
               "w-full h-full object-cover transition-all duration-500",
