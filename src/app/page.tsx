@@ -162,7 +162,7 @@ export default function HomePage() {
           src="/hero-banner.jpg"
           alt="Rage fashion banner"
           fill
-          className="object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
+          className="object-contain grayscale transition-all duration-500 group-hover:grayscale-0"
           priority
         />
         <div className="absolute inset-0 bg-black/40" />
