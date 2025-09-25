@@ -138,7 +138,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-16 md:gap-24">
       {/* Hero Section */}
-      <section className="group relative h-[40vh] w-full md:h-[80vh]">
+      <section className="group relative h-[40vh] w-full md:h-[60vh]">
         <Image
           src="/hero-banner.jpg"
           alt="Rage fashion banner"
@@ -167,9 +167,6 @@ export default function HomePage() {
           onMouseLeave={() => {
             setHoveredCategory(null);
           }}
-          onClick={() => {
-            if(hoveredCategory) setActiveCategory(hoveredCategory);
-          }}
         >
           <nav
             className="flex justify-center items-center gap-16 md:gap-16 border-b"
@@ -182,6 +179,7 @@ export default function HomePage() {
                   key={category.name}
                   href={category.href}
                   onMouseEnter={() => setHoveredCategory(category.name)}
+                  onClick={() => setActiveCategory(category.name)}
                   className={cn(
                     'relative flex items-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'
                   )}

@@ -34,7 +34,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </Badge>
           )}
         </CardContent>
-        <CardFooter className="flex-col items-start gap-2 p-4 flex-1">
+        <CardFooter className="flex-col items-start gap-2 p-4 flex-1 bg-card">
           <h3 className="font-semibold text-sm leading-tight group-hover:underline">
             {product.name}
           </h3>
