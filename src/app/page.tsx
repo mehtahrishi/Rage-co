@@ -154,7 +154,7 @@ export default function HomePage() {
   }, [displayCategory]);
 
   return (
-    <div className="flex flex-col gap-16 md:gap-24">
+    <div className="flex flex-col">
       {/* Hero Section */}
       <section className="group relative w-full block">
         <Image
@@ -273,7 +273,7 @@ export default function HomePage() {
       </section>
 
       {/* Trending Products Section */}
-      <section className="container mx-auto px-4">
+      <section className="container mx-auto px-4 mt-16 md:mt-24">
         <h2 className="mb-8 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Trending Now
         </h2>
