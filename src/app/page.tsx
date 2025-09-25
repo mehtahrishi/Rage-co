@@ -309,20 +309,19 @@ export default function HomePage() {
         <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Shop by Category
         </h2>
-        <Carousel
-          opts={{
-            align: 'start',
-            loop: false,
-          }}
-          className="w-full"
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
         >
-          <motion.div
-             className="flex -ml-4"
-             variants={containerVariants}
-             initial="hidden"
-             animate={isInView ? 'visible' : 'hidden'}
+          <Carousel
+            opts={{
+              align: 'start',
+              loop: false,
+            }}
+            className="w-full"
           >
-            <CarouselContent className='p-0'>
+            <CarouselContent className='-ml-4'>
               {cardCollections.map((collection) => {
                 const image = PlaceHolderImages.find(img => img.id === collection.imageId);
                 return (
@@ -350,8 +349,8 @@ export default function HomePage() {
                 )
               })}
             </CarouselContent>
-          </motion.div>
-        </Carousel>
+          </Carousel>
+        </motion.div>
       </section>
 
 
