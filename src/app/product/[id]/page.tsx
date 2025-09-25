@@ -48,7 +48,7 @@ export default function ProductPage() {
     .filter(Boolean) as (typeof PlaceHolderImages)[0][];
     
   const activeImage = PlaceHolderImages.find((img) => img.id === activeImageId);
-  const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const relatedProducts = products.filter(p => p.subCategory === product.subCategory && p.id !== product.id).slice(0, 4);
 
   return (
     <div className="container mx-auto px-4 py-12">

@@ -19,11 +19,12 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui/carousel';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const categories = [
-  { name: "PANT'S", href: '/products?category=pants', key: 'Pants' },
-  { name: "VEST'S", href: '/products?category=vests', key: 'Vests' },
-  { name: "TSHIRT'S", href: '/products?category=tshirts', key: 'Tshirts' },
+  { name: "PANT'S", href: '/products?category=Pants', key: 'Pants' },
+  { name: "VEST'S", href: '/products?category=Vests', key: 'Vests' },
+  { name: "TSHIRT'S", href: '/products?category=Tshirts', key: 'Tshirts' },
   { name: "LONG SLEEVE'S", href: '/products?category=long-sleeves', key: 'Long-sleeves' },
   { name: "BABY TEE'S", href: '/products?category=baby-tees', key: 'Baby-tees' },
 ];
@@ -150,7 +151,7 @@ export default function HomePage() {
     const categoryKey = categories.find(c => c.name === displayCategory)?.key;
     if (!categoryKey) return [];
 
-    return products.filter(p => p.category === categoryKey);
+    return products.filter(p => p.subCategory === categoryKey);
   }, [displayCategory]);
 
   return (
@@ -205,21 +206,20 @@ export default function HomePage() {
                     <AnimatePresence>
                      {Icon && <Icon />}
                     </AnimatePresence>
+                     <AnimatePresence>
+                        {isDisplaying && (
+                          <motion.div
+                            className="md:hidden text-xs text-foreground mt-1"
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
+                          >
+                            {category.name.replace(/'S/,'')}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                   </div>
                   <span className="hidden md:inline">{category.name}</span>
-
-                  <AnimatePresence>
-                    {isDisplaying && (
-                      <motion.div
-                        className="md:hidden text-xs text-foreground mt-1"
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                      >
-                        {category.name.replace(/'S/,'')}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
 
                   {isDisplaying && (
                     <motion.span

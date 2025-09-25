@@ -29,8 +29,9 @@ export function SiteFooter() {
         <div>
           <h4 className="font-semibold uppercase tracking-wider text-foreground/80">Shop</h4>
           <ul className="mt-4 space-y-2 text-sm">
-            <li><Link href="/products?category=Men" className="text-muted-foreground hover:text-foreground">Men</Link></li>
-            <li><Link href="/products?category=Women" className="text-muted-foreground hover:text-foreground">Women</Link></li>
+            <li><Link href="/products?category=Tops" className="text-muted-foreground hover:text-foreground">Tops</Link></li>
+            <li><Link href="/products?category=Bottoms" className="text-muted-foreground hover:text-foreground">Bottoms</Link></li>
+            <li><Link href="/products" className="text-muted-foreground hover:text-foreground">New Arrivals</Link></li>
           </ul>
         </div>
 

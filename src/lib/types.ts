@@ -3,7 +3,8 @@ import type { PlaceHolderImages } from "./placeholder-images";
 export type Product = {
   id: string;
   name: string;
-  category: 'Men' | 'Women' | 'Pants' | 'Vests' | 'Tshirts' | 'Long-sleeves' | 'Baby-tees';
+  category: 'Tops' | 'Bottoms';
+  subCategory: 'Pants' | 'Vests' | 'Tshirts' | 'Long-sleeves' | 'Baby-tees' | 'Skirts';
   price: number;
   originalPrice?: number;
   rating: number;

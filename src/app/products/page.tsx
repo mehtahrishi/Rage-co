@@ -15,6 +15,7 @@ function ProductsContent() {
   const searchParams = useSearchParams();
   
   const category = searchParams.get('category');
+  const subCategory = searchParams.get('subCategory');
   const sizes = searchParams.getAll('size');
   const colors = searchParams.getAll('color');
   const maxPrice = searchParams.get('maxPrice');
@@ -25,12 +26,13 @@ function ProductsContent() {
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       const categoryMatch = !category || category === 'all' || p.category === category;
+      const subCategoryMatch = !subCategory || subCategory === 'all' || p.subCategory === subCategory;
       const sizeMatch = sizes.length === 0 || p.sizes.some(s => sizes.includes(s));
       const colorMatch = colors.length === 0 || p.colors.some(c => colors.includes(c));
       const priceMatch = !maxPrice || p.price <= Number(maxPrice);
-      return categoryMatch && sizeMatch && colorMatch && priceMatch;
+      return categoryMatch && subCategoryMatch && sizeMatch && colorMatch && priceMatch;
     });
-  }, [category, sizes, colors, maxPrice]);
+  }, [category, subCategory, sizes, colors, maxPrice]);
 
   const handleCategoryChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -68,9 +70,6 @@ function ProductsContent() {
 
   const maxProductPrice = useMemo(() => Math.max(...products.map(p => p.price)), []);
   const currentMaxPrice = Number(searchParams.get('maxPrice') || maxProductPrice);
-  const selectedCategory = searchParams.get('category') || 'all';
-  const selectedSizes = searchParams.getAll('size');
-  const selectedColors = searchParams.getAll('color');
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -101,12 +100,12 @@ function ProductsContent() {
                       <Label htmlFor="cat-all">All</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Men" id="cat-men"/>
-                      <Label htmlFor="cat-men">Men</Label>
+                      <RadioGroupItem value="Tops" id="cat-tops"/>
+                      <Label htmlFor="cat-tops">Tops</Label>
                   </div>
                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Women" id="cat-women"/>
-                      <Label htmlFor="cat-women">Women</Label>
+                      <RadioGroupItem value="Bottoms" id="cat-bottoms"/>
+                      <Label htmlFor="cat-bottoms">Bottoms</Label>
                   </div>
               </RadioGroup>
             </div>

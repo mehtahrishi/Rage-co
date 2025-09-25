@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, ShoppingCart, User } from 'lucide-react';
+import { ChevronDown, Menu, ShoppingCart, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
@@ -24,14 +24,26 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
+
 import { cn } from '@/lib/utils';
 import { BrandText } from './brand-text';
-
-const navLinks = [
-  { href: '/products?category=Men', label: 'Men' },
-  { href: '/products?category=Women', label: 'Women' },
-];
+import { navLinks } from '@/lib/nav-links';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from './ui/accordion';
 
 export function SiteHeader() {
   const { items } = useCart();
@@ -84,17 +96,40 @@ export function SiteHeader() {
               </AnimatePresence>
             </div>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <NavigationMenu>
+            <NavigationMenuList>
+              {navLinks.map((link) =>
+                link.subCategories ? (
+                  <NavigationMenuItem key={link.label}>
+                    <NavigationMenuTrigger className="text-sm font-medium uppercase tracking-wider text-foreground/80 transition-colors hover:text-foreground">
+                      {link.label}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                        {link.subCategories.map((component) => (
+                          <ListItem
+                            key={component.title}
+                            title={component.title}
+                            href={component.href}
+                          >
+                            {component.description}
+                          </ListItem>
+                        ))}
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ) : (
+                  <NavigationMenuItem key={link.label}>
+                    <Link href={link.href} legacyBehavior passHref>
+                      <NavigationMenuLink className="text-sm font-medium uppercase tracking-wider text-foreground/80 transition-colors hover:text-foreground px-4 py-2">
+                        {link.label}
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                )
+              )}
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
 
         <Sheet>
@@ -113,15 +148,34 @@ export function SiteHeader() {
               </SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-4 mt-6">
-              {navLinks.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.href}
-                  className="block px-2 py-1 text-lg"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              <Accordion type="single" collapsible className="w-full">
+                {navLinks.map((link, index) =>
+                  link.subCategories ? (
+                    <AccordionItem key={index} value={`item-${index}`}>
+                      <AccordionTrigger className="text-lg uppercase tracking-wider hover:no-underline">
+                        {link.label}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="flex flex-col gap-4 pl-4 pt-2">
+                          {link.subCategories.map((subLink) => (
+                            <li key={subLink.title}>
+                              <Link href={subLink.href} className="text-muted-foreground hover:text-foreground">{subLink.title}</Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ) : (
+                    <Link
+                      key={index}
+                      href={link.href}
+                      className="block px-2 py-3 text-lg uppercase tracking-wider border-b"
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                )}
+              </Accordion>
             </nav>
           </SheetContent>
         </Sheet>
@@ -196,3 +250,29 @@ export function SiteHeader() {
     </header>
   );
 }
+
+const ListItem = React.forwardRef<
+  React.ElementRef<'a'>,
+  React.ComponentPropsWithoutRef<'a'>
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = 'ListItem';
