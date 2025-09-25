@@ -148,7 +148,10 @@ export default function HomePage() {
 
       {/* Category Navigation Section */}
       <section className="container mx-auto px-4">
-        <nav className="flex justify-center items-center gap-6 md:gap-8 border-b">
+        <nav
+          className="flex justify-center items-center gap-8 md:gap-12 border-b"
+          onMouseLeave={() => setHoveredCategory(null)}
+        >
           {categories.map((category) => {
             const Icon = iconMap[category.name];
             return (
@@ -156,7 +159,6 @@ export default function HomePage() {
                 key={category.name}
                 href={category.href}
                 onMouseEnter={() => setHoveredCategory(category.name)}
-                onMouseLeave={() => setHoveredCategory(null)}
                 className={cn(
                   'relative flex items-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground'
                 )}
@@ -165,17 +167,15 @@ export default function HomePage() {
                   {hoveredCategory === category.name && Icon && <Icon />}
                 </AnimatePresence>
                 {category.name}
-                 <AnimatePresence>
-                  {hoveredCategory === category.name && (
-                    <motion.span
-                      layoutId="category-underline"
-                      className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                    />
-                  )}
-                </AnimatePresence>
+                {hoveredCategory === category.name && (
+                  <motion.span
+                    layoutId="category-underline"
+                    className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, exit: { opacity: 0 } }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
               </Link>
             )
           })}
