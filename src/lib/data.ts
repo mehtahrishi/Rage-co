@@ -1,8 +1,12 @@
 import type { Product, Collection } from '@/lib/types';
 
 export const collections: Collection[] = [
-  { id: '1', title: "Tops", handle: 'tops', imageId: 'collection-men' },
-  { id: '2', title: "Bottoms", handle: 'bottoms', imageId: 'collection-women' },
+  { id: '1', title: 'Pants', handle: 'Pants', imageId: 'category-pants' },
+  { id: '2', title: 'Vests', handle: 'Vests', imageId: 'category-vests' },
+  { id: '3', title: 'T-Shirts', handle: 'Tshirts', imageId: 'category-tshirts' },
+  { id: '4', title: 'Long Sleeves', handle: 'Long-sleeves', imageId: 'category-long-sleeves' },
+  { id: '5', title: 'Baby Tees', handle: 'Baby-tees', imageId: 'category-baby-tees' },
+  { id: '6', title: 'Skirts', handle: 'Skirts', imageId: 'category-skirts' },
 ];
 
 export const products: Product[] = [

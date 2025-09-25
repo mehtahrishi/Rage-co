@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { products } from '@/lib/data';
+import { products, collections } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product-card';
 import { cn } from '@/lib/utils';
@@ -19,6 +19,7 @@ import {
   type CarouselApi,
 } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const categories = [
   { name: "PANT'S", href: '/products?category=Pants', key: 'Pants' },
@@ -124,6 +125,27 @@ const iconMap: { [key: string]: React.ComponentType } = {
     "BABY TEE'S": BabyTeeIcon,
 };
 
+const cardCollections = collections.slice(0, 6);
+
+const cardVariants = {
+  hidden: { x: 0, opacity: 0 },
+  visible: (i: number) => {
+    const total = cardCollections.length;
+    const middle = (total - 1) / 2;
+    const x = (i - middle) * 110; // 110% to add some spacing between cards
+    return {
+      x: `${x}%`,
+      opacity: 1,
+      transition: {
+        delay: i * 0.1,
+        type: 'spring',
+        stiffness: 50,
+        damping: 12,
+      },
+    };
+  },
+};
+
 
 export default function HomePage() {
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
@@ -162,7 +184,7 @@ export default function HomePage() {
           alt="Rage fashion banner"
           width={1920}
           height={800}
-          className="grayscale transition-all duration-500 group-hover:grayscale-0 w-full h-auto"
+          className="w-full h-auto"
           priority
         />
         <div className="absolute inset-0 bg-black/40" />
@@ -271,6 +293,50 @@ export default function HomePage() {
            </AnimatePresence>
         </div>
       </section>
+
+      {/* Shop by Category Section */}
+       <section className="container mx-auto px-4 py-16 md:py-24">
+        <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
+          Shop by Category
+        </h2>
+        <motion.div 
+          className="relative h-64 md:h-80 flex items-center justify-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+        >
+          {cardCollections.map((collection, i) => {
+             const image = PlaceHolderImages.find(img => img.id === collection.imageId);
+            return (
+              <motion.div
+                key={collection.id}
+                className="absolute w-40 md:w-56 aspect-[3/4]"
+                custom={i}
+                variants={cardVariants}
+              >
+                <Link href={`/products?category=${collection.handle}`} className="group block w-full h-full">
+                  <div className="relative w-full h-full rounded-lg overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-primary/50">
+                    {image && (
+                      <Image 
+                        src={image.imageUrl}
+                        alt={collection.title}
+                        fill
+                        className="object-cover grayscale group-hover:grayscale-0"
+                        data-ai-hint={image.imageHint}
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-4 left-4 text-white">
+                      <h3 className="font-headline text-2xl font-bold">{collection.title}</h3>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            )
+          })}
+        </motion.div>
+      </section>
+
 
       {/* Trending Products Section */}
       <section className="container mx-auto px-4 mt-16 md:mt-24">
