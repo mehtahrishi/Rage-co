@@ -232,7 +232,7 @@ export default function HomePage() {
           alt="Rage fashion banner"
           width={1920}
           height={800}
-          className="w-full h-auto"
+          className="w-full h-auto grayscale group-hover:grayscale-0 transition-all duration-300"
           priority
         />
         <div className="absolute inset-0 bg-black/40" />
