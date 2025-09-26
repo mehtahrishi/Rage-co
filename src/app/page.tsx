@@ -21,6 +21,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
+import Autoplay from 'embla-carousel-autoplay';
 
 const categories = [
   { name: "PANT'S", href: '/products?category=Pants', key: 'Pants' },
@@ -462,6 +463,11 @@ export default function HomePage() {
             align: 'start',
             loop: true,
           }}
+          plugins={[
+            Autoplay({
+              delay: 3000,
+            }),
+          ]}
           className="w-full max-w-4xl mx-auto"
         >
           <CarouselContent>
@@ -495,8 +501,6 @@ export default function HomePage() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden md:flex" />
-          <CarouselNext className="hidden md:flex" />
         </Carousel>
       </motion.section>
 
