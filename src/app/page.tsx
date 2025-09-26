@@ -104,8 +104,8 @@ const ShortsIcon = () => (
 );
 
 const BandanaIcon = () => (
-    <motion.svg initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }} width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M2 12s5-3 10-3 10 3 10 3-5 3-10 3-10-3-10-3Z"/><path d="m14 12 3 3 3-3"/>
+    <motion.svg initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }} width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-2" fill="currentColor">
+        <path d="M2,12C4,9,8,8,11,9L10,11A2,2 0 0 0,14 11L13,9C16,8,20,9,22,12C20,15,16,16,13,15L14,13A2,2 0 0 0,10 13L11,15C8,16,4,15,2,12Z" />
     </motion.svg>
 );
 
@@ -552,5 +552,6 @@ export default function HomePage() {
   );
 
     
+
 
 
