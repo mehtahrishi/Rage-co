@@ -3,10 +3,10 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Star, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 
-import { products, collections } from '@/lib/data';
+import { products, collections, reviews } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product-card';
 import { cn } from '@/lib/utils';
@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Card, CardContent } from '@/components/ui/card';
 
 const categories = [
   { name: "PANT'S", href: '/products?category=Pants', key: 'Pants' },
@@ -165,6 +166,8 @@ export default function HomePage() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
+  const reviewsRef = useRef(null);
+  const reviewsInView = useInView(reviewsRef, { once: true, amount: 0.2 });
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
 
@@ -403,15 +406,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="mt-12 text-center">
-        <Button asChild size="lg" variant="outline">
-          <Link href="/products">View All Products</Link>
-        </Button>
-      </div>
-
       {/* Video Section */}
       <section ref={videoContainerRef} className="container mx-auto px-4 py-16">
-        <div className="relative aspect-[21/9] sm:aspect-auto sm:h-[45vh] md:h-[90vh] w-full overflow-hidden rounded-lg shadow-lg bg-black">
+        <div className="relative aspect-[16/9] sm:aspect-auto sm:h-[45vh] md:aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg bg-black">
           <video
             ref={videoRef}
             src="video.mp4"
@@ -448,6 +445,66 @@ export default function HomePage() {
           </button>
         </div>
       </section>
+
+      {/* Reviews Section */}
+      <motion.section
+        ref={reviewsRef}
+        initial={{ opacity: 0, y: 50 }}
+        animate={reviewsInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="container mx-auto px-4 py-16"
+      >
+        <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
+          Voices of RAGE
+        </h2>
+        <Carousel
+          opts={{
+            align: 'start',
+            loop: true,
+          }}
+          className="w-full max-w-4xl mx-auto"
+        >
+          <CarouselContent>
+            {reviews.map((review) => (
+              <CarouselItem key={review.id} className="md:basis-1/2 lg:basis-1/3">
+                <div className="p-4 h-full">
+                  <Card className="h-full flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:shadow-primary/20">
+                    <CardContent className="p-6 flex-1">
+                      <div className="flex items-center mb-4">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={cn(
+                              'h-5 w-5',
+                              i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground/30'
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <p className="text-muted-foreground italic">&quot;{review.review}&quot;</p>
+                    </CardContent>
+                    <div className="p-6 pt-0">
+                      <p className="font-bold">{review.name}</p>
+                      <div className="flex items-center gap-1 text-xs text-green-600">
+                        <ShieldCheck className="h-4 w-4" />
+                        <span>Verified Purchase on {review.productName}</span>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hidden md:flex" />
+          <CarouselNext className="hidden md:flex" />
+        </Carousel>
+      </motion.section>
+
+      <div className="mt-12 text-center">
+        <Button asChild size="lg" variant="outline">
+          <Link href="/products">View All Products</Link>
+        </Button>
+      </div>
     </div>
   );
 }

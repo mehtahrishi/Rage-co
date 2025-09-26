@@ -33,3 +33,11 @@ export type CartItem = {
   size: string;
   color: string;
 };
+
+export type Review = {
+  id: string;
+  name: string;
+  rating: number;
+  review: string;
+  productName: string;
+};

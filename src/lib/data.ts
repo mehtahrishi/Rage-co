@@ -1,4 +1,4 @@
-import type { Product, Collection } from '@/lib/types';
+import type { Product, Collection, Review } from '@/lib/types';
 
 export const collections: Collection[] = [
   { id: '1', title: 'Pants', handle: 'Pants', imageId: 'category-pants' },
@@ -307,5 +307,50 @@ export const products: Product[] = [
     description: 'A timeless trench coat updated with futuristic details like magnetic closures and a detachable hood.',
     details: ['Water-Resistant Gabardine', 'Double-Breasted Front', 'Detachable Hood', 'Belted Waist and Cuffs'],
     isTrending: true,
+  },
+];
+
+export const reviews: Review[] = [
+  {
+    id: '1',
+    name: 'Alex T.',
+    rating: 5,
+    review: 'The quality is insane. The fabric on the trench coat is waterproof and feels super premium. Worth every penny!',
+    productName: 'Cybernetic Trench Coat',
+  },
+  {
+    id: '2',
+    name: 'Jenna M.',
+    rating: 5,
+    review: 'Finally, a dress that makes a statement without being over the top. The fit is perfect. I feel so powerful in it.',
+    productName: 'Architect Dress',
+  },
+  {
+    id: '3',
+    name: 'Carlos R.',
+    rating: 4,
+    review: 'These cargo pants are my new go-to. They are comfortable and have so many useful pockets. Lost a star because they were a bit long.',
+    productName: 'Gravity Cargo Pants',
+  },
+  {
+    id: '4',
+    name: 'Aisha K.',
+    rating: 5,
+    review: 'Obsessed with the Liquid Metal Skirt. It flows beautifully and catches the light in the most amazing way. Got so many compliments!',
+    productName: 'Liquid Metal Skirt',
+  },
+  {
+    id: '5',
+    name: 'Mike P.',
+    rating: 5,
+    review: 'This is not just a hoodie, it\'s a fortress. The material is thick and the oversized hood is perfect. Great for city life.',
+    productName: 'Stealth Hoodie',
+  },
+  {
+    id: '6',
+    name: 'Samantha B.',
+    rating: 5,
+    review: 'The Origami Blouse is a work of art. The details are so intricate and it\'s surprisingly easy to style. A new favorite in my wardrobe.',
+    productName: 'Origami Blouse',
   },
 ];
