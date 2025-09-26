@@ -84,45 +84,45 @@ const TshirtIcon = () => (
 );
 
 const LongSleeveIcon = () => (
-    <motion.svg
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -10 }}
-        transition={{ duration: 0.2 }}
-        width="20"
-        height="20"
-        viewBox="0 0 250 200"
-        xmlns="http://www.w3.org/2000/svg"
-        className="inline-block mr-2"
-        fill="currentColor"
-    >
-        <path d="M246.674,72.269c0.234,1.871-2.491,7.849-4.346,13.565c-0.386,1.18-0.756,2.328-1.11,3.427 c-1.844,5.722-4.493,12.162-6.744,12.129c-2.252-0.038-8.436-2.66-14.267-4.101l-39.64-9.763 c-5.831-1.441-10.563,2.263-10.568,8.273l-0.033,87.112c0,6.01-3.606,14.256-8.909,17.073c-16.79,8.926-37.921,8.072-37.921,8.072 c-18.118,0-29.996-4.101-37.122-7.903c-5.298-2.834-8.746-11.232-8.73-17.242l0.267-87.112c0.016-6.01-4.737-9.883-10.617-8.659 l-41.081,8.583c-5.88,1.235-12.254,3.345-14.533,3.78c-2.279,0.424-5.205-5.706-6.891-11.471l-0.25-0.87 C2.493,81.39,0.165,75.216,0.007,73.128c-0.158-2.083,2.295-4.068,4.036-4.634l3.155-1.023 c32.08-12.298,50.393-19.972,60.183-24.291c5.493-2.42,14.74-4.569,20.75-4.569h0.473c6.005,0,10.84,5.64,15.523,9.404 c6.891,5.548,19.01,5.809,19.01,5.809c9.203,0,14.669-2.627,17.916-5.684c4.368-4.134,9.605-9.529,15.616-9.529h1.942 c6.005,0,15.741,0.479,21.408,2.464c14.963,5.243,40.565,17.476,54.51,24.318C239.919,68.031,246.44,70.397,246.674,72.269z"/>
-    </motion.svg>
+  <motion.svg
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    exit={{ opacity: 0, x: -10 }}
+    transition={{ duration: 0.2 }}
+    width="20"
+    height="20"
+    viewBox="0 0 250 200"
+    xmlns="http://www.w3.org/2000/svg"
+    className="inline-block mr-2"
+    fill="currentColor"
+  >
+    <path d="M246.674,72.269c0.234,1.871-2.491,7.849-4.346,13.565c-0.386,1.18-0.756,2.328-1.11,3.427 c-1.844,5.722-4.493,12.162-6.744,12.129c-2.252-0.038-8.436-2.66-14.267-4.101l-39.64-9.763 c-5.831-1.441-10.563,2.263-10.568,8.273l-0.033,87.112c0,6.01-3.606,14.256-8.909,17.073c-16.79,8.926-37.921,8.072-37.921,8.072 c-18.118,0-29.996-4.101-37.122-7.903c-5.298-2.834-8.746-11.232-8.73-17.242l0.267-87.112c0.016-6.01-4.737-9.883-10.617-8.659 l-41.081,8.583c-5.88,1.235-12.254,3.345-14.533,3.78c-2.279,0.424-5.205-5.706-6.891-11.471l-0.25-0.87 C2.493,81.39,0.165,75.216,0.007,73.128c-0.158-2.083,2.295-4.068,4.036-4.634l3.155-1.023 c32.08-12.298,50.393-19.972,60.183-24.291c5.493-2.42,14.74-4.569,20.75-4.569h0.473c6.005,0,10.84,5.64,15.523,9.404 c6.891,5.548,19.01,5.809,19.01,5.809c9.203,0,14.669-2.627,17.916-5.684c4.368-4.134,9.605-9.529,15.616-9.529h1.942 c6.005,0,15.741,0.479,21.408,2.464c14.963,5.243,40.565,17.476,54.51,24.318C239.919,68.031,246.44,70.397,246.674,72.269z" />
+  </motion.svg>
 );
 
 const BabyTeeIcon = () => (
-    <motion.svg
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -10 }}
-        transition={{ duration: 0.2 }}
-        width="16"
-        height="16"
-        viewBox="0 0 330 330"
-        xmlns="http://www.w3.org/2000/svg"
-        className="inline-block mr-2"
-        fill="currentColor"
-    >
-        <path d="M315,10.013h-90.012c-8.284,0-15,6.716-15,15c0,24.799-20.183,44.974-44.99,44.974 c-24.808,0-44.99-20.175-44.99-44.974c0-8.284-6.716-15-15-15H15c-8.284,0-15,6.716-15,15v109.974c0,8.284,6.716,15,15,15h45v155 c0,8.284,6.716,15,15,15h180c8.284,0,15-6.716,15-15v-155h45c8.284,0,15-6.716,15-15V25.013C330,16.729,323.284,10.013,315,10.013z"/>
-    </motion.svg>
+  <motion.svg
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    exit={{ opacity: 0, x: -10 }}
+    transition={{ duration: 0.2 }}
+    width="16"
+    height="16"
+    viewBox="0 0 330 330"
+    xmlns="http://www.w3.org/2000/svg"
+    className="inline-block mr-2"
+    fill="currentColor"
+  >
+    <path d="M315,10.013h-90.012c-8.284,0-15,6.716-15,15c0,24.799-20.183,44.974-44.99,44.974 c-24.808,0-44.99-20.175-44.99-44.974c0-8.284-6.716-15-15-15H15c-8.284,0-15,6.716-15,15v109.974c0,8.284,6.716,15,15,15h45v155 c0,8.284,6.716,15,15,15h180c8.284,0,15-6.716,15-15v-155h45c8.284,0,15-6.716,15-15V25.013C330,16.729,323.284,10.013,315,10.013z" />
+  </motion.svg>
 );
 
 const iconMap: { [key: string]: React.ComponentType } = {
-    "PANT'S": PantsIcon,
-    "VEST'S": VestIcon,
-    "TSHIRT'S": TshirtIcon,
-    "LONG SLEEVE'S": LongSleeveIcon,
-    "BABY TEE'S": BabyTeeIcon,
+  "PANT'S": PantsIcon,
+  "VEST'S": VestIcon,
+  "TSHIRT'S": TshirtIcon,
+  "LONG SLEEVE'S": LongSleeveIcon,
+  "BABY TEE'S": BabyTeeIcon,
 };
 
 const cardCollections = collections.slice(0, 6);
@@ -159,13 +159,14 @@ export default function HomePage() {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>()
   const [canScrollPrev, setCanScrollPrev] = useState(false)
-  
+
   const animationRef = useRef(null);
   const isInView = useInView(animationRef, { once: false, amount: 0.2 });
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -216,7 +217,7 @@ export default function HomePage() {
 
   const visibleProducts = useMemo(() => {
     if (!displayCategory) return [];
-    
+
     const categoryKey = categories.find(c => c.name === displayCategory)?.key;
     if (!categoryKey) return [];
 
@@ -249,7 +250,7 @@ export default function HomePage() {
 
       {/* Category Navigation Section */}
       <section className="container mx-auto px-4">
-        <div 
+        <div
           onMouseLeave={() => {
             setHoveredCategory(null);
           }}
@@ -271,20 +272,20 @@ export default function HomePage() {
                 >
                   <div className="relative">
                     <AnimatePresence>
-                     {Icon && <Icon />}
+                      {Icon && <Icon />}
                     </AnimatePresence>
-                     <AnimatePresence>
-                        {isDisplaying && (
-                          <motion.div
-                            className="md:hidden text-xs text-foreground mt-1"
-                            initial={{ opacity: 0, y: -5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                          >
-                            {category.name.replace(/'S/,'')}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                    <AnimatePresence>
+                      {isDisplaying && (
+                        <motion.div
+                          className="md:hidden text-xs text-foreground mt-1"
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -5 }}
+                        >
+                          {category.name.replace(/'S/, '')}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                   <span className="hidden md:inline">{category.name}</span>
 
@@ -301,9 +302,9 @@ export default function HomePage() {
               )
             })}
           </nav>
-           <AnimatePresence>
+          <AnimatePresence>
             {visibleProducts.length > 0 && (
-               <motion.div
+              <motion.div
                 key={displayCategory}
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -338,7 +339,7 @@ export default function HomePage() {
                 </div>
               </motion.div>
             )}
-           </AnimatePresence>
+          </AnimatePresence>
         </div>
       </section>
 
@@ -401,28 +402,52 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-      
-      {/* Video Section */}
-      <section ref={videoContainerRef} className="container mx-auto px-4 py-16">
-        <div className="relative aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg">
-          <video
-            ref={videoRef}
-            src="video.mp4"
-            loop
-            playsInline
-            className={cn(
-              "w-full h-full object-cover transition-all duration-500",
-              isIntersecting ? "grayscale-0" : "grayscale"
-            )}
-          />
-        </div>
-      </section>
 
       <div className="mt-12 text-center">
         <Button asChild size="lg" variant="outline">
           <Link href="/products">View All Products</Link>
         </Button>
       </div>
+
+      {/* Video Section */}
+      <section ref={videoContainerRef} className="container mx-auto px-4 py-16">
+        <div className="relative aspect-[21/9] sm:aspect-auto sm:h-[45vh] md:h-[90vh] w-full overflow-hidden rounded-lg shadow-lg bg-black">
+          <video
+            ref={videoRef}
+            src="video.mp4"
+            loop
+            playsInline
+            muted={isMuted}
+            className={cn(
+              "w-full h-full object-fill transition-all duration-500",
+              isIntersecting ? "grayscale-0" : "grayscale"
+            )}
+          />
+          {/* Audio Toggle Button */}
+          <button
+            onClick={() => {
+              const video = videoRef.current;
+              if (video) {
+                setIsMuted(!isMuted);
+                video.muted = !isMuted;
+              }
+            }}
+            className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
+            aria-label={isMuted ? "Unmute video" : "Mute video"}
+          >
+            {isMuted ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 9L20 5M20 9L16 5M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M19.07 4.93C20.9447 6.80528 21.9979 9.34836 21.9979 12C21.9979 14.6516 20.9447 17.1947 19.07 19.07M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17.0039 12C17.0039 13.3308 16.4774 14.6024 15.54 15.54" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
