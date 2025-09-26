@@ -520,7 +520,7 @@ export default function HomePage() {
                             key={i}
                             className={cn(
                               'h-5 w-5',
-                              i < review.rating ? 'text-accent-foreground fill-accent-foreground' : 'text-muted-foreground/30'
+                              i < review.rating ? 'text-primary fill-primary' : 'text-muted-foreground/30'
                             )}
                           />
                         ))}

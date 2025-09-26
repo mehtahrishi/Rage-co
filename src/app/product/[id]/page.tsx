@@ -96,7 +96,7 @@ export default function ProductPage() {
                   key={i}
                   className={cn(
                     'h-5 w-5',
-                    i < Math.round(product.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground/50'
+                    i < Math.round(product.rating) ? 'text-primary fill-primary' : 'text-muted-foreground/50'
                   )}
                 />
               ))}
