@@ -447,7 +447,7 @@ export default function HomePage() {
 
       {/* Video Section */}
       <section ref={videoContainerRef} className="container mx-auto px-4 py-16">
-        <div className="relative aspect-[16/9] sm:h-[45vh] md:aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg bg-black">
+        <div className="relative aspect-video sm:aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg bg-black">
           <video
             ref={videoRef}
             src="video.mp4"
@@ -491,7 +491,7 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 50 }}
         animate={reviewsInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="container mx-auto px-4 py-16"
+        className="container mx-auto px-4 pt-16 pb-8"
       >
         <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Voices of RAGE
@@ -539,7 +539,7 @@ export default function HomePage() {
       </motion.section>
 
       {/* Guarantees Section */}
-      <section className="container mx-auto px-4 py-16">
+      <section className="container mx-auto px-4 pt-8 pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             {guarantees.map(({ Icon, title, description }) => (
                 <div key={title} className="flex flex-col items-center">
@@ -552,4 +552,5 @@ export default function HomePage() {
       </section>
     </div>
   );
-}
+
+    
