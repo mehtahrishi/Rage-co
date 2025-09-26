@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Star, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Star, ShieldCheck, Truck, RefreshCw, Bot, Smile } from 'lucide-react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 
 import { products, collections, reviews } from '@/lib/data';
@@ -137,6 +137,29 @@ const iconMap: { [key: string]: React.ComponentType } = {
   SHORTS: ShortsIcon,
   BANDANAS: BandanaIcon,
 };
+
+const guarantees = [
+    {
+      Icon: Truck,
+      title: 'Free Delivery Anywhere in India',
+      description: 'Dispatched in 48 hours, delivered in just 3-5 working days*',
+    },
+    {
+      Icon: RefreshCw,
+      title: 'Easy Exchanges',
+      description: '72-hour window for quick size or product exchanges.',
+    },
+    {
+      Icon: Bot,
+      title: 'Robust Customer Support',
+      description: 'Reach us anytime: support@genrage.com or WhatsApp +91 9699798971',
+    },
+    {
+      Icon: Smile,
+      title: '200,000+ Happy Customers',
+      description: 'More than numbers - a family of happy customers.',
+    },
+  ];
 
 const cardCollections = collections.slice(0, 6);
 
@@ -424,7 +447,7 @@ export default function HomePage() {
 
       {/* Video Section */}
       <section ref={videoContainerRef} className="container mx-auto px-4 py-16">
-        <div className="relative aspect-[16/9] sm:aspect-auto sm:h-[45vh] md:aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg bg-black">
+        <div className="relative aspect-[16/9] sm:h-[45vh] md:aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg bg-black">
           <video
             ref={videoRef}
             src="video.mp4"
@@ -497,7 +520,7 @@ export default function HomePage() {
                             key={i}
                             className={cn(
                               'h-5 w-5',
-                              i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground/30'
+                              i < review.rating ? 'text-accent-foreground fill-accent-foreground' : 'text-muted-foreground/30'
                             )}
                           />
                         ))}
@@ -514,6 +537,19 @@ export default function HomePage() {
           </CarouselContent>
         </Carousel>
       </motion.section>
+
+      {/* Guarantees Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {guarantees.map(({ Icon, title, description }) => (
+                <div key={title} className="flex flex-col items-center">
+                    <Icon className="h-10 w-10 mb-4 text-primary" />
+                    <h3 className="font-semibold uppercase tracking-wider">{title}</h3>
+                    <p className="text-sm text-muted-foreground mt-2">{description}</p>
+                </div>
+            ))}
+        </div>
+      </section>
     </div>
   );
 }
