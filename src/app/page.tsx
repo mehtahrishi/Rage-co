@@ -446,7 +446,7 @@ export default function HomePage() {
       </div>
 
       {/* Video Section */}
-      <section ref={videoContainerRef} className="container mx-auto px-4 py-16">
+      <section ref={videoContainerRef} className="container mx-auto px-4 py-8">
         <div className="relative aspect-video sm:aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg bg-black">
           <video
             ref={videoRef}
@@ -491,7 +491,7 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 50 }}
         animate={reviewsInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="container mx-auto px-4 pt-16 pb-8"
+        className="container mx-auto px-4 pt-8 pb-8"
       >
         <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Voices of RAGE
