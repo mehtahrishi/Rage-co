@@ -22,11 +22,6 @@ export const navLinks = [
         href: '/products?category=Tops&subCategory=Baby-tees',
         description: 'Cute and trendy cropped baby tees.',
       },
-      {
-        title: 'Tanks',
-        href: '/products?category=Tops&subCategory=Tanks',
-        description: 'Comfortable and stylish tanks for any occasion.',
-      },
     ],
   },
   {

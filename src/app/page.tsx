@@ -27,7 +27,6 @@ const categories = [
   { name: "PANTS", href: '/products?category=Pants', key: 'Pants' },
   { name: "VESTS", href: '/products?category=Vests', key: 'Vests' },
   { name: "TSHIRTS", href: '/products?category=Tshirts', key: 'Tshirts' },
-  { name: "TANKS", href: '/products?category=Tanks', key: 'Tanks' },
   { name: "BABY TEES", href: '/products?category=Baby-tees', key: 'Baby-tees' },
   { name: "SHORTS", href: '/products?category=Shorts', key: 'Shorts' },
   { name: "BANDANAS", href: '/products?category=Bandanas', key: 'Bandanas' },
@@ -87,21 +86,21 @@ const TshirtIcon = () => (
   </motion.svg>
 );
 
-const TankIcon = () => (
-    <motion.svg 
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -10 }}
-        transition={{ duration: 0.2 }}
-        width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M7 21v-4a5 5 0 0 1 5-5v0a5 5 0 0 1 5 5v4"/><path d="M12 3a4 4 0 0 0-4 4v10h8V7a4 4 0 0 0-4-4Z"/>
-    </motion.svg>
-);
-
 const ShortsIcon = () => (
-    <motion.svg initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }} width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m3 4 3 10h12l3-10Z"/><path d="M12 14v7"/><path d="M6 14s-3 4-3 7"/><path d="M18 14s3 4 3 7"/>
-    </motion.svg>
+  <motion.svg
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    exit={{ opacity: 0, x: -10 }}
+    transition={{ duration: 0.2 }}
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    className="inline-block mr-2"
+    fill="currentColor"
+  >
+    <path d="M22,2H2V22H9.69L12,15.85,14.31,22H22ZM20,6H4V4H20Z"/>
+  </motion.svg>
 );
 
 const BandanaIcon = () => (
@@ -133,7 +132,6 @@ const iconMap: { [key: string]: React.ComponentType } = {
   VESTS: VestIcon,
   TSHIRTS: TshirtIcon,
   "BABY TEES": BabyTeeIcon,
-  TANKS: TankIcon,
   SHORTS: ShortsIcon,
   BANDANAS: BandanaIcon,
 };
@@ -554,4 +552,5 @@ export default function HomePage() {
   );
 
     
+
 

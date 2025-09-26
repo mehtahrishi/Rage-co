@@ -4,7 +4,6 @@ export const collections: Collection[] = [
   { id: '1', title: 'Pants', handle: 'Pants', imageId: 'category-pants' },
   { id: '2', title: 'Vests', handle: 'Vests', imageId: 'category-vests' },
   { id: '3', title: 'T-Shirts', handle: 'Tshirts', imageId: 'category-tshirts' },
-  { id: '4', title: 'Tanks', handle: 'Tanks', imageId: 'category-tanks' },
   { id: '5', title: 'Baby Tees', handle: 'Baby-tees', imageId: 'category-baby-tees' },
   { id: '6', title: 'Shorts', handle: 'Shorts', imageId: 'category-shorts' },
   { id: '7', title: 'Bandanas', handle: 'Bandanas', imageId: 'category-bandanas' },
@@ -93,22 +92,6 @@ export const products: Product[] = [
     description: 'A cute and trendy cropped baby tee, perfect for a vintage look.',
     details: ['95% Cotton, 5% Spandex', 'Tight fit', 'Slightly cropped length'],
     isTrending: true,
-  },
-   // Tanks
-  {
-    id: 'ta1',
-    name: 'Racerback Tank',
-    slug: 'racerback-tank',
-    category: 'Tops',
-    subCategory: 'Tanks',
-    price: 59.99,
-    rating: 4.7,
-    reviewCount: 130,
-    imageIds: ['women-top-1'],
-    sizes: ['XS', 'S', 'M', 'L'],
-    colors: ['Black', 'White', 'Teal'],
-    description: 'A versatile racerback tank with a flattering fit.',
-    details: ['90% Modal, 10% Spandex', 'Breathable fabric', 'Racerback design'],
   },
   // Shorts
   {
