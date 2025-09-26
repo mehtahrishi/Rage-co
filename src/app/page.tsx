@@ -292,7 +292,7 @@ export default function HomePage() {
           }}
         >
           <nav
-            className="flex justify-center items-center gap-16 border-b"
+            className="flex md:justify-center items-center gap-4 md:gap-16 border-b overflow-x-auto whitespace-nowrap [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {categories.map((category) => {
               const Icon = iconMap[category.name];
@@ -303,7 +303,7 @@ export default function HomePage() {
                   onMouseEnter={() => setHoveredCategory(category.name)}
                   onClick={() => setActiveCategory(category.name)}
                   className={cn(
-                    'relative flex flex-col items-center justify-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground md:flex-row md:justify-start'
+                    'relative flex flex-col items-center justify-center py-4 text-sm font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground md:flex-row md:justify-start shrink-0 px-4'
                   )}
                 >
                   <div className="relative">
@@ -554,3 +554,4 @@ export default function HomePage() {
   );
 
     
+
