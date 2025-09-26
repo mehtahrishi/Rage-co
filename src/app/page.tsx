@@ -24,11 +24,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import Autoplay from 'embla-carousel-autoplay';
 
 const categories = [
-  { name: "PANT'S", href: '/products?category=Pants', key: 'Pants' },
-  { name: "VEST'S", href: '/products?category=Vests', key: 'Vests' },
-  { name: "TSHIRT'S", href: '/products?category=Tshirts', key: 'Tshirts' },
-  { name: "LONG SLEEVE'S", href: '/products?category=long-sleeves', key: 'Long-sleeves' },
-  { name: "BABY TEE'S", href: '/products?category=baby-tees', key: 'Baby-tees' },
+  { name: "PANTS", href: '/products?category=Pants', key: 'Pants' },
+  { name: "VESTS", href: '/products?category=Vests', key: 'Vests' },
+  { name: "TSHIRTS", href: '/products?category=Tshirts', key: 'Tshirts' },
+  { name: "TANKS", href: '/products?category=Tanks', key: 'Tanks' },
+  { name: "BABY TEES", href: '/products?category=Baby-tees', key: 'Baby-tees' },
+  { name: "SHORTS", href: '/products?category=Shorts', key: 'Shorts' },
+  { name: "BANDANAS", href: '/products?category=Bandanas', key: 'Bandanas' },
 ];
 
 const PantsIcon = () => (
@@ -85,22 +87,29 @@ const TshirtIcon = () => (
   </motion.svg>
 );
 
-const LongSleeveIcon = () => (
-  <motion.svg
-    initial={{ opacity: 0, x: -10 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -10 }}
-    transition={{ duration: 0.2 }}
-    width="20"
-    height="20"
-    viewBox="0 0 250 200"
-    xmlns="http://www.w3.org/2000/svg"
-    className="inline-block mr-2"
-    fill="currentColor"
-  >
-    <path d="M246.674,72.269c0.234,1.871-2.491,7.849-4.346,13.565c-0.386,1.18-0.756,2.328-1.11,3.427 c-1.844,5.722-4.493,12.162-6.744,12.129c-2.252-0.038-8.436-2.66-14.267-4.101l-39.64-9.763 c-5.831-1.441-10.563,2.263-10.568,8.273l-0.033,87.112c0,6.01-3.606,14.256-8.909,17.073c-16.79,8.926-37.921,8.072-37.921,8.072 c-18.118,0-29.996-4.101-37.122-7.903c-5.298-2.834-8.746-11.232-8.73-17.242l0.267-87.112c0.016-6.01-4.737-9.883-10.617-8.659 l-41.081,8.583c-5.88,1.235-12.254,3.345-14.533,3.78c-2.279,0.424-5.205-5.706-6.891-11.471l-0.25-0.87 C2.493,81.39,0.165,75.216,0.007,73.128c-0.158-2.083,2.295-4.068,4.036-4.634l3.155-1.023 c32.08-12.298,50.393-19.972,60.183-24.291c5.493-2.42,14.74-4.569,20.75-4.569h0.473c6.005,0,10.84,5.64,15.523,9.404 c6.891,5.548,19.01,5.809,19.01,5.809c9.203,0,14.669-2.627,17.916-5.684c4.368-4.134,9.605-9.529,15.616-9.529h1.942 c6.005,0,15.741,0.479,21.408,2.464c14.963,5.243,40.565,17.476,54.51,24.318C239.919,68.031,246.44,70.397,246.674,72.269z" />
-  </motion.svg>
+const TankIcon = () => (
+    <motion.svg 
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -10 }}
+        transition={{ duration: 0.2 }}
+        width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 21v-4a5 5 0 0 1 5-5v0a5 5 0 0 1 5 5v4"/><path d="M12 3a4 4 0 0 0-4 4v10h8V7a4 4 0 0 0-4-4Z"/>
+    </motion.svg>
 );
+
+const ShortsIcon = () => (
+    <motion.svg initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }} width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m3 4 3 10h12l3-10Z"/><path d="M12 14v7"/><path d="M6 14s-3 4-3 7"/><path d="M18 14s3 4 3 7"/>
+    </motion.svg>
+);
+
+const BandanaIcon = () => (
+    <motion.svg initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }} width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 12s5-3 10-3 10 3 10 3-5 3-10 3-10-3-10-3Z"/><path d="m14 12 3 3 3-3"/>
+    </motion.svg>
+);
+
 
 const BabyTeeIcon = () => (
   <motion.svg
@@ -120,11 +129,13 @@ const BabyTeeIcon = () => (
 );
 
 const iconMap: { [key: string]: React.ComponentType } = {
-  "PANT'S": PantsIcon,
-  "VEST'S": VestIcon,
-  "TSHIRT'S": TshirtIcon,
-  "LONG SLEEVE'S": LongSleeveIcon,
-  "BABY TEE'S": BabyTeeIcon,
+  PANTS: PantsIcon,
+  VESTS: VestIcon,
+  TSHIRTS: TshirtIcon,
+  "BABY TEES": BabyTeeIcon,
+  TANKS: TankIcon,
+  SHORTS: ShortsIcon,
+  BANDANAS: BandanaIcon,
 };
 
 const cardCollections = collections.slice(0, 6);
@@ -157,7 +168,7 @@ const itemVariants = {
 
 export default function HomePage() {
   const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
-  const [activeCategory, setActiveCategory] = useState<string | null>("PANT'S");
+  const [activeCategory, setActiveCategory] = useState<string | null>("PANTS");
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>()
   const [canScrollPrev, setCanScrollPrev] = useState(false)
@@ -198,8 +209,6 @@ export default function HomePage() {
     if (isIntersecting) {
       video.play().catch(error => {
         console.error("Video autoplay failed:", error);
-        // Autoplay was prevented, which is common in browsers.
-        // You might want to show a play button here.
       });
     } else {
       video.pause();
@@ -407,6 +416,12 @@ export default function HomePage() {
         </div>
       </section>
 
+      <div className="mt-12 text-center">
+        <Button asChild size="lg" variant="outline">
+          <Link href="/products">View All Products</Link>
+        </Button>
+      </div>
+
       {/* Video Section */}
       <section ref={videoContainerRef} className="container mx-auto px-4 py-16">
         <div className="relative aspect-[16/9] sm:aspect-auto sm:h-[45vh] md:aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg bg-black">
@@ -491,10 +506,6 @@ export default function HomePage() {
                     </CardContent>
                     <div className="p-6 pt-0">
                       <p className="font-bold">{review.name}</p>
-                      <div className="flex items-center gap-1 text-xs text-green-600">
-                        <ShieldCheck className="h-4 w-4" />
-                        <span>Verified Purchase on {review.productName}</span>
-                      </div>
                     </div>
                   </Card>
                 </div>
@@ -503,12 +514,6 @@ export default function HomePage() {
           </CarouselContent>
         </Carousel>
       </motion.section>
-
-      <div className="mt-12 text-center">
-        <Button asChild size="lg" variant="outline">
-          <Link href="/products">View All Products</Link>
-        </Button>
-      </div>
     </div>
   );
 }

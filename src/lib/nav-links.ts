@@ -13,11 +13,6 @@ export const navLinks = [
         description: 'Graphic and basic tees for everyday wear.',
       },
       {
-        title: 'Long Sleeves',
-        href: '/products?category=Tops&subCategory=Long-sleeves',
-        description: 'Stay warm with our collection of long-sleeve shirts.',
-      },
-      {
         title: 'Vests',
         href: '/products?category=Tops&subCategory=Vests',
         description: 'Layer up with our stylish and functional vests.',
@@ -26,6 +21,11 @@ export const navLinks = [
         title: 'Baby Tees',
         href: '/products?category=Tops&subCategory=Baby-tees',
         description: 'Cute and trendy cropped baby tees.',
+      },
+      {
+        title: 'Tanks',
+        href: '/products?category=Tops&subCategory=Tanks',
+        description: 'Comfortable and stylish tanks for any occasion.',
       },
     ],
   },
@@ -39,9 +39,20 @@ export const navLinks = [
         description: 'From cargo pants to joggers, find your perfect fit.',
       },
       {
-        title: 'Skirts',
-        href: '/products?category=Bottoms&subCategory=Skirts',
-        description: 'Modern and stylish skirts for any occasion.',
+        title: 'Shorts',
+        href: '/products?category=Bottoms&subCategory=Shorts',
+        description: 'Comfortable shorts for warm weather.',
+      },
+    ],
+  },
+  {
+    label: 'ACCESSORIES',
+    href: '/products?category=Accessories',
+    subCategories: [
+      {
+        title: 'Bandanas',
+        href: '/products?category=Accessories&subCategory=Bandanas',
+        description: 'Stylish bandanas to complete your look.',
       },
     ],
   },

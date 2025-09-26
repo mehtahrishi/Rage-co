@@ -43,6 +43,18 @@
       "imageHint": "stylish shorts"
     },
     {
+      "id": "category-tanks",
+      "description": "A person wearing a stylish tank top.",
+      "imageUrl": "https://images.unsplash.com/photo-1662986788510-54df238c001e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzdHlsaXNoJTIwdGFua3xlbnwwfHx8fDE3NTg4NDU5OTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "stylish tank"
+    },
+    {
+      "id": "category-bandanas",
+      "description": "A person wearing a stylish bandana.",
+      "imageUrl": "https://images.unsplash.com/photo-1698326557255-0956b5b5c4b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzdHlsaXNoJTIwYmFuZGFuYXxlbnwwfHx8fDE3NTg4NDU5OTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "stylish bandana"
+    },
+    {
       "id": "collection-men",
       "description": "A male model wearing a modern, dark outfit.",
       "imageUrl": "https://images.unsplash.com/photo-1656147842766-202fa2e8182e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYWxlJTIwZmFzaGlvbnxlbnwwfHx8fDE3NTg2MDQ2NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",

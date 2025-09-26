@@ -1,10 +1,8 @@
-import type { PlaceHolderImages } from "./placeholder-images";
-
 export type Product = {
   id: string;
   name: string;
-  category: 'Tops' | 'Bottoms';
-  subCategory: 'Pants' | 'Vests' | 'Tshirts' | 'Long-sleeves' | 'Baby-tees' | 'Skirts';
+  category: 'Tops' | 'Bottoms' | 'Accessories';
+  subCategory: 'Tshirts' | 'Vests' | 'Baby-tees' | 'Tanks' | 'Pants' | 'Shorts' | 'Bandanas';
   price: number;
   originalPrice?: number;
   rating: number;
