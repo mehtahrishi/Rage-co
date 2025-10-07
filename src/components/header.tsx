@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import * as React from 'react';
@@ -73,6 +74,11 @@ export function SiteHeader() {
   }, [isHomePage, pathname]);
 
   const showTextLogo = !isHomePage || isScrolled;
+  
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
 
   return (
     <header className="w-full border-b bg-background">
@@ -243,6 +249,9 @@ export function SiteHeader() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/profile">My Orders</Link>
+                  </DropdownMenuItem>
+                   <DropdownMenuItem asChild>
+                    <Link href="/admin">Admin Panel</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Logout</DropdownMenuItem>
