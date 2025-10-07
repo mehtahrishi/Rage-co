@@ -1,3 +1,4 @@
+'use client';
 import { Activity, ArrowUpRight, CircleUser, CreditCard, DollarSign, Menu, Package2, Search, Users, } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage, } from '@/components/ui/avatar';
