@@ -59,7 +59,7 @@ export function AnimatedQuote() {
   const isInView = useInView(ref, { once: true, amount: 0.5 });
 
   return (
-    <div ref={ref} className="container mx-auto px-4 py-8 text-center">
+    <div ref={ref} className="container mx-auto px-4 pb-8 text-center">
       <svg
         viewBox="0 0 1200 100"
         xmlns="http://www.w3.org/2000/svg"
@@ -75,10 +75,14 @@ export function AnimatedQuote() {
         
         {isInView && (
             <>
-                <Star x={100} y={10} custom={1} />
-                <Star x={1100} y={60} custom={2} />
-                <Star x={300} y={80} custom={3} />
-                 <Star x={900} y={5} custom={4} />
+                <Star x={50} y={5} custom={1} />
+                <Star x={1150} y={70} custom={2} />
+                <Star x={250} y={85} custom={3} />
+                <Star x={950} y={10} custom={4} />
+                <Star x={400} y={15} custom={5} />
+                <Star x={800} y={75} custom={6} />
+                <Star x={100} y={90} custom={7} />
+                <Star x={1050} y={30} custom={8} />
             </>
         )}
 
@@ -88,7 +92,7 @@ export function AnimatedQuote() {
           dy=".35em"
           textAnchor="middle"
           className="fill-current text-foreground"
-          style={{ fontFamily: "'UnifrakturMaguntia', cursive", fontSize: '32px' }}
+          style={{ fontFamily: "'UnifrakturMaguntia', cursive", fontSize: '48px' }}
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
