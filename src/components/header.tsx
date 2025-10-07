@@ -20,6 +20,8 @@ import {
   SheetHeader,
 } from '@/components/ui/sheet';
 import { useCart } from '@/hooks/use-cart';
+import { useAuth } from '@/context/auth-provider';
+import { useToast } from '@/hooks/use-toast';
 import { BrandIcon } from './brand-icon';
 import { ThemeToggle } from './theme-toggle';
 import {
@@ -52,11 +54,12 @@ import {
 
 export function SiteHeader() {
   const { items } = useCart();
+  const { user, logout, isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
   const pathname = usePathname();
 
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Placeholder for auth state
 
   const isHomePage = pathname === '/';
 
@@ -77,6 +80,18 @@ export function SiteHeader() {
   }, [isHomePage, pathname]);
 
   const showTextLogo = !isHomePage || isScrolled;
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
   
   if (pathname.startsWith('/admin')) {
     return null;
@@ -238,7 +253,7 @@ export function SiteHeader() {
             </Button>
             <ThemeToggle />
             <div className="flex items-center justify-end space-x-2">
-              {isLoggedIn ? (
+              {isAuthenticated ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" aria-label="User Profile">
@@ -246,7 +261,9 @@ export function SiteHeader() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuLabel>
+                      {user?.name || 'My Account'}
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link href="/profile">My Profile</Link>
@@ -255,11 +272,18 @@ export function SiteHeader() {
                       <Link href="/profile">My Orders</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>Logout</DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button variant="outline" onClick={() => setIsLoggedIn(true)}>Login</Button>
+                <div className="flex items-center space-x-2">
+                  <Button variant="ghost" asChild>
+                    <Link href="/auth/login">Login</Link>
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link href="/auth/register">Sign Up</Link>
+                  </Button>
+                </div>
               )}
             </div>
           </nav>

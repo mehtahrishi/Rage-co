@@ -6,7 +6,7 @@ export const collections: Collection[] = [
   { id: '3', title: 'T-Shirts', handle: 'Tshirts', imageId: 'category-tshirts' },
   { id: '5', title: 'Baby Tees', handle: 'Baby-tees', imageId: 'category-baby-tees' },
   { id: '6', title: 'Shorts', handle: 'Shorts', imageId: 'category-shorts' },
-  { id: '7', title: 'Bandanas', handle: 'Bandanas', imageId: 'category-bandanas' },
+  { id: '7', title: 'Long Sleeves', handle: 'Long Sleeves', imageId: 'category-long-sleeves' },
 ];
 
 export const products: Product[] = [

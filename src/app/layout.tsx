@@ -6,10 +6,12 @@ import { SiteHeader } from '@/components/header';
 import { SiteFooter } from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { CartProvider } from '@/context/cart-provider';
+import { AuthProvider } from '@/context/auth-provider';
 import { ChatWidget } from '@/components/chat-widget';
 import { ThemeProvider } from '@/context/theme-provider';
 import { AnnouncementBar } from '@/components/announcement-bar';
 import { AnimatedQuote } from '@/components/animated-quote';
+import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -50,15 +52,18 @@ export default function RootLayout({
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <CartProvider>
-            <AnnouncementBar />
-            <SiteHeader />
-            <main className="pb-24">{children}</main>
-            <AnimatedQuote />
-            <SiteFooter />
-            <ChatWidget />
-            <Toaster />
-          </CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              <AnnouncementBar />
+              <SiteHeader />
+              <main className="pb-24">{children}</main>
+              <AnimatedQuote />
+              <SiteFooter />
+              <ChatWidget />
+              <Toaster />
+               <CookieConsentBanner />
+            </CartProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,5 +1,5 @@
 'use client'
-import { Suspense, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { ProductCard } from '@/components/product-card';
 import { products } from '@/lib/data';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -177,11 +177,5 @@ function ProductsContent() {
 }
 
 export default function ProductsPage() {
-  return (
-    <Suspense fallback={<div className="container mx-auto px-4 py-12"><div className="text-center">Loading products...</div></div>}>
-      <ProductsContent />
-    </Suspense>
-  );
+  return <ProductsContent />;
 }
-
-    
