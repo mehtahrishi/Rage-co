@@ -9,6 +9,7 @@ import { CartProvider } from '@/context/cart-provider';
 import { ChatWidget } from '@/components/chat-widget';
 import { ThemeProvider } from '@/context/theme-provider';
 import { AnnouncementBar } from '@/components/announcement-bar';
+import { AnimatedQuote } from '@/components/animated-quote';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -25,9 +26,6 @@ const playfairDisplay = Playfair_Display({
 export const metadata: Metadata = {
   title: 'RAGE: Next-Gen Style',
   description: 'The future of fashion is here. Discover next-gen style with RAGE.',
-  icons: {
-    icon: '/favicon.svg',
-  },
 };
 
 export default function RootLayout({
@@ -56,6 +54,7 @@ export default function RootLayout({
             <AnnouncementBar />
             <SiteHeader />
             <main className="pb-24">{children}</main>
+            <AnimatedQuote />
             <SiteFooter />
             <ChatWidget />
             <Toaster />
