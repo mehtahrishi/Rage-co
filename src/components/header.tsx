@@ -1,6 +1,7 @@
 
 
 
+
 'use client';
 
 import * as React from 'react';
@@ -252,9 +253,6 @@ export function SiteHeader() {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/profile">My Orders</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/admin">Admin Panel</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>Logout</DropdownMenuItem>
