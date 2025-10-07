@@ -537,7 +537,7 @@ export default function HomePage() {
       </motion.section>
 
       {/* Guarantees Section */}
-      <section className="container mx-auto px-4 pt-8 pb-16">
+      <section className="container mx-auto px-4 pt-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             {guarantees.map(({ Icon, title, description }) => (
                 <div key={title} className="flex flex-col items-center">
