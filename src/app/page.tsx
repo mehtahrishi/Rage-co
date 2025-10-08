@@ -347,7 +347,8 @@ export default function HomePage() {
                       layoutId="category-underline"
                       className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"
                       initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, exit: { opacity: 0 } }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                     />
                   )}
@@ -418,7 +419,7 @@ export default function HomePage() {
               {cardCollections.map((collection) => {
                 const image = PlaceHolderImages.find(img => img.id === collection.imageId);
                 return (
-                  <CarouselItem key={collection.id} className="pl-4 basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                  <CarouselItem key={collection.$id} className="pl-4 basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                     <motion.div variants={itemVariants}>
                       <Link href={`/products?category=${collection.handle}`} className="group block w-full h-full">
                         <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-primary/50">
@@ -533,7 +534,7 @@ export default function HomePage() {
         >
           <CarouselContent>
             {reviews.map((review) => (
-              <CarouselItem key={review.id} className="md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={review.$id} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-4 h-full">
                   <Card className="h-full flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:shadow-primary/20">
                     <CardContent className="p-6 flex-1">

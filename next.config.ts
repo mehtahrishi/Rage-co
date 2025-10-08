@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'nyc.cloud.appwrite.io',
+        port: '',
+        pathname: '/v1/storage/**',
+      },
     ],
   },
 };

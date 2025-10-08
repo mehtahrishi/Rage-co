@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/lib/types';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ImageService } from '@/services/image';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
 import { Card, CardContent, CardFooter } from './ui/card';
@@ -11,23 +12,33 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const firstImage = PlaceHolderImages.find((img) => img.id === product.imageIds[0]);
+  // Try to get image from Appwrite first, then fallback to placeholder
+  const getImageUrl = () => {
+    if (product.imageIds?.[0]) {
+      const appwriteUrl = ImageService.getImageUrl(product.imageIds[0]);
+      if (appwriteUrl) return appwriteUrl;
+    }
+    // Fallback to placeholder images
+    const placeholderImage = PlaceHolderImages.find((img) => img.id === product.imageIds?.[0]);
+    return placeholderImage?.imageUrl || '/placeholder.jpg';
+  };
+
+  const imageUrl = getImageUrl();
+  const placeholderImage = PlaceHolderImages.find((img) => img.id === product.imageIds?.[0]);
   const onSale = product.originalPrice && product.originalPrice > product.price;
 
   return (
     <Link href={`/product/${product.slug}`} className="group">
       <div className="overflow-hidden h-full flex flex-col">
         <div className="relative aspect-[4/5] p-0">
-          {firstImage && (
-            <Image
-              src={firstImage.imageUrl}
-              alt={product.name}
-              fill
-              className="object-cover grayscale transition-all duration-300 group-hover:scale-105 group-hover:grayscale-0"
-              data-ai-hint={firstImage.imageHint}
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-            />
-          )}
+          <Image
+            src={imageUrl}
+            alt={product.name}
+            fill
+            className="object-cover grayscale transition-all duration-300 group-hover:scale-105 group-hover:grayscale-0"
+            data-ai-hint={placeholderImage?.imageHint || product.name}
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+          />
           {onSale && (
             <Badge variant="destructive" className="absolute left-3 top-3">
               Sale

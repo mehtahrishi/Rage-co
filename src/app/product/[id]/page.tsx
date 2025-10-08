@@ -9,6 +9,7 @@ import type { Product } from '@/lib/types';
 import { ProductService } from '@/services/database';
 
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ImageService } from '@/services/image';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -68,11 +69,29 @@ export default function ProductPage() {
     }
   };
 
-  const productImages = product.imageIds
-    .map((id) => PlaceHolderImages.find((img) => img.id === id))
-    .filter(Boolean) as (typeof PlaceHolderImages)[0][];
+  // Create image objects that work with both Appwrite and placeholder images
+  const productImages = product.imageIds.map((id, index) => {
+    // Try to get Appwrite image first
+    const appwriteUrl = ImageService.getImageUrl(id);
+    if (appwriteUrl) {
+      return {
+        id,
+        imageUrl: appwriteUrl,
+        description: `${product.name} - Image ${index + 1}`,
+        imageHint: `${product.name} product image`
+      };
+    }
+    // Fallback to placeholder image
+    const placeholderImage = PlaceHolderImages.find((img) => img.id === id);
+    return placeholderImage || {
+      id,
+      imageUrl: '/placeholder.jpg',
+      description: `${product.name} - Image ${index + 1}`,
+      imageHint: `${product.name} product image`
+    };
+  });
     
-  const activeImage = PlaceHolderImages.find((img) => img.id === activeImageId);
+  const activeImage = productImages.find((img) => img.id === activeImageId) || productImages[0];
 
   return (
     <div className="container mx-auto px-4 py-12">

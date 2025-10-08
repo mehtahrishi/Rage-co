@@ -56,7 +56,7 @@ export default function ProfilePage() {
                         <Separator />
                         <div className="mt-4 space-y-2">
                              {order.items.map((item: Product) => (
-                                <div key={item.id} className="flex justify-between items-center text-sm">
+                                <div key={item.$id} className="flex justify-between items-center text-sm">
                                     <span className="text-muted-foreground">{item.name}</span>
                                     <span>₹{item.price.toFixed(2)}</span>
                                 </div>
@@ -80,7 +80,7 @@ export default function ProfilePage() {
                 <CardContent>
                     {wishlist.length > 0 ? (
                         <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
-                            {wishlist.map(product => <ProductCard key={product.id} product={product} />)}
+                            {wishlist.map(product => <ProductCard key={product.$id} product={product} />)}
                         </div>
                     ) : <p>Your wishlist is empty.</p>}
                 </CardContent>

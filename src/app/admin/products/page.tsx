@@ -45,26 +45,33 @@ import * as z from 'zod';
 import { ProductService } from '@/services/database';
 import type { Product } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { ImageUpload } from '@/components/image-upload';
 
-const productSchema = z.object({
+const productFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   slug: z.string().min(1, 'Slug is required'),
-  price: z.coerce.number().min(0, 'Price must be non-negative'),
-  originalPrice: z.coerce.number().optional(),
+  price: z.number().min(0, 'Price must be positive'),
+  originalPrice: z.number().optional(),
   category: z.enum(['Tops', 'Bottoms', 'Accessories']),
   subCategory: z.enum(['Tshirts', 'Vests', 'Baby-tees', 'Pants', 'Shorts', 'Bandanas']),
   description: z.string().min(1, 'Description is required'),
-  details: z.string().transform(val => val.split(',').map(s => s.trim())),
-  sizes: z.string().transform(val => val.split(',').map(s => s.trim())),
-  colors: z.string().transform(val => val.split(',').map(s => s.trim())),
-  imageIds: z.string().transform(val => val.split(',').map(s => s.trim())),
+  details: z.string(),
+  sizes: z.string().refine((val) => {
+    const sizes = val.split(',').map(s => s.trim()).filter(Boolean);
+    return sizes.every(size => size.length <= 10);
+  }, 'Each size must be 10 characters or less'),
+  colors: z.string().refine((val) => {
+    const colors = val.split(',').map(c => c.trim()).filter(Boolean);
+    return colors.every(color => color.length <= 10);
+  }, 'Each color must be 10 characters or less'),
+  imageIds: z.array(z.string()).min(1, 'At least one image is required'),
   isFeatured: z.boolean().default(false),
   isTrending: z.boolean().default(false),
-  rating: z.coerce.number().min(0).max(5).default(0),
-  reviewCount: z.coerce.number().min(0).default(0),
+  rating: z.number().min(0).max(5).default(0),
+  reviewCount: z.number().min(0).default(0),
 });
 
-type ProductFormData = z.infer<typeof productSchema>;
+type ProductFormData = z.infer<typeof productFormSchema>;
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -74,7 +81,7 @@ export default function ProductsPage() {
   const { toast } = useToast();
 
   const form = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(productFormSchema),
   });
 
   const fetchProducts = async () => {
@@ -105,7 +112,7 @@ export default function ProductsPage() {
         details: product.details.join(', '),
         sizes: product.sizes.join(', '),
         colors: product.colors.join(', '),
-        imageIds: product.imageIds.join(', '),
+        imageIds: product.imageIds,
     });
     setIsDialogOpen(true);
   };
@@ -131,11 +138,20 @@ export default function ProductsPage() {
 
   const onSubmit = async (data: ProductFormData) => {
     try {
+      // Convert comma-separated strings to arrays (imageIds is already an array)
+      const productData = {
+        ...data,
+        details: data.details.split(',').map(item => item.trim()).filter(Boolean),
+        sizes: data.sizes.split(',').map(item => item.trim()).filter(Boolean),
+        colors: data.colors.split(',').map(item => item.trim()).filter(Boolean),
+        imageIds: data.imageIds, // Already an array from ImageUpload component
+      };
+
       if (editingProduct) {
-        await ProductService.updateProduct(editingProduct.$id, data);
+        await ProductService.updateProduct(editingProduct.$id, productData);
         toast({ title: 'Success', description: 'Product updated successfully.' });
       } else {
-        await ProductService.createProduct(data);
+        await ProductService.createProduct(productData);
         toast({ title: 'Success', description: 'Product created successfully.' });
       }
       setIsDialogOpen(false);
@@ -164,7 +180,7 @@ export default function ProductsPage() {
         details: '',
         sizes: '',
         colors: '',
-        imageIds: '',
+        imageIds: [],
         isFeatured: false,
         isTrending: false,
         rating: 0,
@@ -288,12 +304,26 @@ export default function ProductsPage() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="price" className="text-right">Price</Label>
-              <Input id="price" type="number" {...form.register('price')} className="col-span-3" />
+              <Input 
+                id="price" 
+                type="number" 
+                {...form.register('price', { 
+                  valueAsNumber: true 
+                })} 
+                className="col-span-3" 
+              />
               {form.formState.errors.price && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.price.message}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="originalPrice" className="text-right">Original Price</Label>
-              <Input id="originalPrice" type="number" {...form.register('originalPrice')} className="col-span-3" />
+              <Input 
+                id="originalPrice" 
+                type="number" 
+                {...form.register('originalPrice', { 
+                  valueAsNumber: true 
+                })} 
+                className="col-span-3" 
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="category" className="text-right">Category</Label>
@@ -342,15 +372,32 @@ export default function ProductsPage() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="sizes" className="text-right">Sizes</Label>
-              <Input id="sizes" {...form.register('sizes')} className="col-span-3" placeholder="Comma-separated" />
+              <Input id="sizes" {...form.register('sizes')} className="col-span-3" placeholder="S, M, L, XL (max 10 chars each)" />
+              {form.formState.errors.sizes && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.sizes.message}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="colors" className="text-right">Colors</Label>
-              <Input id="colors" {...form.register('colors')} className="col-span-3" placeholder="Comma-separated" />
+              <Input id="colors" {...form.register('colors')} className="col-span-3" placeholder="Red, Blue, Black (max 10 chars each)" />
+              {form.formState.errors.colors && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.colors.message}</p>}
             </div>
              <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="imageIds" className="text-right">Image IDs</Label>
-              <Input id="imageIds" {...form.register('imageIds')} className="col-span-3" placeholder="Comma-separated"/>
+              <Label className="text-right">Product Images</Label>
+              <div className="col-span-3">
+                <Controller
+                  control={form.control}
+                  name="imageIds"
+                  render={({ field }) => (
+                    <ImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      maxImages={5}
+                    />
+                  )}
+                />
+                {form.formState.errors.imageIds && (
+                  <p className="text-red-500 text-sm mt-1">{form.formState.errors.imageIds.message}</p>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="isFeatured" className="text-right">Featured</Label>
