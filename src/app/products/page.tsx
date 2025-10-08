@@ -9,10 +9,18 @@ import { Slider } from '@/components/ui/slider';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { X } from 'lucide-react';
 
 const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '30', '32', '34', '36'];
 const ALL_COLORS = ['Black', 'White', 'Olive', 'Charcoal', 'Heather Grey', 'Khaki', 'Pastel Pink', 'Red', 'Blue', 'Paisley Black'];
-const MAX_PRICE = 500;
+const MAX_PRICE = 3000;
 
 function ProductsContent() {
   const router = useRouter();
@@ -21,6 +29,7 @@ function ProductsContent() {
   
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
 
   const categoryParam = searchParams.get('category');
   const subCategoryParam = searchParams.get('subCategory');
@@ -39,8 +48,12 @@ function ProductsContent() {
           sizes: searchParams.getAll('size'),
           colors: searchParams.getAll('color'),
         };
-        const fetchedProducts = await ProductService.getProducts(filters);
+        const [fetchedProducts, count] = await Promise.all([
+          ProductService.getProducts(filters),
+          ProductService.countProducts(filters),
+        ]);
         setProducts(fetchedProducts);
+        setTotalCount(count);
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {
@@ -87,12 +100,56 @@ function ProductsContent() {
     router.replace(pathname);
   }
 
+  const removeFilter = (filterType: string, value?: string) => {
+    const params = new URLSearchParams(searchParams);
+    
+    if (filterType === 'category') {
+      params.delete('category');
+      params.delete('subCategory');
+    } else if (filterType === 'size' && value) {
+      const currentSizes = params.getAll('size');
+      params.delete('size');
+      currentSizes.filter(s => s !== value).forEach(s => params.append('size', s));
+    } else if (filterType === 'color' && value) {
+      const currentColors = params.getAll('color');
+      params.delete('color');
+      currentColors.filter(c => c !== value).forEach(c => params.append('color', c));
+    } else if (filterType === 'price') {
+      params.delete('maxPrice');
+    }
+    
+    router.replace(`${pathname}?${params.toString()}`);
+  }
+
   const currentMaxPrice = Number(searchParams.get('maxPrice') || MAX_PRICE);
 
   const getCategoryValue = () => {
     if(categoryParam === 'Tops' || categoryParam === 'Bottoms' || categoryParam === 'Accessories') return categoryParam;
     return 'all';
   }
+
+  // Get active filters for display
+  const activeFilters = useMemo(() => {
+    const filters = [];
+    
+    if (categoryParam) {
+      filters.push({ type: 'category', value: categoryParam, label: categoryParam });
+    }
+    
+    sizes.forEach(size => {
+      filters.push({ type: 'size', value: size, label: `Size: ${size}` });
+    });
+    
+    colors.forEach(color => {
+      filters.push({ type: 'color', value: color, label: `Color: ${color}` });
+    });
+    
+    if (searchParams.get('maxPrice')) {
+      filters.push({ type: 'price', value: 'price', label: `Under ₹${currentMaxPrice}` });
+    }
+    
+    return filters;
+  }, [categoryParam, sizes, colors, searchParams]);
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -105,97 +162,86 @@ function ProductsContent() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-        {/* Filters Sidebar */}
-        <aside className="lg:col-span-1">
-          <div className="sticky top-24 space-y-8">
-            <div className="flex justify-between items-center">
-              <h2 className="font-headline text-2xl font-bold">Filters</h2>
-              <Button variant="ghost" onClick={clearFilters} className="text-sm">Clear All</Button>
-            </div>
-
+      {/* Top Filters Bar */}
+      <div className="mb-8 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             {/* Category Filter */}
-            <div>
-              <h3 className="font-semibold mb-4">Category</h3>
-              <RadioGroup value={getCategoryValue()} onValueChange={handleCategoryChange}>
-                  <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="all" id="cat-all"/>
-                      <Label htmlFor="cat-all">All</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Tops" id="cat-tops"/>
-                      <Label htmlFor="cat-tops">Tops</Label>
-                  </div>
-                   <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Bottoms" id="cat-bottoms"/>
-                      <Label htmlFor="cat-bottoms">Bottoms</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Accessories" id="cat-accessories"/>
-                      <Label htmlFor="cat-accessories">Accessories</Label>
-                  </div>
-              </RadioGroup>
-            </div>
-
-            {/* Size Filter */}
-            <div>
-              <h3 className="font-semibold mb-4">Size</h3>
-              <div className="grid grid-cols-3 gap-2">
-                {ALL_SIZES.map(size => (
-                  <div key={size} className="flex items-center space-x-2">
-                    <Checkbox id={`size-${size}`} checked={sizes.includes(size)} onCheckedChange={(checked) => handleMultiCheckboxChange('size', size, !!checked)}/>
-                    <Label htmlFor={`size-${size}`}>{size}</Label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Color Filter */}
-            <div>
-              <h3 className="font-semibold mb-4">Color</h3>
-              <div className="space-y-2">
-                {ALL_COLORS.map(color => (
-                  <div key={color} className="flex items-center space-x-2">
-                    <Checkbox id={`color-${color}`} checked={colors.includes(color)} onCheckedChange={(checked) => handleMultiCheckboxChange('color', color, !!checked)} />
-                    <Label htmlFor={`color-${color}`}>{color}</Label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Price Filter */}
-            <div>
-              <h3 className="font-semibold mb-4">Price Range</h3>
-              <Slider value={[currentMaxPrice]} max={MAX_PRICE} step={10} onValueChange={handlePriceChange} />
-              <div className="flex justify-between text-sm text-muted-foreground mt-2">
-                <span>₹0</span>
-                <span>₹{currentMaxPrice}</span>
-              </div>
-            </div>
+            <Select value={getCategoryValue()} onValueChange={handleCategoryChange}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="Tops">Tops</SelectItem>
+                <SelectItem value="Bottoms">Bottoms</SelectItem>
+                <SelectItem value="Accessories">Accessories</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </aside>
 
-        {/* Products Grid */}
-        <main className="lg:col-span-3">
-          {isLoading ? (
-            <div className="text-center py-16">
-              <p>Loading products...</p>
-            </div>
-          ) : products.length > 0 ? (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
-              {products.map((product) => (
-                <ProductCard key={product.$id} product={product} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <h2 className="text-2xl font-semibold">No products found</h2>
-              <p className="mt-2 text-muted-foreground">Try adjusting your filters or check back later.</p>
-              <Button onClick={clearFilters} className="mt-6">Clear Filters</Button>
-            </div>
-          )}
-        </main>
+          <div className="flex-1 hidden md:block text-center text-sm text-muted-foreground">
+            Available {isLoading ? '...' : totalCount} products
+          </div>
+
+          {/* Price Filter - Moved to Right Corner */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Price:</span>
+            <Slider 
+              value={[currentMaxPrice]} 
+              max={MAX_PRICE} 
+              step={10} 
+              onValueChange={handlePriceChange} 
+              className="w-32"
+            />
+            <span className="text-sm w-16">₹{currentMaxPrice}</span>
+          </div>
+        </div>
+
+        {/* Active Filters Display */}
+        {activeFilters.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {activeFilters.map((filter, index) => (
+              <div 
+                key={index} 
+                className="flex items-center bg-muted rounded-full px-3 py-1 text-sm"
+              >
+                <span>{filter.label}</span>
+                <button 
+                  onClick={() => removeFilter(filter.type, filter.value)}
+                  className="ml-2 rounded-full hover:bg-muted-foreground/20 p-1"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+            <Button variant="ghost" onClick={clearFilters} className="text-sm h-7">
+              Clear All
+            </Button>
+          </div>
+        )}
       </div>
+
+      {/* Products Grid */}
+      <main>
+        {isLoading ? (
+          <div className="text-center py-16">
+            <p>Loading products...</p>
+          </div>
+        ) : products.length > 0 ? (
+          <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
+            {products.map((product) => (
+              <ProductCard key={product.$id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <h2 className="text-2xl font-semibold">No products found</h2>
+            <p className="mt-2 text-muted-foreground">Try adjusting your filters or check back later.</p>
+            <Button onClick={clearFilters} className="mt-6">Clear Filters</Button>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

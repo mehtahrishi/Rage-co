@@ -13,7 +13,7 @@ const barContainerVariants = {
   animate: {
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 2.5, // Start explosion after bars are full
+      delayChildren: 2.5,
     },
   },
 };
@@ -23,8 +23,8 @@ const fragmentVariants = {
   animate: {
     opacity: 0,
     scale: 0.5,
-    x: () => Math.random() * 400 - 200,
-    y: () => Math.random() * 400 - 200,
+    x: [0, () => Math.random() * 400 - 200],
+    y: [0, () => Math.random() * 400 - 200],
     transition: { duration: 0.6, ease: 'easeOut' },
   },
 };
@@ -43,10 +43,10 @@ export function CustomLoader({ onLoadingComplete }: { onLoadingComplete: () => v
       <div className="relative flex items-center justify-center">
         {/* Rage SVG */}
         <motion.div
-            animate={{ opacity: [1, 1, 0]}}
-            transition={{ duration: 3, times: [0, 0.9, 1] }}
+          animate={{ opacity: [1, 1, 0] }}
+          transition={{ duration: 3, times: [0, 0.9, 1] }}
         >
-            <BrandText />
+          <BrandText />
         </motion.div>
 
         {/* Horizontal Loader Bar */}
@@ -56,26 +56,26 @@ export function CustomLoader({ onLoadingComplete }: { onLoadingComplete: () => v
           animate={{ scaleX: 1 }}
           transition={{ duration: 2, ease: 'linear' }}
           onAnimationComplete={() => {
-            setTimeout(onLoadingComplete, 600); // Trigger page load after explosion
+            setTimeout(onLoadingComplete, 600);
           }}
         >
-            <AnimatePresence>
+          <AnimatePresence>
+            <motion.div
+              className="w-full h-full flex"
+              variants={barContainerVariants}
+              initial="initial"
+              animate="animate"
+              exit="initial"
+            >
+              {horizontalFragments.map((_, i) => (
                 <motion.div
-                    className="w-full h-full flex"
-                    variants={barContainerVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="initial"
-                >
-                    {horizontalFragments.map((_, i) => (
-                        <motion.div
-                        key={i}
-                        className="w-[10%] h-full bg-primary"
-                        variants={fragmentVariants}
-                        />
-                    ))}
-                </motion.div>
-            </AnimatePresence>
+                  key={i}
+                  className="w-[10%] h-full bg-primary"
+                  variants={fragmentVariants}
+                />
+              ))}
+            </motion.div>
+          </AnimatePresence>
         </motion.div>
 
         {/* Vertical Loader Bar */}
@@ -85,23 +85,23 @@ export function CustomLoader({ onLoadingComplete }: { onLoadingComplete: () => v
           animate={{ scaleY: 1 }}
           transition={{ duration: 2, ease: 'linear' }}
         >
-             <AnimatePresence>
+          <AnimatePresence>
+            <motion.div
+              className="w-full h-full flex flex-col"
+              variants={barContainerVariants}
+              initial="initial"
+              animate="animate"
+              exit="initial"
+            >
+              {verticalFragments.map((_, i) => (
                 <motion.div
-                    className="w-full h-full flex flex-col"
-                    variants={barContainerVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="initial"
-                >
-                    {verticalFragments.map((_, i) => (
-                        <motion.div
-                        key={i}
-                        className="w-full h-[20%] bg-primary"
-                        variants={fragmentVariants}
-                        />
-                    ))}
-                </motion.div>
-            </AnimatePresence>
+                  key={i}
+                  className="w-full h-[20%] bg-primary"
+                  variants={fragmentVariants}
+                />
+              ))}
+            </motion.div>
+          </AnimatePresence>
         </motion.div>
       </div>
     </motion.div>

@@ -61,6 +61,45 @@ export class ProductService {
     }
   }
 
+  // Count products with optional filtering
+  static async countProducts(filters?: {
+    category?: string;
+    subCategory?: string;
+    maxPrice?: number;
+    sizes?: string[];
+    colors?: string[];
+  }) {
+    try {
+      const queries: any[] = [];
+      
+      if (filters?.category && filters.category !== 'all') {
+        queries.push(Query.equal('category', filters.category));
+      }
+      
+      if (filters?.subCategory && filters.subCategory !== 'all') {
+        queries.push(Query.equal('subCategory', filters.subCategory));
+      }
+      
+      if (filters?.maxPrice) {
+        queries.push(Query.lessThanEqual('price', filters.maxPrice));
+      }
+
+      // Reduce payload while still getting total from Appwrite
+      queries.push(Query.limit(1));
+
+      const response: any = await databases.listDocuments(
+        CONFIG.DATABASE_ID,
+        CONFIG.COLLECTIONS.PRODUCTS,
+        queries
+      );
+
+      return response.total ?? (response.documents?.length ?? 0);
+    } catch (error) {
+      console.error('Error counting products:', error);
+      throw error;
+    }
+  }
+
   // Get single product by ID
   static async getProduct(productId: string) {
     try {

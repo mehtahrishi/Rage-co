@@ -9,17 +9,17 @@ export const navLinks = [
     subCategories: [
       {
         title: 'T-Shirts',
-        href: '/products?category=Tops&subCategory=Tshirts',
+        href: '/products?category=Tops',
         description: 'Graphic and basic tees for everyday wear.',
       },
       {
         title: 'Vests',
-        href: '/products?category=Tops&subCategory=Vests',
+        href: '/products?category=Tops',
         description: 'Layer up with our stylish and functional vests.',
       },
       {
         title: 'Baby Tees',
-        href: '/products?category=Tops&subCategory=Baby-tees',
+        href: '/products?category=Tops',
         description: 'Cute and trendy cropped baby tees.',
       },
     ],
@@ -30,12 +30,12 @@ export const navLinks = [
     subCategories: [
       {
         title: 'Pants',
-        href: '/products?category=Bottoms&subCategory=Pants',
+        href: '/products?category=Bottoms',
         description: 'From cargo pants to joggers, find your perfect fit.',
       },
       {
         title: 'Shorts',
-        href: '/products?category=Bottoms&subCategory=Shorts',
+        href: '/products?category=Bottoms',
         description: 'Comfortable shorts for warm weather.',
       },
     ],
@@ -46,7 +46,7 @@ export const navLinks = [
     subCategories: [
       {
         title: 'Bandanas',
-        href: '/products?category=Accessories&subCategory=Bandanas',
+        href: '/products?category=Accessories',
         description: 'Stylish bandanas to complete your look.',
       },
     ],
