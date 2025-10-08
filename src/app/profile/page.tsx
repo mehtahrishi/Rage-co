@@ -1,44 +1,19 @@
+'use client';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ProductCard } from '@/components/product-card';
-import { products } from '@/lib/data';
+import { ProductService } from '@/services/database';
+import type { Product, Order, Address } from '@/lib/types';
+
 
 // Mock Data
-const orders = [
-  {
-    id: 'ORD-001',
-    date: 'June 1, 2024',
-    status: 'Delivered',
-    total: 21998.00,
-    items: [products[0], products[2]],
-  },
-  {
-    id: 'ORD-002',
-    date: 'May 15, 2024',
-    status: 'Delivered',
-    total: 34999.00,
-    items: [products[4]],
-  },
-];
+const orders: any[] = [];
+const addresses: Address[] = [];
+const wishlist: Product[] = [];
 
-const addresses = [
-    {
-        id: '1',
-        name: 'Home',
-        address: '123 Main St, Anytown, India 12345',
-        isDefault: true,
-    },
-    {
-        id: '2',
-        name: 'Work',
-        address: '456 Business Ave, Workville, India 54321',
-        isDefault: false,
-    }
-]
-
-const wishlist = products.slice(5, 9);
 
 export default function ProfilePage() {
   return (
@@ -65,7 +40,7 @@ export default function ProfilePage() {
               <CardDescription>View the history of your past purchases.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
-              {orders.map((order, index) => (
+              {orders.length > 0 ? orders.map((order, index) => (
                 <div key={order.id}>
                     <div className="p-6 rounded-lg border">
                         <div className="flex flex-wrap gap-4 justify-between items-center mb-4">
@@ -80,7 +55,7 @@ export default function ProfilePage() {
                         </div>
                         <Separator />
                         <div className="mt-4 space-y-2">
-                             {order.items.map(item => (
+                             {order.items.map((item: Product) => (
                                 <div key={item.id} className="flex justify-between items-center text-sm">
                                     <span className="text-muted-foreground">{item.name}</span>
                                     <span>₹{item.price.toFixed(2)}</span>
@@ -90,7 +65,7 @@ export default function ProfilePage() {
                     </div>
                      {index < orders.length - 1 && <Separator className="my-8"/>}
                 </div>
-              ))}
+              )) : <p>You have no past orders.</p>}
             </CardContent>
           </Card>
         </TabsContent>
@@ -103,9 +78,11 @@ export default function ProfilePage() {
                     <CardDescription>Products you're keeping an eye on.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
-                        {wishlist.map(product => <ProductCard key={product.id} product={product} />)}
-                    </div>
+                    {wishlist.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
+                            {wishlist.map(product => <ProductCard key={product.id} product={product} />)}
+                        </div>
+                    ) : <p>Your wishlist is empty.</p>}
                 </CardContent>
             </Card>
         </TabsContent>
@@ -118,7 +95,7 @@ export default function ProfilePage() {
                     <CardDescription>Manage your shipping addresses.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    {addresses.map(address => (
+                    {addresses.length > 0 ? addresses.map(address => (
                         <div key={address.id} className="p-6 rounded-lg border flex justify-between items-start">
                            <div>
                                 <h3 className="font-semibold">{address.name} {address.isDefault && <span className="text-xs text-muted-foreground font-normal">(Default)</span>}</h3>
@@ -129,7 +106,7 @@ export default function ProfilePage() {
                                 <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">Remove</Button>
                            </div>
                         </div>
-                    ))}
+                    )) : <p>You have no saved addresses.</p>}
                 </CardContent>
                 <CardFooter>
                     <Button>Add New Address</Button>

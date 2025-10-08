@@ -1,7 +1,8 @@
 'use client'
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ProductCard } from '@/components/product-card';
-import { products } from '@/lib/data';
+import type { Product } from '@/lib/types';
+import { ProductService } from '@/services/database';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
@@ -9,30 +10,46 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
+const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '30', '32', '34', '36'];
+const ALL_COLORS = ['Black', 'White', 'Olive', 'Charcoal', 'Heather Grey', 'Khaki', 'Pastel Pink', 'Red', 'Blue', 'Paisley Black'];
+const MAX_PRICE = 500;
+
 function ProductsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const categoryParam = searchParams.get('category');
   const subCategoryParam = searchParams.get('subCategory');
   const sizes = searchParams.getAll('size');
   const colors = searchParams.getAll('color');
   const maxPrice = searchParams.get('maxPrice');
 
-  const allSizes = [...new Set(products.flatMap(p => p.sizes))];
-  const allColors = [...new Set(products.flatMap(p => p.colors))];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        const filters = {
+          category: searchParams.get('category') || undefined,
+          subCategory: searchParams.get('subCategory') || undefined,
+          maxPrice: searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined,
+          sizes: searchParams.getAll('size'),
+          colors: searchParams.getAll('color'),
+        };
+        const fetchedProducts = await ProductService.getProducts(filters);
+        setProducts(fetchedProducts);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const filteredProducts = useMemo(() => {
-    return products.filter(p => {
-      const categoryMatch = !categoryParam || categoryParam === 'all' || p.category === categoryParam || p.subCategory === categoryParam;
-      const subCategoryMatch = !subCategoryParam || subCategoryParam === 'all' || p.subCategory === subCategoryParam;
-      const sizeMatch = sizes.length === 0 || p.sizes.some(s => sizes.includes(s));
-      const colorMatch = colors.length === 0 || p.colors.some(c => colors.includes(c));
-      const priceMatch = !maxPrice || p.price <= Number(maxPrice);
-      return categoryMatch && subCategoryMatch && sizeMatch && colorMatch && priceMatch;
-    });
-  }, [categoryParam, subCategoryParam, sizes, colors, maxPrice]);
+    fetchProducts();
+  }, [searchParams]);
 
   const handleCategoryChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -70,11 +87,10 @@ function ProductsContent() {
     router.replace(pathname);
   }
 
-  const maxProductPrice = useMemo(() => Math.max(...products.map(p => p.price)), []);
-  const currentMaxPrice = Number(searchParams.get('maxPrice') || maxProductPrice);
+  const currentMaxPrice = Number(searchParams.get('maxPrice') || MAX_PRICE);
 
   const getCategoryValue = () => {
-    if(categoryParam === 'Tops' || categoryParam === 'Bottoms') return categoryParam;
+    if(categoryParam === 'Tops' || categoryParam === 'Bottoms' || categoryParam === 'Accessories') return categoryParam;
     return 'all';
   }
 
@@ -114,6 +130,10 @@ function ProductsContent() {
                       <RadioGroupItem value="Bottoms" id="cat-bottoms"/>
                       <Label htmlFor="cat-bottoms">Bottoms</Label>
                   </div>
+                  <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Accessories" id="cat-accessories"/>
+                      <Label htmlFor="cat-accessories">Accessories</Label>
+                  </div>
               </RadioGroup>
             </div>
 
@@ -121,7 +141,7 @@ function ProductsContent() {
             <div>
               <h3 className="font-semibold mb-4">Size</h3>
               <div className="grid grid-cols-3 gap-2">
-                {allSizes.map(size => (
+                {ALL_SIZES.map(size => (
                   <div key={size} className="flex items-center space-x-2">
                     <Checkbox id={`size-${size}`} checked={sizes.includes(size)} onCheckedChange={(checked) => handleMultiCheckboxChange('size', size, !!checked)}/>
                     <Label htmlFor={`size-${size}`}>{size}</Label>
@@ -134,7 +154,7 @@ function ProductsContent() {
             <div>
               <h3 className="font-semibold mb-4">Color</h3>
               <div className="space-y-2">
-                {allColors.map(color => (
+                {ALL_COLORS.map(color => (
                   <div key={color} className="flex items-center space-x-2">
                     <Checkbox id={`color-${color}`} checked={colors.includes(color)} onCheckedChange={(checked) => handleMultiCheckboxChange('color', color, !!checked)} />
                     <Label htmlFor={`color-${color}`}>{color}</Label>
@@ -146,10 +166,10 @@ function ProductsContent() {
             {/* Price Filter */}
             <div>
               <h3 className="font-semibold mb-4">Price Range</h3>
-              <Slider value={[maxPrice ? Number(maxPrice) : maxProductPrice]} max={maxProductPrice} step={100} onValueChange={handlePriceChange} />
+              <Slider value={[currentMaxPrice]} max={MAX_PRICE} step={10} onValueChange={handlePriceChange} />
               <div className="flex justify-between text-sm text-muted-foreground mt-2">
                 <span>₹0</span>
-                <span>₹{maxPrice ? Number(maxPrice) : maxProductPrice}</span>
+                <span>₹{currentMaxPrice}</span>
               </div>
             </div>
           </div>
@@ -157,10 +177,14 @@ function ProductsContent() {
 
         {/* Products Grid */}
         <main className="lg:col-span-3">
-          {filteredProducts.length > 0 ? (
+          {isLoading ? (
+            <div className="text-center py-16">
+              <p>Loading products...</p>
+            </div>
+          ) : products.length > 0 ? (
             <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {products.map((product) => (
+                <ProductCard key={product.$id} product={product} />
               ))}
             </div>
           ) : (

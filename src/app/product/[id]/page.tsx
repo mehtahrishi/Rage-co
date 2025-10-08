@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { notFound, useParams } from 'next/navigation';
 import { Star } from 'lucide-react';
 
-import { products } from '@/lib/data';
+import type { Product } from '@/lib/types';
+import { ProductService } from '@/services/database';
+
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -22,19 +24,42 @@ import { ProductCard } from '@/components/product-card';
 
 export default function ProductPage() {
   const params = useParams();
-  const id = params?.id as string;
-  const product = products.find((p) => p.slug === id);
+  const slug = params?.id as string;
+  const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | undefined>();
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
-  
+  const [activeImageId, setActiveImageId] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (!slug) return;
+
+    const fetchProductData = async () => {
+      try {
+        const fetchedProduct = await ProductService.getProductBySlug(slug);
+        setProduct(fetchedProduct);
+        setActiveImageId(fetchedProduct.imageIds[0]);
+
+        if (fetchedProduct.subCategory) {
+          const allProducts = await ProductService.getProducts({ subCategory: fetchedProduct.subCategory });
+          const related = allProducts.filter(p => p.$id !== fetchedProduct.$id).slice(0, 4);
+          setRelatedProducts(related);
+        }
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+        setProduct(null);
+      }
+    };
+
+    fetchProductData();
+  }, [slug]);
+
   if (!product) {
-    notFound();
+    // TODO: Add a proper loading state
+    return <div>Loading...</div>;
   }
   
-  const [activeImageId, setActiveImageId] = useState<string | undefined>(product.imageIds[0]);
-
-
   const handleAddToCart = () => {
     if (selectedSize && selectedColor) {
       addItem(product, selectedSize, selectedColor);
@@ -48,7 +73,6 @@ export default function ProductPage() {
     .filter(Boolean) as (typeof PlaceHolderImages)[0][];
     
   const activeImage = PlaceHolderImages.find((img) => img.id === activeImageId);
-  const relatedProducts = products.filter(p => p.subCategory === product.subCategory && p.id !== product.id).slice(0, 4);
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -194,9 +218,15 @@ export default function ProductPage() {
          <h2 className="mb-8 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           You Might Also Like
         </h2>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
-          {relatedProducts.map((p) => <ProductCard key={p.id} product={p} />)}
-        </div>
+        {relatedProducts.length > 0 ? (
+          <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
+            {relatedProducts.map((p) => <ProductCard key={p.$id} product={p} />)}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            <p>No related products found.</p>
+          </div>
+        )}
       </div>
     </div>
   );

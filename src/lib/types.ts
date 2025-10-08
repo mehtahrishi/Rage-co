@@ -2,16 +2,10 @@ import type { Models } from 'appwrite';
 
 // Appwrite document interface
 export interface AppwriteDocument extends Models.Document {
-  $id: string;
-  $createdAt: string;
-  $updatedAt: string;
-  $permissions: string[];
-  $collectionId: string;
-  $databaseId: string;
+  // no need to redeclare $id, etc. they are in Models.Document
 }
 
 export interface Product extends AppwriteDocument {
-  id: string;
   name: string;
   category: 'Tops' | 'Bottoms' | 'Accessories';
   subCategory: 'Tshirts' | 'Vests' | 'Baby-tees' | 'Pants' | 'Shorts' | 'Bandanas';
@@ -30,7 +24,6 @@ export interface Product extends AppwriteDocument {
 }
 
 export interface Collection extends AppwriteDocument {
-  id: string;
   title: string;
   handle: string;
   imageId: string;
@@ -45,7 +38,6 @@ export type CartItem = {
 };
 
 export interface Review extends AppwriteDocument {
-  id: string;
   name: string;
   rating: number;
   review: string;
@@ -55,7 +47,6 @@ export interface Review extends AppwriteDocument {
 
 // User profile interface
 export interface UserProfile extends AppwriteDocument {
-  id: string;
   email: string;  
   name: string;
   addresses: Address[];
@@ -74,7 +65,6 @@ export interface Address {
 }
 
 export interface Order extends AppwriteDocument {
-  id: string;
   userId: string;
   items: OrderItem[];
   total: number;

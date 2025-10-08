@@ -6,7 +6,10 @@ import Link from 'next/link';
 import { ArrowRight, Star, ShieldCheck, Truck, RefreshCw, Bot, Smile } from 'lucide-react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 
-import { products, collections, reviews } from '@/lib/data';
+import { collections, reviews } from '@/lib/data';
+import type { Product } from '@/lib/types';
+import { ProductService } from '@/services/database';
+
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product-card';
 import { cn } from '@/lib/utils';
@@ -188,7 +191,9 @@ const itemVariants = {
 
 
 export default function HomePage() {
-  const trendingProducts = products.filter((p) => p.isTrending).slice(0, 8);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [trendingProducts, setTrendingProducts] = useState<Product[]>([]);
+
   const [activeCategory, setActiveCategory] = useState<string | null>("PANTS");
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>()
@@ -203,6 +208,20 @@ export default function HomePage() {
   const reviewsInView = useInView(reviewsRef, { once: true, amount: 0.2 });
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const products = await ProductService.getProducts();
+        setAllProducts(products);
+        const trending = await ProductService.getTrendingProducts(8);
+        setTrendingProducts(trending);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -255,8 +274,8 @@ export default function HomePage() {
     const categoryKey = categories.find(c => c.name === displayCategory)?.key;
     if (!categoryKey) return [];
 
-    return products.filter(p => p.subCategory === categoryKey);
-  }, [displayCategory]);
+    return allProducts.filter(p => p.subCategory === categoryKey);
+  }, [displayCategory, allProducts]);
 
   return (
     <div className="flex flex-col">
@@ -358,7 +377,7 @@ export default function HomePage() {
                     <CarouselContent>
                       {visibleProducts.map((product) => (
                         <CarouselItem
-                          key={product.id}
+                          key={product.$id}
                           className="basis-1/2 md:basis-1/3 lg:basis-1/4"
                         >
                           <div className="p-1">
@@ -430,11 +449,17 @@ export default function HomePage() {
         <h2 className="mt-8 mb-8 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
           Trending Now
         </h2>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
-          {trendingProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {trendingProducts.length > 0 ? (
+          <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
+            {trendingProducts.map((product) => (
+              <ProductCard key={product.$id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            <p>Trending products are being loaded...</p>
+          </div>
+        )}
       </section>
 
       <div className="mt-12 text-center">
