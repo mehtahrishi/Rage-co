@@ -1,7 +1,3 @@
-
-
-
-
 'use client';
 
 import * as React from 'react';
@@ -269,7 +265,7 @@ export function SiteHeader() {
                       <Link href="/profile">My Profile</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/profile">My Orders</Link>
+                      <Link href="/profile/orders">My Orders</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
