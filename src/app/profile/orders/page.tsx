@@ -1,18 +1,31 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/context/auth-provider';
 import { OrderService } from '@/services/orders';
+import type { Order } from '@/lib/types';
+import Link from 'next/link';
+import { CustomLoader } from '@/components/custom-loader';
 
 export default function OrdersPage() {
-  const { user } = useAuth();
-  const [orders, setOrders] = useState<any[]>([]);
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/auth/login');
+    }
+  }, [user, authLoading, router]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -22,9 +35,7 @@ export default function OrdersPage() {
         setLoading(true);
         setError(null);
         // Fetch user orders using the OrderService
-        const fetchedOrders = await OrderService.getMyOrders();
-        // Filter orders by user ID on the client side
-        const userOrders = fetchedOrders.filter(order => order.userId === user.$id);
+        const userOrders = await OrderService.getUserOrders(user.$id);
         setOrders(userOrders);
       } catch (error: any) {
         console.error('Error fetching orders:', error);
@@ -36,6 +47,10 @@ export default function OrdersPage() {
 
     fetchOrders();
   }, [user]);
+
+  const handleLoadingComplete = () => {
+    setShowLoader(false);
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -54,6 +69,16 @@ export default function OrdersPage() {
     }
   };
 
+  // Show custom loader while checking authentication or loading orders
+  if (authLoading || (loading && showLoader)) {
+    return <CustomLoader onLoadingComplete={handleLoadingComplete} />;
+  }
+
+  // Don't render anything if user is not authenticated (will redirect)
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="container mx-auto px-4 py-12">
       <header className="mb-12 text-center">
@@ -70,11 +95,7 @@ export default function OrdersPage() {
             <CardDescription>View your past and current orders</CardDescription>
           </CardHeader>
           <CardContent>
-            {loading ? (
-              <div className="flex items-center justify-center h-64">
-                <p>Loading orders...</p>
-              </div>
-            ) : error ? (
+            {error ? (
               <div className="text-center py-12">
                 <p className="text-destructive mb-4">{error}</p>
                 <Button onClick={() => window.location.reload()}>Retry</Button>
@@ -97,9 +118,9 @@ export default function OrdersPage() {
                       <TableCell>{new Date(order.$createdAt).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          {order.items?.map((item: any, index: number) => (
+                          {order.items?.map((item, index: number) => (
                             <div key={index} className="text-sm">
-                              {item.quantity} × {item.productName}
+                              {item.quantity} × {item.productName} ({item.size}, {item.color})
                             </div>
                           ))}
                         </div>
@@ -113,7 +134,9 @@ export default function OrdersPage() {
             ) : (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">You haven't placed any orders yet.</p>
-                <Button className="mt-4">Start Shopping</Button>
+                <Button asChild className="mt-4">
+                  <Link href="/products">Start Shopping</Link>
+                </Button>
               </div>
             )}
           </CardContent>

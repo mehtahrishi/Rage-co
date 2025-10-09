@@ -68,10 +68,8 @@ export interface Order extends AppwriteDocument {
   userId: string;
   items: OrderItem[];
   total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  shippingAddress: Address;
-  createdAt: string;
-  updatedAt: string;
+  status?: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  shippingAddress: Address | string; // Can be object or JSON string
 }
 
 export interface OrderItem {

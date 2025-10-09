@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { Star, X } from 'lucide-react';
 
@@ -224,14 +225,24 @@ export default function ProductPage() {
             </RadioGroup>
           </div>
 
-          <Button
-            size="default"
-            className="w-full md:w-auto"
-            onClick={handleAddToCart}
-            disabled={!selectedColor || !selectedSize}
-          >
-            Add to Cart
-          </Button>
+          <div className="flex flex-row gap-3 w-full">
+            <Button
+              size="default"
+              className="flex-1"
+              onClick={handleAddToCart}
+              disabled={!selectedColor || !selectedSize}
+            >
+              Add to Cart
+            </Button>
+            <Button
+              size="default"
+              variant="outline"
+              className="flex-1"
+              asChild
+            >
+              <Link href="/cart">Go to Cart</Link>
+            </Button>
+          </div>
 
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="details">

@@ -1,19 +1,61 @@
-import { Client, Databases, Query } from 'appwrite';
-import { CONFIG, databases } from '@/lib/appwrite';
-import type { Order } from '@/lib/types';
+import { databases, CONFIG, ID, Query } from '@/lib/appwrite';
+import type { Order, OrderItem } from '@/lib/types';
+
+export interface CreateOrderData {
+  userId: string;
+  items: OrderItem[];
+  total: number;
+  shippingAddress: {
+    firstName: string;
+    lastName: string;
+    address: string;
+    apartment?: string;
+    city: string;
+    country: string;
+    postalCode: string;
+  };
+}
 
 export class OrderService {
-  // Get orders for the current user
-  static async getUserOrders(): Promise<Order[]> {
+  // Create a new order
+  static async createOrder(orderData: CreateOrderData): Promise<Order> {
     try {
-      // Use the existing authenticated databases client
+      const order = await databases.createDocument(
+        CONFIG.DATABASE_ID,
+        CONFIG.COLLECTIONS.ORDERS,
+        ID.unique(),
+        {
+          userId: orderData.userId,
+          items: JSON.stringify(orderData.items),
+          total: orderData.total,
+          shippingAddress: JSON.stringify(orderData.shippingAddress)
+        }
+      );
+
+      return order as unknown as Order;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      throw error;
+    }
+  }
+
+  // Get orders for the current user
+  static async getUserOrders(userId: string): Promise<Order[]> {
+    try {
       const ordersResponse = await databases.listDocuments(
         CONFIG.DATABASE_ID,
         CONFIG.COLLECTIONS.ORDERS,
-        [] // We'll filter on the client side or use a different approach
+        [
+          Query.equal('userId', userId),
+          Query.orderDesc('$createdAt')
+        ]
       );
 
-      return ordersResponse.documents as unknown as Order[];
+      return ordersResponse.documents.map(doc => ({
+        ...doc,
+        items: JSON.parse(doc.items as string),
+        shippingAddress: JSON.parse(doc.shippingAddress as string)
+      })) as unknown as Order[];
     } catch (error) {
       console.error('Error fetching user orders:', error);
       throw error;

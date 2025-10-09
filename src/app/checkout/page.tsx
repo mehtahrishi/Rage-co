@@ -25,6 +25,9 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { OrderService } from '@/services/orders';
+import { useToast } from '@/hooks/use-toast';
+import { CustomLoader } from '@/components/custom-loader';
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -40,13 +43,15 @@ const formSchema = z.object({
 type CheckoutFormValues = z.infer<typeof formSchema>;
 
 export default function CheckoutPage() {
-  const { items, totalPrice } = useCart();
-  const { user } = useAuth();
+  const { items, totalPrice, clearCart } = useCart();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
+  const [showAuthLoader, setShowAuthLoader] = useState(true);
   const [paymentTimer, setPaymentTimer] = useState(60); // 1 minute timer
   const upiId = process.env.NEXT_PUBLIC_UPI_ID || 'mehtahrishi45@okaxis'; // Fallback to your provided UPI ID
 
@@ -101,6 +106,23 @@ export default function CheckoutPage() {
     return () => clearTimeout(timer);
   }, [isPaymentModalOpen, paymentTimer]);
 
+  // Handle authentication loading completion
+  const handleAuthLoadingComplete = () => {
+    setShowAuthLoader(false);
+  };
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to proceed with checkout.",
+        variant: "destructive"
+      });
+      router.push('/auth/login');
+    }
+  }, [user, authLoading, router, toast]);
+
   // Redirect after loader animation
   useEffect(() => {
     if (showLoader) {
@@ -131,15 +153,75 @@ export default function CheckoutPage() {
   };
 
   // Handle payment confirmation
-  const handlePaymentSuccess = () => {
-    setIsPaymentSuccess(true);
-    setTimeout(() => {
-      setIsPaymentSuccess(false);
-      setIsPaymentModalOpen(false);
-      setPaymentTimer(60); // Reset timer
-      setShowLoader(true); // Show custom loader
-      // Here you would typically clear the cart
-    }, 2000); // Show success animation for 2 seconds
+  const handlePaymentSuccess = async () => {
+    try {
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to place an order.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Create order in database
+      const orderData = {
+        userId: user.$id,
+        items: items.map(item => ({
+          productId: item.product.$id,
+          productName: item.product.name,
+          quantity: item.quantity,
+          price: item.product.price,
+          size: item.size,
+          color: item.color
+        })),
+        total: finalTotal,
+        shippingAddress: {
+          firstName: form.getValues('firstName'),
+          lastName: form.getValues('lastName'),
+          address: form.getValues('address'),
+          apartment: form.getValues('apartment'),
+          city: form.getValues('city'),
+          country: form.getValues('country'),
+          postalCode: form.getValues('postalCode')
+        }
+      };
+      
+      console.log('Creating order with data:', orderData);
+      
+      // Create the order
+      const createdOrder = await OrderService.createOrder(orderData);
+      console.log('Order created successfully:', createdOrder);
+      
+      // Show success animation
+      setIsPaymentSuccess(true);
+      
+      setTimeout(async () => {
+        setIsPaymentSuccess(false);
+        setIsPaymentModalOpen(false);
+        setPaymentTimer(60); // Reset timer
+        
+        // Clear the cart after successful order creation
+        await clearCart();
+        console.log('Cart cleared successfully');
+        
+        setShowLoader(true); // Show custom loader
+        
+        // Show success toast
+        toast({
+          title: "Order Placed Successfully!",
+          description: "Your order has been placed and you will be redirected to your orders page.",
+        });
+      }, 2000); // Show success animation for 2 seconds
+      
+    } catch (error) {
+      console.error('Error during checkout process:', error);
+      toast({
+        title: "Error",
+        description: "There was an error processing your order. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Handle payment cancellation
@@ -170,6 +252,16 @@ export default function CheckoutPage() {
   const gstAmount = totalPrice * 0.05;
   const finalTotal = totalPrice + gstAmount;
 
+  // Show custom loader while checking authentication
+  if (authLoading && showAuthLoader) {
+    return <CustomLoader onLoadingComplete={handleAuthLoadingComplete} />;
+  }
+
+  // Don't render if user is not authenticated (will redirect)
+  if (!user) {
+    return null;
+  }
+
   if (items.length === 0) {
     return (
         <div className="container mx-auto px-4 py-24 text-center">
@@ -190,7 +282,7 @@ export default function CheckoutPage() {
         </h1>
         <p className="mt-2 text-muted-foreground">Complete your purchase with confidence</p>
       </header>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
         {/* Shipping Form */}
         <div className="lg:pr-8">
           <div className="bg-card rounded-xl border p-6 shadow-sm">
@@ -343,7 +435,10 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold line-clamp-1">{item.product.name}</p>
+                    <p className="font-semibold line-clamp-1">
+                      <span className="text-muted-foreground mr-2">x{item.quantity}</span>
+                      {item.product.name}
+                    </p>
                     <p className="text-sm text-muted-foreground">{item.size} / {item.color}</p>
                     <p className="font-semibold mt-1">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                   </div>

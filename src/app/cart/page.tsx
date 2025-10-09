@@ -7,10 +7,22 @@ import { useCart } from '@/hooks/use-cart';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ImageService } from '@/services/image';
 import { cn } from '@/lib/utils';
 
 export default function CartPage() {
   const { items, updateItemQuantity, removeItem, totalPrice } = useCart();
+
+  // Get image URL for product
+  const getProductImageUrl = (imageId: string) => {
+    // Try to get image from Appwrite first
+    const appwriteUrl = ImageService.getImageUrl(imageId);
+    if (appwriteUrl) return appwriteUrl;
+    
+    // Fallback to placeholder images
+    const placeholderImage = PlaceHolderImages.find(img => img.id === imageId);
+    return placeholderImage?.imageUrl || '/placeholder.jpg';
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -34,13 +46,17 @@ export default function CartPage() {
           <div className="lg:col-span-2">
             <div className="space-y-6">
               {items.map((item) => {
-                const image = PlaceHolderImages.find(img => img.id === item.product.imageIds[0]);
+                const imageUrl = getProductImageUrl(item.product.imageIds[0]);
                 return (
                   <div key={item.id} className="flex gap-4 items-center border-b pb-6">
-                    <div className="relative h-24 w-24 overflow-hidden rounded-md">
-                      {image && (
-                         <Image src={image.imageUrl} alt={item.product.name} fill className="object-cover grayscale"/>
-                      )}
+                    <div className="relative h-24 w-24 overflow-hidden rounded-md border">
+                      <Image 
+                        src={imageUrl} 
+                        alt={item.product.name} 
+                        fill 
+                        className="object-cover"
+                        sizes="96px"
+                      />
                     </div>
                     <div className="flex-1 flex flex-col sm:flex-row justify-between gap-4">
                       <div className="flex-1">
