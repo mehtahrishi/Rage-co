@@ -51,14 +51,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       console.log('Starting registration process...');
       await AuthService.register({ email, password, name, phone });
-      console.log('Registration successful, getting current user...');
+      console.log('Registration successful - user not logged in');
       
-      // Wait a moment for the session to be fully established
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const currentUser = await AuthService.getCurrentUser();
-      console.log('Current user after registration:', currentUser);
-      setUser(currentUser);
+      // Don't set user or create session - user needs to login manually
+      // setUser remains null so user stays logged out
     } catch (error) {
       console.error('Registration error:', error);
       throw error;

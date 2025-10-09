@@ -72,12 +72,12 @@ export default function RegisterPage() {
       await register(formData.email, formData.password, formData.name, formData.phone);
       
       toast({
-        title: "Welcome to RAGE!",
-        description: "Your account has been created and you're now logged in.",
+        title: "Account Created Successfully!",
+        description: "Please log in with your credentials to continue.",
       });
       
-      // Navigate to home page after successful registration
-      router.push('/');
+      // Navigate to login page after successful registration
+      router.push('/auth/login');
       
     } catch (error: any) {
       console.error('Registration form error:', error);

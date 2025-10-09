@@ -26,16 +26,18 @@ export class AuthService {
         name
       );
       
-      console.log('User created, creating session...');
-      // Create session after registration
-      const session = await account.createEmailPasswordSession(email, password);
-      console.log('Session created:', session);
+      console.log('User created successfully');
       
-      // Store phone number in user preferences if provided
+      // If phone number is provided, we need to temporarily log in to store it
       if (phone) {
         console.log('Storing phone number in preferences...');
+        // Create temporary session to store phone
+        const tempSession = await account.createEmailPasswordSession(email, password);
         await account.updatePrefs({ phone });
         console.log('Phone number stored successfully');
+        // Logout immediately after storing phone
+        await account.deleteSession('current');
+        console.log('Temporary session ended');
       }
       
       return user;
