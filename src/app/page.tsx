@@ -412,6 +412,7 @@ export default function HomePage() {
             opts={{
               align: 'start',
               loop: false,
+              dragFree: true,
             }}
             className="w-full"
           >
