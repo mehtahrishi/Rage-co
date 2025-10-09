@@ -22,17 +22,17 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog"
-  
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -108,15 +108,15 @@ export default function ProductsPage() {
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
     form.reset({
-        ...product,
-        details: product.details.join(', '),
-        sizes: product.sizes.join(', '),
-        colors: product.colors.join(', '),
-        imageIds: product.imageIds,
+      ...product,
+      details: product.details.join(', '),
+      sizes: product.sizes.join(', '),
+      colors: product.colors.join(', '),
+      imageIds: product.imageIds,
     });
     setIsDialogOpen(true);
   };
-  
+
   const handleDelete = async (productId: string) => {
     try {
       await ProductService.deleteProduct(productId);
@@ -170,21 +170,21 @@ export default function ProductsPage() {
   const openNewProductDialog = () => {
     setEditingProduct(null);
     form.reset({
-        name: '',
-        slug: '',
-        price: 0,
-        originalPrice: undefined,
-        category: 'Tops',
-        subCategory: 'Tshirts',
-        description: '',
-        details: '',
-        sizes: '',
-        colors: '',
-        imageIds: [],
-        isFeatured: false,
-        isTrending: false,
-        rating: 0,
-        reviewCount: 0,
+      name: '',
+      slug: '',
+      price: 0,
+      originalPrice: undefined,
+      category: 'Tops',
+      subCategory: 'Tshirts',
+      description: '',
+      details: '',
+      sizes: '',
+      colors: '',
+      imageIds: [],
+      isFeatured: false,
+      isTrending: false,
+      rating: 0,
+      reviewCount: 0,
     });
     setIsDialogOpen(true);
   }
@@ -192,91 +192,165 @@ export default function ProductsPage() {
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <Card>
-        <CardHeader className="flex flex-row items-center">
-            <div className="grid gap-2">
-                <CardTitle>Products</CardTitle>
-                <CardDescription>Manage your product inventory.</CardDescription>
-            </div>
-          <div className="ml-auto flex items-center gap-2">
-            <Button size="sm" className="h-8 gap-1" onClick={openNewProductDialog}>
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="grid gap-2">
+            <CardTitle>Products</CardTitle>
+            <CardDescription>Manage your product inventory.</CardDescription>
+          </div>
+          <div className="flex items-center gap-2 sm:ml-auto">
+            <Button size="sm" className="h-8 gap-1 w-full sm:w-auto" onClick={openNewProductDialog}>
               <PlusCircle className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Product</span>
+              <span className="sm:whitespace-nowrap">Add Product</span>
             </Button>
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead className="hidden md:table-cell">Trending</TableHead>
-                <TableHead className="hidden md:table-cell">Featured</TableHead>
-                <TableHead><span className="sr-only">Actions</span></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow><TableCell colSpan={6}>Loading...</TableCell></TableRow>
-              ) : products.length > 0 ? (
-                products.map((product) => (
-                  <TableRow key={product.$id}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>{product.subCategory}</TableCell>
-                    <TableCell>₹{product.price}</TableCell>
-                    <TableCell className="hidden md:table-cell">
-                        <Checkbox checked={product.isTrending} disabled/>
-                    </TableCell>
-                     <TableCell className="hidden md:table-cell">
-                        <Checkbox checked={product.isFeatured} disabled/>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => handleEdit(product)}>Edit</DropdownMenuItem>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <p>Loading products...</p>
+            </div>
+          ) : (
+            <>
+              {/* Mobile Card Layout */}
+              <div className="block md:hidden space-y-4">
+                {products.length > 0 ? (
+                  products.map((product) => (
+                    <Card key={product.$id} className="p-4">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-sm">{product.name}</h3>
+                          <p className="text-xs text-muted-foreground">{product.subCategory}</p>
+                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => handleEdit(product)}>Edit</DropdownMenuItem>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
                                 <Button variant="ghost" className="w-full justify-start text-sm font-normal px-2 py-1.5 text-destructive hover:text-destructive">Delete</Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
                                 <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
+                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
                                     This action cannot be undone. This will permanently delete the product.
-                                </AlertDialogDescription>
+                                  </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(product.$id)}>Delete</AlertDialogAction>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDelete(product.$id)}>Delete</AlertDialogAction>
                                 </AlertDialogFooter>
-                            </AlertDialogContent>
+                              </AlertDialogContent>
                             </AlertDialog>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow><TableCell colSpan={6}>No products found.</TableCell></TableRow>
-              )}
-            </TableBody>
-          </Table>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">Price:</span>
+                          <span className="font-medium">₹{product.price}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">Trending:</span>
+                          <Checkbox checked={product.isTrending} disabled />
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">Featured:</span>
+                          <Checkbox checked={product.isFeatured} disabled />
+                        </div>
+                      </div>
+                    </Card>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No products found.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop Table Layout */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table className="min-w-[600px]">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="min-w-[200px]">Name</TableHead>
+                      <TableHead className="min-w-[120px]">Category</TableHead>
+                      <TableHead className="min-w-[100px]">Price</TableHead>
+                      <TableHead className="min-w-[100px]">Trending</TableHead>
+                      <TableHead className="min-w-[100px]">Featured</TableHead>
+                      <TableHead className="min-w-[80px]"><span className="sr-only">Actions</span></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {products.length > 0 ? (
+                      products.map((product) => (
+                        <TableRow key={product.$id}>
+                          <TableCell className="font-medium">{product.name}</TableCell>
+                          <TableCell>{product.subCategory}</TableCell>
+                          <TableCell>₹{product.price}</TableCell>
+                          <TableCell>
+                            <Checkbox checked={product.isTrending} disabled />
+                          </TableCell>
+                          <TableCell>
+                            <Checkbox checked={product.isFeatured} disabled />
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button aria-haspopup="true" size="icon" variant="ghost">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Toggle menu</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuItem onClick={() => handleEdit(product)}>Edit</DropdownMenuItem>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" className="w-full justify-start text-sm font-normal px-2 py-1.5 text-destructive hover:text-destructive">Delete</Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete the product.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleDelete(product.$id)}>Delete</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow><TableCell colSpan={6}>No products found.</TableCell></TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
-      
+
       <Dialog open={isDialogOpen} onOpenChange={(open) => {
         setIsDialogOpen(open);
         if (!open) {
-            setEditingProduct(null);
-            form.reset();
+          setEditingProduct(null);
+          form.reset();
         }
       }}>
         <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
@@ -304,25 +378,25 @@ export default function ProductsPage() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="price" className="text-right">Price</Label>
-              <Input 
-                id="price" 
-                type="number" 
-                {...form.register('price', { 
-                  valueAsNumber: true 
-                })} 
-                className="col-span-3" 
+              <Input
+                id="price"
+                type="number"
+                {...form.register('price', {
+                  valueAsNumber: true
+                })}
+                className="col-span-3"
               />
               {form.formState.errors.price && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.price.message}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="originalPrice" className="text-right">Original Price</Label>
-              <Input 
-                id="originalPrice" 
-                type="number" 
-                {...form.register('originalPrice', { 
-                  valueAsNumber: true 
-                })} 
-                className="col-span-3" 
+              <Input
+                id="originalPrice"
+                type="number"
+                {...form.register('originalPrice', {
+                  valueAsNumber: true
+                })}
+                className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -366,9 +440,9 @@ export default function ProductsPage() {
                 )}
               />
             </div>
-             <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="details" className="text-right">Details</Label>
-              <Input id="details" {...form.register('details')} className="col-span-3" placeholder="Comma-separated"/>
+              <Input id="details" {...form.register('details')} className="col-span-3" placeholder="Comma-separated" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="sizes" className="text-right">Sizes</Label>
@@ -380,7 +454,7 @@ export default function ProductsPage() {
               <Input id="colors" {...form.register('colors')} className="col-span-3" placeholder="Red, Blue, Black (max 10 chars each)" />
               {form.formState.errors.colors && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.colors.message}</p>}
             </div>
-             <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Product Images</Label>
               <div className="col-span-3">
                 <Controller
@@ -405,17 +479,17 @@ export default function ProductsPage() {
                 control={form.control}
                 name="isFeatured"
                 render={({ field }) => (
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} id="isFeatured" className="col-span-3"/>
+                  <Checkbox checked={field.value} onCheckedChange={field.onChange} id="isFeatured" className="col-span-3" />
                 )}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="isTrending" className="text-right">Trending</Label>
-               <Controller
+              <Controller
                 control={form.control}
                 name="isTrending"
                 render={({ field }) => (
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} id="isTrending" className="col-span-3"/>
+                  <Checkbox checked={field.value} onCheckedChange={field.onChange} id="isTrending" className="col-span-3" />
                 )}
               />
             </div>

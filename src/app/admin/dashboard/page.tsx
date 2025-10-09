@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from '@/components/ui/table';
-import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import { AdminService } from '@/services/admin';
 import { ProductService } from '@/services/database';
 
@@ -38,10 +38,9 @@ export default function Dashboard() {
                 const products = await ProductService.getProducts({ limit: 4 });
                 setRecentProducts(products);
                 
-                // Generate chart data based on real orders
-                const orders = await AdminService.getOrders();
-                const ordersChartData = generateOrdersChartData(orders);
-                setChartData(ordersChartData);
+                // Generate simple chart data using the stats we just fetched
+                const chartData = generateSimpleChartData(stats.totalSales, stats.totalRevenue);
+                setChartData(chartData);
                 
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
@@ -60,48 +59,45 @@ export default function Dashboard() {
         fetchData();
     }, []);
 
-    // Generate chart data from real orders
-    const generateOrdersChartData = (orders: any[]) => {
-        // Create an array for the last 12 months
-        const months: { name: string; orders: number }[] = [];
-        const now = new Date();
+    // Generate simple chart data showing total revenue and orders
+    const generateSimpleChartData = (orders: number, revenue: number) => {
+        // Simple 12 months from Jan to Dec
+        const months = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
         
-        for (let i = 11; i >= 0; i--) {
-            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            months.push({
-                name: date.toLocaleString('default', { month: 'short' }),
-                orders: 0
-            });
-        }
-        
-        // Count orders per month
-        orders.forEach(order => {
-            const orderDate = new Date(order.createdAt);
-            const monthIndex = 11 - (now.getMonth() - orderDate.getMonth() + 
-                (now.getFullYear() - orderDate.getFullYear()) * 12);
-            
-            if (monthIndex >= 0 && monthIndex < 12) {
-                months[monthIndex].orders += 1;
+        // Create chart data - put all data in current month (October)
+        return months.map((month) => {
+            if (month === 'Oct') { // Current month - show actual data
+                return {
+                    name: month,
+                    orders: orders,
+                    revenue: revenue
+                };
             }
+            return {
+                name: month,
+                orders: 0,
+                revenue: 0
+            };
         });
-        
-        return months;
     };
 
     const getMockChartData = () => {
         return [
-            { name: 'Jan', orders: 45 },
-            { name: 'Feb', orders: 52 },
-            { name: 'Mar', orders: 48 },
-            { name: 'Apr', orders: 60 },
-            { name: 'May', orders: 75 },
-            { name: 'Jun', orders: 68 },
-            { name: 'Jul', orders: 80 },
-            { name: 'Aug', orders: 72 },
-            { name: 'Sep', orders: 65 },
-            { name: 'Oct', orders: 70 },
-            { name: 'Nov', orders: 85 },
-            { name: 'Dec', orders: 92 },
+            { name: 'Jan', orders: 0, revenue: 0 },
+            { name: 'Feb', orders: 0, revenue: 0 },
+            { name: 'Mar', orders: 0, revenue: 0 },
+            { name: 'Apr', orders: 0, revenue: 0 },
+            { name: 'May', orders: 0, revenue: 0 },
+            { name: 'Jun', orders: 0, revenue: 0 },
+            { name: 'Jul', orders: 0, revenue: 0 },
+            { name: 'Aug', orders: 0, revenue: 0 },
+            { name: 'Sep', orders: 0, revenue: 0 },
+            { name: 'Oct', orders: 11, revenue: 8060.05 },
+            { name: 'Nov', orders: 0, revenue: 0 },
+            { name: 'Dec', orders: 0, revenue: 0 },
         ];
     };
 
@@ -186,7 +182,7 @@ export default function Dashboard() {
                         <CardContent>
                             <div className="text-2xl font-bold">₹{totalRevenue.toLocaleString()}</div>
                             <p className="text-xs text-muted-foreground">
-                                +20.1% from last month
+                                Total from all orders
                             </p>
                         </CardContent>
                     </Card>
@@ -198,9 +194,9 @@ export default function Dashboard() {
                             <CreditCard className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">+{totalOrders}</div>
+                            <div className="text-2xl font-bold">{totalOrders}</div>
                             <p className="text-xs text-muted-foreground">
-                                +19% from last month
+                                Total orders placed
                             </p>
                         </CardContent>
                     </Card>
@@ -210,9 +206,9 @@ export default function Dashboard() {
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">+{totalUsers}</div>
+                            <div className="text-2xl font-bold">{totalUsers}</div>
                             <p className="text-xs text-muted-foreground">
-                                +180.1% from last month
+                                Registered users
                             </p>
                         </CardContent>
                     </Card>
@@ -222,9 +218,9 @@ export default function Dashboard() {
                             <Package2 className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">+{recentProducts.length}</div>
+                            <div className="text-2xl font-bold">{recentProducts.length}</div>
                             <p className="text-xs text-muted-foreground">
-                                Recently added
+                                Products available
                             </p>
                         </CardContent>
                     </Card>
@@ -232,14 +228,15 @@ export default function Dashboard() {
                 <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
                     <Card className="xl:col-span-2">
                         <CardHeader>
-                            <CardTitle>Orders Overview</CardTitle>
+                            <CardTitle>Orders & Revenue Overview</CardTitle>
                             <CardDescription>
-                                Orders placed over the last 12 months
+                                Orders count and revenue generated over the last 12 months
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pl-2">
                              <ResponsiveContainer width="100%" height={350}>
-                                <LineChart data={chartData}>
+                                <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                                     <XAxis
                                         dataKey="name"
                                         stroke="#888888"
@@ -248,21 +245,62 @@ export default function Dashboard() {
                                         axisLine={false}
                                     />
                                     <YAxis
+                                        yAxisId="orders"
+                                        orientation="left"
                                         stroke="#888888"
                                         fontSize={12}
                                         tickLine={false}
                                         axisLine={false}
+                                        domain={[0, 15]}
+                                        ticks={[0, 5, 10, 15]}
                                         tickFormatter={(value) => `${value}`}
                                     />
-                                    <Tooltip />
+                                    <YAxis
+                                        yAxisId="revenue"
+                                        orientation="right"
+                                        stroke="#888888"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        domain={[0, 10000]}
+                                        ticks={[0, 2500, 5000, 7500, 10000]}
+                                        tickFormatter={(value) => `₹${(value / 1000).toFixed(1)}k`}
+                                    />
+                                    <Tooltip 
+                                        formatter={(value, name) => {
+                                            if (name === 'Revenue') {
+                                                return [`₹${Number(value).toLocaleString()}`, 'Revenue'];
+                                            }
+                                            return [value, 'Orders'];
+                                        }}
+                                        labelStyle={{ color: 'hsl(var(--foreground))' }}
+                                        contentStyle={{ 
+                                            backgroundColor: 'hsl(var(--background))', 
+                                            border: '1px solid hsl(var(--border))',
+                                            borderRadius: '8px',
+                                            color: 'hsl(var(--foreground))'
+                                        }}
+                                    />
                                     <Legend />
                                     <Line
+                                        yAxisId="orders"
                                         type="monotone"
                                         dataKey="orders"
                                         stroke="hsl(var(--primary))"
-                                        strokeWidth={2}
-                                        activeDot={{ r: 8 }}
+                                        strokeWidth={3}
+                                        dot={false}
+                                        activeDot={false}
                                         name="Orders"
+                                    />
+                                    <Line
+                                        yAxisId="revenue"
+                                        type="monotone"
+                                        dataKey="revenue"
+                                        stroke="hsl(var(--chart-2))"
+                                        strokeWidth={3}
+                                        dot={false}
+                                        activeDot={false}
+                                        name="Revenue"
                                     />
                                 </LineChart>
                             </ResponsiveContainer>

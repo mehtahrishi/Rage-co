@@ -85,6 +85,8 @@ export class AdminService {
   // Update order status
   static async updateOrderStatus(orderId: string, status: string) {
     try {
+      console.log(`AdminService: Updating order ${orderId} to status ${status}`);
+      
       const response = await fetch('/api/admin/orders', {
         method: 'PUT',
         headers: {
@@ -93,10 +95,20 @@ export class AdminService {
         body: JSON.stringify({ orderId, status }),
       });
       
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response text:', errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText || 'Failed to update order status'}`);
+      }
+      
       const data = await response.json();
+      console.log('Response data:', data);
       
       if (!data.success) {
-        throw new Error(data.error || 'Failed to update order status');
+        throw new Error(data.error || data.details || 'Failed to update order status');
       }
       
       return data.data;

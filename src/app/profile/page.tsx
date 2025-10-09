@@ -23,9 +23,18 @@ export default function ProfilePage() {
     return name.charAt(0).toUpperCase();
   };
 
+  // Helper function to safely get phone number
+  const getPhoneNumber = (): string | null => {
+    if (user?.prefs && typeof user.prefs === 'object' && user.prefs !== null && 'phone' in user.prefs) {
+      const phone = user.prefs.phone;
+      return phone ? String(phone) : null;
+    }
+    return null;
+  };
+
   // Determine avatar background and text color based on theme
   const getAvatarColors = () => {
-    return theme === 'dark' 
+    return theme === 'dark'
       ? { background: 'bg-gray-800', text: 'text-white' }
       : { background: 'bg-gray-200', text: 'text-gray-800' };
   };
@@ -105,7 +114,7 @@ export default function ProfilePage() {
                   {getUserInitial()}
                 </AvatarFallback>
               </Avatar>
-              
+
               <div className="text-center space-y-4 w-full">
                 {isEditing ? (
                   <div className="space-y-4">
@@ -128,6 +137,9 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     <h2 className="text-2xl font-bold">{user?.name || 'User'}</h2>
                     <p className="text-muted-foreground">{user?.email || 'user@example.com'}</p>
+                    {getPhoneNumber() && (
+                      <p className="text-muted-foreground">{getPhoneNumber()}</p>
+                    )}
                     <Badge variant="secondary">Verified Account</Badge>
                     <div className="pt-4">
                       <Button onClick={handleEdit} variant="outline">
@@ -138,14 +150,39 @@ export default function ProfilePage() {
                 )}
               </div>
             </div>
-            
-            <div className="rounded-lg bg-muted p-6 text-center">
-              <h3 className="font-semibold mb-2">Privacy Notice</h3>
-              <p className="text-sm text-muted-foreground">
-                Your data is kept private and secure. We never share your personal information 
-                with third parties without your consent. All data is encrypted and stored 
-                securely in compliance with privacy regulations.
-              </p>
+
+            <div className="space-y-4">
+              <div className="rounded-lg bg-muted p-4">
+                <h3 className="font-semibold mb-2">Account Information</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Email:</span>
+                    <span>{user?.email}</span>
+                  </div>
+                  {getPhoneNumber() && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Phone:</span>
+                      <span>{getPhoneNumber()}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Account Status:</span>
+                    <Badge variant="secondary" className="text-xs">Verified</Badge>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  Phone number cannot be changed after registration for security purposes.
+                </p>
+              </div>
+
+              <div className="rounded-lg bg-muted p-4 text-center">
+                <h3 className="font-semibold mb-2">Privacy Notice</h3>
+                <p className="text-sm text-muted-foreground">
+                  Your data is kept private and secure. We never share your personal information
+                  with third parties without your consent. All data is encrypted and stored
+                  securely in compliance with privacy regulations.
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>

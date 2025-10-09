@@ -8,7 +8,7 @@ interface AuthContextType {
   user: Models.User<Models.Preferences> | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
+  register: (email: string, password: string, name: string, phone?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (name: string) => Promise<void>;
   isAuthenticated: boolean;
@@ -47,10 +47,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async (email: string, password: string, name: string) => {
+  const register = async (email: string, password: string, name: string, phone?: string) => {
     try {
       console.log('Starting registration process...');
-      await AuthService.register({ email, password, name });
+      await AuthService.register({ email, password, name, phone });
       console.log('Registration successful, getting current user...');
       
       // Wait a moment for the session to be fully established

@@ -64,9 +64,15 @@ export async function GET(request: NextRequest) {
 // Update order status
 export async function PUT(request: NextRequest) {
   try {
-    const { orderId, status } = await request.json();
+    console.log('PUT request received for order update');
+    
+    const body = await request.json();
+    console.log('Request body:', body);
+    
+    const { orderId, status } = body;
     
     if (!orderId || !status) {
+      console.log('Missing required fields:', { orderId, status });
       return NextResponse.json(
         {
           success: false,
@@ -77,6 +83,12 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    console.log('Environment check:', {
+      endpoint: process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT ? 'Set' : 'Missing',
+      project: process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID ? 'Set' : 'Missing',
+      apiKey: process.env.APPWRITE_API_KEY ? 'Set' : 'Missing'
+    });
+
     // Initialize Appwrite server SDK
     const client = new Client()
       .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
@@ -85,31 +97,73 @@ export async function PUT(request: NextRequest) {
 
     const databases = new Databases(client);
 
+    console.log(`Attempting to update order ${orderId} with status: ${status}`);
+    console.log('CONFIG:', { DATABASE_ID: CONFIG.DATABASE_ID, ORDERS_COLLECTION: CONFIG.COLLECTIONS.ORDERS });
+    
+    // First, try to get the current order to see its structure
+    try {
+      const currentOrder = await databases.getDocument(
+        CONFIG.DATABASE_ID,
+        CONFIG.COLLECTIONS.ORDERS,
+        orderId
+      );
+      console.log('Current order structure:', Object.keys(currentOrder));
+    } catch (getError) {
+      console.log('Could not fetch current order:', getError);
+    }
+    
     // Update order status
     const updatedOrder = await databases.updateDocument(
       CONFIG.DATABASE_ID,
       CONFIG.COLLECTIONS.ORDERS,
       orderId,
       {
-        status,
-        updatedAt: new Date().toISOString()
+        status: status
       }
     );
+    
+    console.log('Order updated successfully:', updatedOrder.$id);
 
     return NextResponse.json({
       success: true,
-      data: updatedOrder
+      data: updatedOrder,
+      message: `Order ${orderId} status updated to ${status}`
     });
 
-  } catch (error) {
-    console.error('Error updating order:', error);
+  } catch (error: any) {
+    console.error('Detailed error updating order:', error);
+    console.error('Error type:', error.constructor.name);
+    console.error('Error code:', error.code);
+    console.error('Error type from Appwrite:', error.type);
+    
+    // More specific error handling
+    let errorMessage = 'Failed to update order';
+    let statusCode = 500;
+    
+    if (error.code === 404) {
+      errorMessage = 'Order not found';
+      statusCode = 404;
+    } else if (error.code === 401 || error.code === 403) {
+      errorMessage = 'Insufficient permissions to update order';
+      statusCode = 403;
+    } else if (error.code === 400) {
+      errorMessage = 'Invalid request - the status field may not exist in the collection';
+      statusCode = 400;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to update order',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: errorMessage,
+        details: error.message || 'Unknown error',
+        code: error.code,
+        type: error.type,
+        orderId,
+        status
       },
-      { status: 500 }
+      { status: statusCode }
     );
   }
 }

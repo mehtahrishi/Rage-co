@@ -22,6 +22,8 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -45,13 +47,17 @@ export function AdminHeader() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
-          <nav className="grid gap-2 text-lg font-medium">
-            <Link
-              href="#"
-              className="flex items-center gap-2 text-lg font-semibold"
-            >
-              <BrandText />
-            </Link>
+          <SheetHeader>
+            <SheetTitle>
+              <Link
+                href="#"
+                className="flex items-center gap-2 text-lg font-semibold"
+              >
+                <BrandText />
+              </Link>
+            </SheetTitle>
+          </SheetHeader>
+          <nav className="grid gap-2 text-lg font-medium mt-4">
             <Link
               href="/admin/dashboard"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"

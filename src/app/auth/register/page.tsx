@@ -26,6 +26,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    phone: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +53,7 @@ export default function RegisterPage() {
   const isFormValid = 
     formData.name.trim() &&
     formData.email.trim() &&
+    formData.phone.trim() &&
     Object.values(passwordRequirements).every(Boolean) &&
     passwordsMatch;
 
@@ -67,7 +69,7 @@ export default function RegisterPage() {
     try {
       setIsLoading(true);
       console.log('Starting registration from form...');
-      await register(formData.email, formData.password, formData.name);
+      await register(formData.email, formData.password, formData.name, formData.phone);
       
       toast({
         title: "Welcome to RAGE!",
@@ -141,6 +143,20 @@ export default function RegisterPage() {
                     type="email"
                     placeholder="your@email.com"
                     value={formData.email}
+                    onChange={handleChange}
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="+91 98765 43210"
+                    value={formData.phone}
                     onChange={handleChange}
                     required
                     disabled={isLoading}

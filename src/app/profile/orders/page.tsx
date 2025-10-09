@@ -52,20 +52,26 @@ export default function OrdersPage() {
     setShowLoader(false);
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
+  const getStatusBadge = (status: string | null | undefined) => {
+    const normalizedStatus = (status || 'pending').toLowerCase();
+    
+    switch (normalizedStatus) {
       case 'pending':
-        return <Badge variant="secondary">Pending</Badge>;
+        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">Pending</Badge>;
+      case 'confirmed':
+        return <Badge variant="default" className="bg-blue-100 text-blue-800 hover:bg-blue-200">Confirmed</Badge>;
       case 'processing':
-        return <Badge variant="default">Processing</Badge>;
+        return <Badge variant="default" className="bg-purple-100 text-purple-800 hover:bg-purple-200">Processing</Badge>;
       case 'shipped':
-        return <Badge variant="default" className="bg-blue-500">Shipped</Badge>;
+        return <Badge variant="default" className="bg-indigo-100 text-indigo-800 hover:bg-indigo-200">Shipped</Badge>;
       case 'delivered':
-        return <Badge variant="default" className="bg-green-500">Delivered</Badge>;
+        return <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-200">Delivered</Badge>;
       case 'cancelled':
-        return <Badge variant="destructive">Cancelled</Badge>;
+        return <Badge variant="destructive" className="bg-red-100 text-red-800 hover:bg-red-200">Cancelled</Badge>;
+      case 'refunded':
+        return <Badge variant="outline" className="bg-gray-100 text-gray-800 hover:bg-gray-200">Refunded</Badge>;
       default:
-        return <Badge variant="outline">Unknown</Badge>;
+        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">Pending</Badge>;
     }
   };
 
@@ -126,7 +132,7 @@ export default function OrdersPage() {
                         </div>
                       </TableCell>
                       <TableCell>₹{order.total?.toLocaleString() || 0}</TableCell>
-                      <TableCell>{getStatusBadge(order.status || 'pending')}</TableCell>
+                      <TableCell>{getStatusBadge(order.status)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -10,12 +10,13 @@ export interface RegisterCredentials {
   email: string;
   password: string;
   name: string;
+  phone?: string;
 }
 
 export class AuthService {
   
   // Register new user
-  static async register({ email, password, name }: RegisterCredentials) {
+  static async register({ email, password, name, phone }: RegisterCredentials) {
     try {
       console.log('Creating user account...');
       const user = await account.create(
@@ -29,6 +30,13 @@ export class AuthService {
       // Create session after registration
       const session = await account.createEmailPasswordSession(email, password);
       console.log('Session created:', session);
+      
+      // Store phone number in user preferences if provided
+      if (phone) {
+        console.log('Storing phone number in preferences...');
+        await account.updatePrefs({ phone });
+        console.log('Phone number stored successfully');
+      }
       
       return user;
     } catch (error) {
