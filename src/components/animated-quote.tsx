@@ -92,7 +92,10 @@ export function AnimatedQuote() {
           dy=".35em"
           textAnchor="middle"
           className="fill-current text-foreground"
-          style={{ fontFamily: "'UnifrakturMaguntia', cursive", fontSize: '48px' }}
+          style={{ 
+            fontFamily: "'UnifrakturMaguntia', cursive", 
+            fontSize: 'clamp(32px, 5vw, 48px)' 
+          }}
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}

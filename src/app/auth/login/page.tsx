@@ -38,6 +38,13 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     
+    // Validate password length before attempting login
+    if (formData.password.length < 8 || formData.password.length > 256) {
+      setError('Password must be between 8 and 256 characters long.');
+      setIsLoading(false);
+      return;
+    }
+    
     try {
       setIsLoading(true);
       await login(formData.email, formData.password);

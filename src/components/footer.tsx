@@ -46,12 +46,34 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <h4 className="font-semibold uppercase tracking-wider text-foreground/80">Stay in the Loop</h4>
-          <p className="mt-4 text-sm text-muted-foreground">Subscribe for the latest drops and exclusive deals.</p>
-          <form className="mt-4 flex gap-2">
-            <Input type="email" placeholder="Enter your email" className="max-w-xs" />
-            <Button type="submit">Subscribe</Button>
-          </form>
+          <h4 className="font-semibold uppercase tracking-wider text-foreground/80">Inspiration</h4>
+          <div className="mt-4">
+            <svg
+              viewBox="0 0 800 80"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-auto max-w-lg"
+            >
+              <defs>
+                <style>
+                  {`
+                    @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+                  `}
+                </style>
+              </defs>
+              
+              <text
+                x="50%"
+                y="50%"
+                dy=".35em"
+                textAnchor="middle"
+                className="fill-current text-foreground/90"
+                style={{ fontFamily: "'UnifrakturMaguntia', cursive", fontSize: '51px' }}
+              >
+                "Do not go gentle into that good night"
+              </text>
+            </svg>
+            <p className="mt-3 text-sm text-muted-foreground text-center">- Dylan Thomas</p>
+          </div>
         </div>
       </div>
       <div className="border-t">
