@@ -42,18 +42,19 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
-import { ProductService } from '@/services/database';
+import { AdminProductService } from '@/services/database';
 import type { Product } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/image-upload';
 
+// Base schema for creating new products
 const productFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   slug: z.string().min(1, 'Slug is required'),
   price: z.number().min(0, 'Price must be positive'),
   originalPrice: z.number().optional(),
   category: z.enum(['Tops', 'Bottoms', 'Accessories']),
-  subCategory: z.enum(['Tshirts', 'Vests', 'Baby-tees', 'Pants', 'Shorts', 'Bandanas']),
+  subCategory: z.enum(['Tshirts', 'Long-sleeves', 'Vests', 'Baby-tees', 'Pants', 'Shorts', 'Bandanas']),
   description: z.string().min(1, 'Description is required'),
   details: z.string(),
   sizes: z.string().refine((val) => {
@@ -71,7 +72,38 @@ const productFormSchema = z.object({
   reviewCount: z.number().min(0).default(0),
 });
 
+// Partial schema for editing existing products - makes fields optional except critical ones
+const editProductFormSchema = z.object({
+  name: z.string().min(1, 'Name is required').optional(),
+  slug: z.string().min(1, 'Slug is required').optional(),
+  price: z.number().min(0, 'Price must be positive').optional(),
+  originalPrice: z.number().optional(),
+  category: z.enum(['Tops', 'Bottoms', 'Accessories']).optional(),
+  subCategory: z.enum(['Tshirts', 'Long-sleeves', 'Vests', 'Baby-tees', 'Pants', 'Shorts', 'Bandanas']).optional(),
+  description: z.string().min(1, 'Description is required').optional(),
+  details: z.string().optional(),
+  sizes: z.string().refine((val) => {
+    if (!val) return true; // Allow empty for optional field
+    const sizes = val.split(',').map(s => s.trim()).filter(Boolean);
+    return sizes.every(size => size.length <= 10);
+  }, 'Each size must be 10 characters or less').optional(),
+  colors: z.string().refine((val) => {
+    if (!val) return true; // Allow empty for optional field
+    const colors = val.split(',').map(c => c.trim()).filter(Boolean);
+    return colors.every(color => color.length <= 10);
+  }, 'Each color must be 10 characters or less').optional(),
+  imageIds: z.array(z.string()).optional(),
+  isFeatured: z.boolean().optional(),
+  isTrending: z.boolean().optional(),
+  rating: z.number().min(0).max(5).optional(),
+  reviewCount: z.number().min(0).optional(),
+}).refine((data) => {
+  // At least one field must be provided for editing
+  return Object.values(data).some(value => value !== undefined && value !== null && value !== '');
+}, 'At least one field must be updated');
+
 type ProductFormData = z.infer<typeof productFormSchema>;
+type EditProductFormData = z.infer<typeof editProductFormSchema>;
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -80,14 +112,47 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { toast } = useToast();
 
-  const form = useForm<ProductFormData>({
+  const form = useForm<any>({
     resolver: zodResolver(productFormSchema),
   });
+
+  // Update resolver when switching between edit and create modes
+  useEffect(() => {
+    const currentResolver = editingProduct ? editProductFormSchema : productFormSchema;
+    form.clearErrors();
+  }, [editingProduct, form]);
+
+  // Watch category changes to filter subcategories
+  const selectedCategory = form.watch('category');
+
+  // Helper function to get subcategories based on selected category
+  const getSubcategoriesForCategory = (category: string) => {
+    switch (category) {
+      case 'Tops':
+        return [
+          { value: 'Tshirts', label: 'T-Shirts' },
+          { value: 'Long-sleeves', label: 'Long Sleeves' },
+          { value: 'Baby-tees', label: 'Baby Tees' },
+          { value: 'Vests', label: 'Vests' },
+        ];
+      case 'Bottoms':
+        return [
+          { value: 'Pants', label: 'Pants' },
+          { value: 'Shorts', label: 'Shorts' },
+        ];
+      case 'Accessories':
+        return [
+          { value: 'Bandanas', label: 'Bandanas' },
+        ];
+      default:
+        return [];
+    }
+  };
 
   const fetchProducts = async () => {
     try {
       setIsLoading(true);
-      const fetchedProducts = await ProductService.getProducts();
+      const fetchedProducts = await AdminProductService.getProducts();
       setProducts(fetchedProducts);
     } catch (error) {
       console.error('Failed to fetch products', error);
@@ -107,19 +172,30 @@ export default function ProductsPage() {
 
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
+    // Reset form with current product values for editing
     form.reset({
-      ...product,
+      name: product.name,
+      slug: product.slug,
+      price: product.price,
+      originalPrice: product.originalPrice,
+      category: product.category,
+      subCategory: product.subCategory,
+      description: product.description,
       details: product.details.join(', '),
       sizes: product.sizes.join(', '),
       colors: product.colors.join(', '),
       imageIds: product.imageIds,
+      isFeatured: product.isFeatured,
+      isTrending: product.isTrending,
+      rating: product.rating,
+      reviewCount: product.reviewCount,
     });
     setIsDialogOpen(true);
   };
 
   const handleDelete = async (productId: string) => {
     try {
-      await ProductService.deleteProduct(productId);
+      await AdminProductService.deleteProduct(productId);
       toast({
         title: 'Success',
         description: 'Product deleted successfully.',
@@ -136,24 +212,44 @@ export default function ProductsPage() {
   };
 
 
-  const onSubmit = async (data: ProductFormData) => {
+  const onSubmit = async (data: ProductFormData | EditProductFormData) => {
     try {
-      // Convert comma-separated strings to arrays (imageIds is already an array)
-      const productData = {
-        ...data,
-        details: data.details.split(',').map(item => item.trim()).filter(Boolean),
-        sizes: data.sizes.split(',').map(item => item.trim()).filter(Boolean),
-        colors: data.colors.split(',').map(item => item.trim()).filter(Boolean),
-        imageIds: data.imageIds, // Already an array from ImageUpload component
-      };
-
+      let productData: any = {};
+      
       if (editingProduct) {
-        await ProductService.updateProduct(editingProduct.$id, productData);
+        // For editing, only include fields that have values (partial update)
+        Object.keys(data).forEach(key => {
+          const value = (data as any)[key];
+          if (value !== undefined && value !== null && value !== '') {
+            if (key === 'details' && typeof value === 'string') {
+              productData[key] = value.split(',').map(item => item.trim()).filter(Boolean);
+            } else if (key === 'sizes' && typeof value === 'string') {
+              productData[key] = value.split(',').map(item => item.trim()).filter(Boolean);
+            } else if (key === 'colors' && typeof value === 'string') {
+              productData[key] = value.split(',').map(item => item.trim()).filter(Boolean);
+            } else {
+              productData[key] = value;
+            }
+          }
+        });
+        
+        await AdminProductService.updateProduct(editingProduct.$id, productData);
         toast({ title: 'Success', description: 'Product updated successfully.' });
       } else {
-        await ProductService.createProduct(productData);
+        // For creating, convert comma-separated strings to arrays
+        const fullData = data as ProductFormData;
+        productData = {
+          ...fullData,
+          details: fullData.details.split(',').map(item => item.trim()).filter(Boolean),
+          sizes: fullData.sizes.split(',').map(item => item.trim()).filter(Boolean),
+          colors: fullData.colors.split(',').map(item => item.trim()).filter(Boolean),
+          imageIds: fullData.imageIds,
+        };
+        
+        await AdminProductService.createProduct(productData);
         toast({ title: 'Success', description: 'Product created successfully.' });
       }
+      
       setIsDialogOpen(false);
       setEditingProduct(null);
       fetchProducts();
@@ -169,6 +265,7 @@ export default function ProductsPage() {
 
   const openNewProductDialog = () => {
     setEditingProduct(null);
+    // Reset the form with empty values for new product
     form.reset({
       name: '',
       slug: '',
@@ -351,33 +448,59 @@ export default function ProductsPage() {
         if (!open) {
           setEditingProduct(null);
           form.reset();
+          form.clearErrors();
         }
       }}>
         <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingProduct ? 'Edit Product' : 'Add Product'}</DialogTitle>
             <DialogDescription>
-              {editingProduct ? 'Update the details of your product.' : 'Add a new product to your store.'}
+              {editingProduct 
+                ? 'Update any field you want to change. You can edit individual fields independently - only modified fields will be updated.' 
+                : 'Add a new product to your store. All fields marked with * are required.'}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">Name</Label>
-              <Input id="name" {...form.register('name')} className="col-span-3" />
-              {form.formState.errors.name && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.name.message}</p>}
+              <Label htmlFor="name" className="text-right">
+                Name{!editingProduct && ' *'}
+              </Label>
+              <Input 
+                id="name" 
+                {...form.register('name')} 
+                className="col-span-3" 
+                placeholder={editingProduct ? `Current: ${editingProduct.name}` : 'Enter product name'}
+              />
+              {form.formState.errors.name && <p className="col-start-2 col-span-3 text-red-500 text-sm">{String(form.formState.errors.name.message)}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="slug" className="text-right">Slug</Label>
-              <Input id="slug" {...form.register('slug')} className="col-span-3" />
-              {form.formState.errors.slug && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.slug.message}</p>}
+              <Label htmlFor="slug" className="text-right">
+                Slug{!editingProduct && ' *'}
+              </Label>
+              <Input 
+                id="slug" 
+                {...form.register('slug')} 
+                className="col-span-3" 
+                placeholder={editingProduct ? `Current: ${editingProduct.slug}` : 'Enter product slug'}
+              />
+              {form.formState.errors.slug && <p className="col-start-2 col-span-3 text-red-500 text-sm">{String(form.formState.errors.slug.message)}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="description" className="text-right">Description</Label>
-              <Textarea id="description" {...form.register('description')} className="col-span-3" />
-              {form.formState.errors.description && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.description.message}</p>}
+              <Label htmlFor="description" className="text-right">
+                Description{!editingProduct && ' *'}
+              </Label>
+              <Textarea 
+                id="description" 
+                {...form.register('description')} 
+                className="col-span-3" 
+                placeholder={editingProduct ? `Current: ${editingProduct.description}` : 'Enter product description'}
+              />
+              {form.formState.errors.description && <p className="col-start-2 col-span-3 text-red-500 text-sm">{String(form.formState.errors.description.message)}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="price" className="text-right">Price</Label>
+              <Label htmlFor="price" className="text-right">
+                Price{!editingProduct && ' *'}
+              </Label>
               <Input
                 id="price"
                 type="number"
@@ -385,8 +508,9 @@ export default function ProductsPage() {
                   valueAsNumber: true
                 })}
                 className="col-span-3"
+                placeholder={editingProduct ? `Current: ₹${editingProduct.price}` : 'Enter price'}
               />
-              {form.formState.errors.price && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.price.message}</p>}
+              {form.formState.errors.price && <p className="col-start-2 col-span-3 text-red-500 text-sm">{String(form.formState.errors.price.message)}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="originalPrice" className="text-right">Original Price</Label>
@@ -397,17 +521,27 @@ export default function ProductsPage() {
                   valueAsNumber: true
                 })}
                 className="col-span-3"
+                placeholder={editingProduct ? `Current: ${editingProduct.originalPrice ? '₹' + editingProduct.originalPrice : 'Not set'}` : 'Enter original price (optional)'}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="category" className="text-right">Category</Label>
+              <Label htmlFor="category" className="text-right">
+                Category{!editingProduct && ' *'}
+              </Label>
               <Controller
                 control={form.control}
                 name="category"
                 render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select 
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      // Reset subcategory when category changes
+                      form.setValue('subCategory', '');
+                    }} 
+                    value={field.value}
+                  >
                     <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder={editingProduct ? `Current: ${editingProduct.category}` : "Select a category"} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Tops">Tops</SelectItem>
@@ -419,57 +553,99 @@ export default function ProductsPage() {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="subCategory" className="text-right">Sub-Category</Label>
+              <Label htmlFor="subCategory" className="text-right">
+                Sub-Category{!editingProduct && ' *'}
+              </Label>
               <Controller
                 control={form.control}
                 name="subCategory"
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select a sub-category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Tshirts">T-Shirts</SelectItem>
-                      <SelectItem value="Vests">Vests</SelectItem>
-                      <SelectItem value="Baby-tees">Baby Tees</SelectItem>
-                      <SelectItem value="Pants">Pants</SelectItem>
-                      <SelectItem value="Shorts">Shorts</SelectItem>
-                      <SelectItem value="Bandanas">Bandanas</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
+                render={({ field }) => {
+                  const availableSubcategories = getSubcategoriesForCategory(selectedCategory || '');
+                  return (
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      disabled={!selectedCategory}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue 
+                          placeholder={
+                            !selectedCategory 
+                              ? "Select a category first" 
+                              : editingProduct 
+                                ? `Current: ${editingProduct.subCategory}` 
+                                : "Select a sub-category"
+                          } 
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableSubcategories.map((subcategory) => (
+                          <SelectItem key={subcategory.value} value={subcategory.value}>
+                            {subcategory.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  );
+                }}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="details" className="text-right">Details</Label>
-              <Input id="details" {...form.register('details')} className="col-span-3" placeholder="Comma-separated" />
+              <Input 
+                id="details" 
+                {...form.register('details')} 
+                className="col-span-3" 
+                placeholder={editingProduct ? `Current: ${editingProduct.details.join(', ')}` : "Comma-separated details"}
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="sizes" className="text-right">Sizes</Label>
-              <Input id="sizes" {...form.register('sizes')} className="col-span-3" placeholder="S, M, L, XL (max 10 chars each)" />
-              {form.formState.errors.sizes && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.sizes.message}</p>}
+              <Label htmlFor="sizes" className="text-right">
+                Sizes{!editingProduct && ' *'}
+              </Label>
+              <Input 
+                id="sizes" 
+                {...form.register('sizes')} 
+                className="col-span-3" 
+                placeholder={editingProduct ? `Current: ${editingProduct.sizes.join(', ')}` : "S, M, L, XL (max 10 chars each)"}
+              />
+              {form.formState.errors.sizes && <p className="col-start-2 col-span-3 text-red-500 text-sm">{String(form.formState.errors.sizes.message)}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="colors" className="text-right">Colors</Label>
-              <Input id="colors" {...form.register('colors')} className="col-span-3" placeholder="Red, Blue, Black (max 10 chars each)" />
-              {form.formState.errors.colors && <p className="col-start-2 col-span-3 text-red-500 text-sm">{form.formState.errors.colors.message}</p>}
+              <Label htmlFor="colors" className="text-right">
+                Colors{!editingProduct && ' *'}
+              </Label>
+              <Input 
+                id="colors" 
+                {...form.register('colors')} 
+                className="col-span-3" 
+                placeholder={editingProduct ? `Current: ${editingProduct.colors.join(', ')}` : "Red, Blue, Black (max 10 chars each)"}
+              />
+              {form.formState.errors.colors && <p className="col-start-2 col-span-3 text-red-500 text-sm">{String(form.formState.errors.colors.message)}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Product Images</Label>
+              <Label className="text-right">
+                Product Images{!editingProduct && ' *'}
+              </Label>
               <div className="col-span-3">
                 <Controller
                   control={form.control}
                   name="imageIds"
                   render={({ field }) => (
                     <ImageUpload
-                      value={field.value}
+                      value={field.value || []}
                       onChange={field.onChange}
                       maxImages={5}
                     />
                   )}
                 />
+                {editingProduct && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Current: {editingProduct.imageIds.length} image(s). Upload new images to replace them.
+                  </p>
+                )}
                 {form.formState.errors.imageIds && (
-                  <p className="text-red-500 text-sm mt-1">{form.formState.errors.imageIds.message}</p>
+                  <p className="text-red-500 text-sm mt-1">{String(form.formState.errors.imageIds?.message)}</p>
                 )}
               </div>
             </div>
@@ -493,9 +669,39 @@ export default function ProductsPage() {
                 )}
               />
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="rating" className="text-right">Rating</Label>
+              <Input
+                id="rating"
+                type="number"
+                min="0"
+                max="5"
+                step="0.1"
+                {...form.register('rating', {
+                  valueAsNumber: true
+                })}
+                className="col-span-3"
+                placeholder={editingProduct ? `Current: ${editingProduct.rating}⭐` : 'Enter rating (0-5)'}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="reviewCount" className="text-right">Review Count</Label>
+              <Input
+                id="reviewCount"
+                type="number"
+                min="0"
+                {...form.register('reviewCount', {
+                  valueAsNumber: true
+                })}
+                className="col-span-3"
+                placeholder={editingProduct ? `Current: ${editingProduct.reviewCount} reviews` : 'Enter review count'}
+              />
+            </div>
 
             <DialogFooter>
-              <Button type="submit">Save changes</Button>
+              <Button type="submit">
+                {editingProduct ? 'Update Product' : 'Create Product'}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

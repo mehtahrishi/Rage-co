@@ -17,7 +17,95 @@ const transformReview = (doc: any): Review => ({
   id: doc.$id,
 });
 
-// Product Database Operations
+// Admin Product Operations (uses API routes with server-side authentication)
+export class AdminProductService {
+  // Admin: Create product via API
+  static async createProduct(productData: any) {
+    try {
+      const response = await fetch('/api/admin/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+      });
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to create product');
+      }
+      
+      return data.data;
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw error;
+    }
+  }
+
+  // Admin: Update product via API
+  static async updateProduct(productId: string, productData: any) {
+    try {
+      const response = await fetch(`/api/admin/products/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+      });
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to update product');
+      }
+      
+      return data.data;
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    }
+  }
+
+  // Admin: Delete product via API
+  static async deleteProduct(productId: string) {
+    try {
+      const response = await fetch(`/api/admin/products/${productId}`, {
+        method: 'DELETE',
+      });
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to delete product');
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      throw error;
+    }
+  }
+
+  // Admin: Get all products via API
+  static async getProducts() {
+    try {
+      const response = await fetch('/api/admin/products');
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to fetch products');
+      }
+      
+      return data.data;
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      throw error;
+    }
+  }
+}
+
+// Product Database Operations (for public access)
 export class ProductService {
   
   // Get all products with optional filtering
