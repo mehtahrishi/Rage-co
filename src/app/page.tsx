@@ -153,7 +153,7 @@ const guarantees = [
     {
       Icon: Bot,
       title: 'Robust Customer Support',
-      description: 'Reach us anytime: support@genrage.com or WhatsApp +91 9892090398',
+      description: 'Reach us anytime: clothrage@gmail.com or WhatsApp +91 9892090398',
     },
     {
       Icon: Smile,

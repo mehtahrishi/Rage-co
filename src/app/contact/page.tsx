@@ -5,8 +5,72 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Mail, Phone } from 'lucide-react';
 import { AnimatedPage } from '@/components/animated-page';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Message Sent!",
+          description: data.message,
+        });
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: data.error || "Failed to send message. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <AnimatedPage>
       <div className="container mx-auto px-4 py-12">
@@ -23,27 +87,53 @@ export default function ContactPage() {
           <div className="space-y-8">
             <div>
               <h2 className="text-2xl font-bold font-headline mb-4">Send us a Message</h2>
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Your Name" />
+                    <Input 
+                      id="name" 
+                      placeholder="Your Name" 
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="your@email.com" />
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="your@email.com" 
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject</Label>
-                  <Input id="subject" placeholder="What is this about?" />
+                  <Input 
+                    id="subject" 
+                    placeholder="What is this about?" 
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="message">Message</Label>
-                  <Textarea id="message" placeholder="Your message..." rows={5} />
+                  <Textarea 
+                    id="message" 
+                    placeholder="Your message..." 
+                    rows={5} 
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
-                <Button type="submit" size="lg">
-                  Send Message
+                <Button type="submit" size="lg" disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </div>
@@ -58,7 +148,7 @@ export default function ContactPage() {
                     <Mail className="h-6 w-6 mt-1 text-primary"/>
                     <div>
                         <h3 className="font-semibold text-foreground">Email</h3>
-                        <a href="mailto:support@rage.com" className="hover:text-primary transition-colors">support@rage.com</a>
+                        <a href="mailto:clothrage@gmail.com" className="hover:text-primary transition-colors">clothrage@gmail.com</a>
                         <p className="text-sm">We'll get back to you within 24 hours.</p>
                     </div>
                 </div>

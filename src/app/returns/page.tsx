@@ -42,13 +42,9 @@ export default function ReturnsPage() {
 
             <h2 className="text-foreground font-headline text-2xl mt-8">How to Start a Return</h2>
             <p>
-              To start a return, you can contact us at <a href="mailto:returns@rage.com" className="text-primary hover:underline">returns@rage.com</a>. If your return is accepted, we’ll send you a return shipping label, as well as instructions on how and where to send your package. Items sent back to us without first requesting a return will not be accepted.
+              To start a return, you can contact us at <a href="mailto:clothrage@gmail.com" className="text-primary hover:underline">clothrage@gmail.com</a>. If your return is accepted, we’ll send you a return shipping label, as well as instructions on how and where to send your package. Items sent back to us without first requesting a return will not be accepted.
             </p>
-            <div className="text-center mt-8">
-                <Button size="lg">
-                Start a Return <ArrowRight className="ml-2" />
-                </Button>
-            </div>
+            
             <h2 className="text-foreground font-headline text-2xl mt-8">Exchanges</h2>
             <p>
               The fastest way to ensure you get what you want is to return the item you have, and once the return is accepted, make a separate purchase for the new item.

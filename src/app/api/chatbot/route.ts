@@ -104,13 +104,13 @@ Be short, helpful, and friendly!`;
 
         if (ticketResponse.ok) {
           const ticketData = await ticketResponse.json();
-          text = `I've created a support ticket (#${ticketData.ticketId}) for you and sent it to our team. They'll get back to you soon! \n\nIn the meantime, you can also reach us at support@genrage.com if you have any urgent issues.`;
+          text = `I've created a support ticket (#${ticketData.ticketId}) for you and sent it to our team. They'll get back to you soon! \n\nIn the meantime, you can also reach us at clothrage@gmail.com if you have any urgent issues.`;
         } else if (ticketResponse.status === 401) {
           text = `To create a support ticket for your issue, please log in to your account first. I can still help with general questions about RAGE products and policies!`;
         }
       } catch (error) {
         console.error('Failed to create ticket:', error);
-        text = `I understand you need help with this issue. For personalized support, please log in to your account or contact us directly at support@genrage.com`;
+        text = `I understand you need help with this issue. For personalized support, please log in to your account or contact us directly at clothrage@gmail.com`;
       }
     }
     

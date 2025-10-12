@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, Send, Bot, User, Loader2, X, Minus, Headphones } from 'lucide-react';
+import { MessageSquare, Send, Bot, User, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -129,7 +129,7 @@ export function ChatWidget() {
             onClick={() => setIsOpen(true)}
             aria-label="Open support chat"
           >
-            <Headphones className="h-7 w-7" />
+            <Bot className="h-7 w-7" />
           </Button>
         )}
         {isOpen && (

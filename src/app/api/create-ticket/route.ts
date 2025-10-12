@@ -124,8 +124,8 @@ export async function POST(request: NextRequest) {
 
     // Admin notification email
     const adminMailOptions = {
-      from: process.env.EMAIL_USER || 'support@rage.com',
-      to: 'mehtahrishi45@gmail.com',
+      from: process.env.EMAIL_USER || 'clothrage@gmail.com',
+      to: 'clothrage@gmail.com',
       subject: `🎫 New RAGE Support Ticket: ${ticketId}`,
       html: emailHTML,
       text: `New RAGE Support Ticket: ${ticketId}\n\nCustomer: ${userName} (${userEmail})\nMessage: ${message}\n\nTimestamp: ${new Date(timestamp).toLocaleString()}`

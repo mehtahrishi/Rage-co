@@ -60,7 +60,7 @@ const prompt = ai.definePrompt({
   **Instructions:**
   - Be conversational and friendly
   - If asked about specific products, mention our categories
-  - For complex issues, direct them to support@genrage.com or WhatsApp
+  - For complex issues, direct them to clothrage@gmail.com or WhatsApp
   - Always end with asking if there's anything else you can help with
   
   Customer Question: {{{query}}}`,

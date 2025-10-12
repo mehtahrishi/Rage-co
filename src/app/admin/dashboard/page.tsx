@@ -15,6 +15,7 @@ export default function Dashboard() {
     const [totalRevenue, setTotalRevenue] = useState(0);
     const [totalOrders, setTotalOrders] = useState(0);
     const [totalUsers, setTotalUsers] = useState(0);
+    const [totalProducts, setTotalProducts] = useState(0); // New state for total products
     const [recentProducts, setRecentProducts] = useState<any[]>([]);
     const [chartData, setChartData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -34,8 +35,16 @@ export default function Dashboard() {
                 setTotalOrders(stats.totalSales);
                 setTotalUsers(stats.totalUsers);
                 
-                // Fetch recent products
-                const products = await ProductService.getProducts({ limit: 4 });
+                // Fetch total product count
+                const productCount = await ProductService.countProducts();
+                setTotalProducts(productCount);
+                
+                // Fetch recent products sorted by creation date (newest first)
+                const products = await ProductService.getProducts({ 
+                  limit: 7, 
+                  sortBy: '$createdAt', 
+                  sortOrder: 'desc' 
+                });
                 setRecentProducts(products);
                 
                 // Generate simple chart data using the stats we just fetched
@@ -49,6 +58,7 @@ export default function Dashboard() {
                 setTotalRevenue(45231890);
                 setTotalOrders(12234);
                 setTotalUsers(2350);
+                setTotalProducts(4); // Fallback to 4 products
                 setRecentProducts(getMockProducts());
                 setChartData(getMockChartData());
             } finally {
@@ -218,7 +228,7 @@ export default function Dashboard() {
                             <Package2 className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{recentProducts.length}</div>
+                            <div className="text-2xl font-bold">{totalProducts}</div>
                             <p className="text-xs text-muted-foreground">
                                 Products available
                             </p>

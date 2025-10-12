@@ -108,7 +108,7 @@ export class AdminProductService {
 // Product Database Operations (for public access)
 export class ProductService {
   
-  // Get all products with optional filtering
+  // Get all products with optional filtering and sorting
   static async getProducts(filters?: {
     category?: string;
     subCategory?: string;
@@ -116,6 +116,8 @@ export class ProductService {
     sizes?: string[];
     colors?: string[];
     limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }) {
     try {
       const queries = [];
@@ -130,6 +132,15 @@ export class ProductService {
       
       if (filters?.maxPrice) {
         queries.push(Query.lessThanEqual('price', filters.maxPrice));
+      }
+      
+      // Add sorting if specified
+      if (filters?.sortBy) {
+        if (filters.sortOrder === 'desc') {
+          queries.push(Query.orderDesc(filters.sortBy));
+        } else {
+          queries.push(Query.orderAsc(filters.sortBy));
+        }
       }
       
       if (filters?.limit) {
