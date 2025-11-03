@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Plus, Minus, Trash2, ShoppingCart } from 'lucide-react';
@@ -12,16 +13,47 @@ import { cn } from '@/lib/utils';
 
 export default function CartPage() {
   const { items, updateItemQuantity, removeItem, totalPrice } = useCart();
+  const [loadingItems, setLoadingItems] = useState<Set<string>>(new Set());
 
   // Get image URL for product
   const getProductImageUrl = (imageId: string) => {
     // Try to get image from Appwrite first
     const appwriteUrl = ImageService.getImageUrl(imageId);
     if (appwriteUrl) return appwriteUrl;
-    
+
     // Fallback to placeholder images
     const placeholderImage = PlaceHolderImages.find(img => img.id === imageId);
     return placeholderImage?.imageUrl || '/placeholder.jpg';
+  };
+
+  const handleQuantityUpdate = async (itemId: string, newQuantity: number) => {
+    if (loadingItems.has(itemId)) return;
+
+    setLoadingItems(prev => new Set(prev).add(itemId));
+    try {
+      await updateItemQuantity(itemId, newQuantity);
+    } finally {
+      setLoadingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleRemoveItem = async (itemId: string) => {
+    if (loadingItems.has(itemId)) return;
+
+    setLoadingItems(prev => new Set(prev).add(itemId));
+    try {
+      await removeItem(itemId);
+    } finally {
+      setLoadingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+        return newSet;
+      });
+    }
   };
 
   return (
@@ -31,7 +63,7 @@ export default function CartPage() {
           Your Cart
         </h1>
       </header>
-      
+
       {items.length === 0 ? (
         <div className="text-center py-16">
           <ShoppingCart className="mx-auto h-24 w-24 text-muted-foreground/50" />
@@ -50,10 +82,10 @@ export default function CartPage() {
                 return (
                   <div key={item.id} className="flex gap-4 items-center border-b pb-6">
                     <div className="relative h-24 w-24 overflow-hidden rounded-md border">
-                      <Image 
-                        src={imageUrl} 
-                        alt={item.product.name} 
-                        fill 
+                      <Image
+                        src={imageUrl}
+                        alt={item.product.name}
+                        fill
                         className="object-cover"
                         sizes="96px"
                       />
@@ -64,20 +96,37 @@ export default function CartPage() {
                         <p className="text-sm text-muted-foreground">
                           {item.size} / {item.color}
                         </p>
-                         <p className="text-sm font-semibold mt-2 sm:hidden">₹{(item.product.price * item.quantity).toFixed(2)}</p>
+                        <p className="text-sm font-semibold mt-2 sm:hidden">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center border rounded-md">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateItemQuantity(item.id, item.quantity - 1)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleQuantityUpdate(item.id, item.quantity - 1)}
+                            disabled={loadingItems.has(item.id)}
+                          >
                             <Minus className="h-4 w-4" />
                           </Button>
                           <span className="w-8 text-center text-sm">{item.quantity}</span>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleQuantityUpdate(item.id, item.quantity + 1)}
+                            disabled={loadingItems.has(item.id)}
+                          >
                             <Plus className="h-4 w-4" />
                           </Button>
                         </div>
                         <p className="font-semibold w-20 text-right hidden sm:block">₹{(item.product.price * item.quantity).toFixed(2)}</p>
-                        <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleRemoveItem(item.id)}
+                          disabled={loadingItems.has(item.id)}
+                        >
                           <Trash2 className="h-4 w-4 text-muted-foreground" />
                         </Button>
                       </div>
@@ -100,7 +149,7 @@ export default function CartPage() {
                   <span>Shipping</span>
                   <span>Free</span>
                 </div>
-                 <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Taxes</span>
                   <span>Calculated at checkout</span>
                 </div>

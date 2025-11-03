@@ -37,6 +37,7 @@ export default function ProductPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showLoader, setShowLoader] = useState(true);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -76,11 +77,21 @@ export default function ProductPage() {
     return <div>Product not found</div>;
   }
   
-  const handleAddToCart = () => {
-    if (selectedSize && selectedColor) {
-      addItem(product, selectedSize, selectedColor);
-    } else {
+  const handleAddToCart = async () => {
+    if (!selectedSize || !selectedColor) {
       alert('Please select a size and color.');
+      return;
+    }
+
+    if (isAddingToCart) return; // Prevent multiple clicks
+
+    setIsAddingToCart(true);
+    try {
+      await addItem(product, selectedSize, selectedColor);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
@@ -230,9 +241,9 @@ export default function ProductPage() {
               size="default"
               className="flex-1"
               onClick={handleAddToCart}
-              disabled={!selectedColor || !selectedSize}
+              disabled={!selectedColor || !selectedSize || isAddingToCart}
             >
-              Add to Cart
+              {isAddingToCart ? 'Adding...' : 'Add to Cart'}
             </Button>
             <Button
               size="default"

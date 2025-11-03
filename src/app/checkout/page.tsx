@@ -53,7 +53,8 @@ export default function CheckoutPage() {
   const [showLoader, setShowLoader] = useState(false);
   const [showAuthLoader, setShowAuthLoader] = useState(true);
   const [paymentTimer, setPaymentTimer] = useState(60); // 1 minute timer
-  const upiId = process.env.NEXT_PUBLIC_UPI_ID || 'mehtahrishi45@okaxis'; // Fallback to your provided UPI ID
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const upiId = process.env.NEXT_PUBLIC_UPI_ID || 'generationragers@ybl'; // Fallback to your provided UPI ID
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(formSchema),
@@ -154,6 +155,11 @@ export default function CheckoutPage() {
 
   // Handle payment confirmation
   const handlePaymentSuccess = async () => {
+    // Prevent multiple clicks
+    if (isProcessingPayment) return;
+
+    setIsProcessingPayment(true);
+    
     try {
       if (!user) {
         toast({
@@ -161,6 +167,7 @@ export default function CheckoutPage() {
           description: "You must be logged in to place an order.",
           variant: "destructive"
         });
+        setIsProcessingPayment(false);
         return;
       }
 
@@ -200,6 +207,7 @@ export default function CheckoutPage() {
         setIsPaymentSuccess(false);
         setIsPaymentModalOpen(false);
         setPaymentTimer(60); // Reset timer
+        setIsProcessingPayment(false); // Reset processing state
         
         // Clear the cart after successful order creation
         await clearCart();
@@ -221,6 +229,7 @@ export default function CheckoutPage() {
         description: "There was an error processing your order. Please try again.",
         variant: "destructive"
       });
+      setIsProcessingPayment(false);
     }
   };
 
@@ -548,14 +557,16 @@ export default function CheckoutPage() {
                 variant="outline" 
                 className="flex-1"
                 onClick={handlePaymentCancel}
+                disabled={isProcessingPayment}
               >
                 Cancel
               </Button>
               <Button 
                 className="flex-1"
                 onClick={handlePaymentSuccess}
+                disabled={isProcessingPayment}
               >
-                Payment Done
+                {isProcessingPayment ? 'Processing...' : 'Payment Done'}
               </Button>
             </div>
           </div>
