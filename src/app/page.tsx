@@ -25,6 +25,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
 import Autoplay from 'embla-carousel-autoplay';
+import { BrandModel } from '@/components/brand-model';
+import { TypewriterBrand } from '@/components/typewriter-brand';
 
 const categories = [
   { name: "PANTS", href: '/products?category=Pants', key: 'Pants' },
@@ -102,14 +104,14 @@ const ShortsIcon = () => (
     className="inline-block mr-2"
     fill="currentColor"
   >
-    <path d="M22,2H2V22H9.69L12,15.85,14.31,22H22ZM20,6H4V4H20Z"/>
+    <path d="M22,2H2V22H9.69L12,15.85,14.31,22H22ZM20,6H4V4H20Z" />
   </motion.svg>
 );
 
 const BandanaIcon = () => (
-    <motion.svg initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }} width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-2" fill="currentColor">
-        <path d="M2,12C4,9,8,8,11,9L10,11A2,2 0 0 0,14 11L13,9C16,8,20,9,22,12C20,15,16,16,13,15L14,13A2,2 0 0 0,10 13L11,15C8,16,4,15,2,12Z" />
-    </motion.svg>
+  <motion.svg initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }} width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="inline-block mr-2" fill="currentColor">
+    <path d="M2,12C4,9,8,8,11,9L10,11A2,2 0 0 0,14 11L13,9C16,8,20,9,22,12C20,15,16,16,13,15L14,13A2,2 0 0 0,10 13L11,15C8,16,4,15,2,12Z" />
+  </motion.svg>
 );
 
 
@@ -140,27 +142,27 @@ const iconMap: { [key: string]: React.ComponentType } = {
 };
 
 const guarantees = [
-    {
-      Icon: Truck,
-      title: 'Free Delivery Anywhere in India',
-      description: 'Dispatched in 48 hours, delivered in just 3-5 working days*',
-    },
-    {
-      Icon: RefreshCw,
-      title: 'Easy Exchanges',
-      description: '72-hour window for quick size or product exchanges.',
-    },
-    {
-      Icon: Bot,
-      title: 'Robust Customer Support',
-      description: 'Reach us anytime: clothrage@gmail.com or WhatsApp +91 9892090398',
-    },
-    {
-      Icon: Smile,
-      title: '200,000+ Happy Customers',
-      description: 'More than numbers - a family of happy customers.',
-    },
-  ];
+  {
+    Icon: Truck,
+    title: 'Free Delivery Anywhere in India',
+    description: 'Dispatched in 48 hours, delivered in just 3-5 working days*',
+  },
+  {
+    Icon: RefreshCw,
+    title: 'Easy Exchanges',
+    description: '72-hour window for quick size or product exchanges.',
+  },
+  {
+    Icon: Bot,
+    title: 'Robust Customer Support',
+    description: 'Reach us anytime: clothrage@gmail.com or WhatsApp +91 9892090398',
+  },
+  {
+    Icon: Smile,
+    title: '200,000+ Happy Customers',
+    description: 'More than numbers - a family of happy customers.',
+  },
+];
 
 const cardCollections = collections.slice(0, 6);
 
@@ -208,6 +210,7 @@ export default function HomePage() {
   const reviewsInView = useInView(reviewsRef, { once: true, amount: 0.2 });
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [activePanel, setActivePanel] = useState<'left' | 'center' | 'right'>('center');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -280,25 +283,120 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="group relative w-full block">
-        <Image
-          src="/hero-banner.jpg"
-          alt="Rage fashion banner"
-          width={1920}
-          height={800}
-          className="w-full h-auto grayscale group-hover:grayscale-0 transition-all duration-300"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-0 flex h-full flex-col items-center justify-end text-center text-primary-foreground">
-          <div className="pb-8">
-            <Button asChild variant="ghost" size="lg" className="hover:bg-transparent text-white">
-              <Link href="/products">
-                Explore <ArrowRight className="ml-2" />
-              </Link>
+      <section className="group relative w-full h-[50vh] md:h-[70vh] bg-black overflow-hidden flex justify-center" onMouseLeave={() => setActivePanel('center')}>
+        {/* Left Panel */}
+        <motion.div
+          onMouseEnter={() => setActivePanel('left')}
+          animate={{
+            flex: activePanel === 'left' ? 2 : activePanel === 'center' ? 1 : 0.5,
+            opacity: activePanel === 'left' ? 1 : 0.6
+          }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="hidden md:block relative h-full cursor-pointer overflow-hidden"
+        >
+          <div className="absolute inset-0 w-[80vw] h-full left-1/2 -translate-x-1/2">
+            <Image
+              src="/image copy 9.png"
+              alt="Left Banner"
+              fill
+              className={cn(
+                "object-cover transition-all duration-500",
+                activePanel === 'left' ? "grayscale-0" : "grayscale opacity-60"
+              )}
+            />
+          </div>
+          <div className={cn(
+            "absolute inset-0 bg-black/30 transition-opacity duration-300",
+            activePanel === 'left' ? "opacity-0" : "opacity-100"
+          )} />
+
+          {/* Left Panel Content - Visible on Hover */}
+          <div className={cn(
+            "absolute inset-0 flex items-center justify-center transition-opacity duration-300",
+            activePanel === 'left' ? "opacity-100" : "opacity-0"
+          )}>
+            <Button variant="outline" className="bg-black/20 border-white/30 text-white backdrop-blur-sm">
+              Shop Collection
             </Button>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Center Panel */}
+        <motion.div
+          onMouseEnter={() => setActivePanel('center')}
+          animate={{
+            flex: activePanel === 'center' ? 2 : 0.5,
+            opacity: activePanel === 'center' ? 1 : 0.6
+          }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="relative h-full overflow-hidden cursor-pointer"
+        >
+          <div className="absolute inset-0 w-[80vw] h-full left-1/2 -translate-x-1/2">
+            <Image
+              src="/hero-banner.jpg"
+              alt="Rage fashion banner"
+              fill
+              className={cn(
+                "object-cover transition-all duration-500",
+                activePanel === 'center' ? "grayscale-0" : "grayscale opacity-60"
+              )}
+              priority
+            />
+          </div>
+
+          {/* Overlay Content */}
+          <div className={cn(
+            "absolute inset-0 z-30 flex h-full flex-col items-center justify-end text-center text-primary-foreground transition-opacity duration-300",
+            activePanel === 'center' ? "opacity-100" : "opacity-0"
+          )}>
+            <motion.div
+              className="pb-12"
+            >
+              <Button asChild variant="outline" size="lg" className="bg-black/20 border-white/30 text-white hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-sm">
+                <Link href="/products">
+                  Explore <ArrowRight className="ml-2" />
+                </Link>
+              </Button>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Right Panel */}
+        <motion.div
+          onMouseEnter={() => setActivePanel('right')}
+          animate={{
+            flex: activePanel === 'right' ? 2 : activePanel === 'center' ? 1 : 0.5,
+            opacity: activePanel === 'right' ? 1 : 0.6
+          }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="hidden md:block relative h-full cursor-pointer overflow-hidden"
+        >
+          <div className="absolute inset-0 w-[80vw] h-full left-1/2 -translate-x-1/2">
+            <Image
+              src="/image copy 10.png"
+              alt="Right Banner"
+              fill
+              className={cn(
+                "object-cover transition-all duration-500",
+                activePanel === 'right' ? "grayscale-0" : "grayscale opacity-60"
+              )}
+            />
+          </div>
+          <div className={cn(
+            "absolute inset-0 bg-black/30 transition-opacity duration-300",
+            activePanel === 'right' ? "opacity-0" : "opacity-100"
+          )} />
+
+          {/* Right Panel Content - Visible on Hover */}
+          <div className={cn(
+            "absolute inset-0 flex items-center justify-center transition-opacity duration-300",
+            activePanel === 'right' ? "opacity-100" : "opacity-0"
+          )}>
+            <Button variant="outline" className="bg-black/20 border-white/30 text-white backdrop-blur-sm">
+              New Arrivals
+            </Button>
+          </div>
+        </motion.div>
       </section>
 
       {/* Category Navigation Section */}
@@ -471,42 +569,58 @@ export default function HomePage() {
       </div>
 
       {/* Video Section */}
-      <section ref={videoContainerRef} className="container mx-auto px-4 py-8">
-        <div className="relative aspect-video sm:aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden rounded-lg shadow-lg bg-black">
-          <video
-            ref={videoRef}
-            src="video.mp4"
-            loop
-            playsInline
-            muted={isMuted}
-            className={cn(
-              "w-full h-full object-fill transition-all duration-500",
-              isIntersecting ? "grayscale-0" : "grayscale"
-            )}
-          />
-          {/* Audio Toggle Button */}
-          <button
-            onClick={() => {
-              const video = videoRef.current;
-              if (video) {
-                setIsMuted(!isMuted);
-                video.muted = !isMuted;
-              }
-            }}
-            className="absolute bottom-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
-            aria-label={isMuted ? "Unmute video" : "Mute video"}
-          >
-            {isMuted ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16 9L20 5M20 9L16 5M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M19.07 4.93C20.9447 6.80528 21.9979 9.34836 21.9979 12C21.9979 14.6516 20.9447 17.1947 19.07 19.07M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17.0039 12C17.0039 13.3308 16.4774 14.6024 15.54 15.54" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
-          </button>
+      {/* Bento Grid Section */}
+      <section className="container mx-auto px-4 py-12">
+        <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
+          {/* The Collection */}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[300px]">
+          {/* Item 1: Tall (1x2) - Left */}
+          <div className="relative group overflow-hidden rounded-lg md:col-span-1 md:row-span-2">
+            <Image
+              src="/demo-right.jpg"
+              alt="Collection Item 1"
+              fill
+              className="object-contain transition-transform duration-500 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 transition-colors duration-300" />
+            <div className="absolute bottom-4 left-4 text-white font-bold text-xl">
+              Street Style
+            </div>
+          </div>
+
+          {/* Middle Column: Stacked Items */}
+          <div className="md:col-span-1 md:row-span-2 flex flex-col gap-4 h-full">
+            {/* Item 2: Accessories (Taller) */}
+            <div className="relative group overflow-hidden rounded-lg flex-[2] min-h-0">
+              <BrandModel />
+              <div className="absolute inset-0 pointer-events-none" />
+              <div className="absolute bottom-4 left-4 text-white font-bold text-xl pointer-events-none">
+                {/* Accessories */}
+              </div>
+            </div>
+
+            {/* Item 3: Logo Link (Shorter) */}
+            <Link href="/products" className="relative group overflow-hidden rounded-lg flex-1 min-h-0 flex items-center justify-center transition-colors">
+              <div className="w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+                <TypewriterBrand />
+              </div>
+            </Link>
+          </div>
+
+          {/* Item 4: Tall (1x2) - Right */}
+          <div className="relative group overflow-hidden rounded-lg md:col-span-1 md:row-span-2">
+            <Image
+              src="/demo-left.png"
+              alt="Collection Item 4"
+              fill
+              className="object-contain transition-transform duration-500 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 transition-colors duration-300" />
+            <div className="absolute bottom-4 left-4 text-white font-bold text-xl">
+              Limited Edition
+            </div>
+          </div>
         </div>
       </section>
 
@@ -519,7 +633,7 @@ export default function HomePage() {
         className="container mx-auto px-4 pt-8 pb-8"
       >
         <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
-          Voices of RAGE
+          Voices of Liars
         </h2>
         <Carousel
           opts={{
@@ -566,13 +680,13 @@ export default function HomePage() {
       {/* Guarantees Section */}
       <section className="container mx-auto px-4 pt-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {guarantees.map(({ Icon, title, description }) => (
-                <div key={title} className="flex flex-col items-center">
-                    <Icon className="h-10 w-10 mb-4 text-primary" />
-                    <h3 className="font-semibold uppercase tracking-wider">{title}</h3>
-                    <p className="text-sm text-muted-foreground mt-2">{description}</p>
-                </div>
-            ))}
+          {guarantees.map(({ Icon, title, description }) => (
+            <div key={title} className="flex flex-col items-center">
+              <Icon className="h-10 w-10 mb-4 text-primary" />
+              <h3 className="font-semibold uppercase tracking-wider">{title}</h3>
+              <p className="text-sm text-muted-foreground mt-2">{description}</p>
+            </div>
+          ))}
         </div>
       </section>
     </div>

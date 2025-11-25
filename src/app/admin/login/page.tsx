@@ -33,14 +33,14 @@ export default function AdminLoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     // Validate password length before attempting login
     if (formData.password.length < 8 || formData.password.length > 256) {
       setError('Password must be between 8 and 256 characters long.');
       setIsLoading(false);
       return;
     }
-    
+
     try {
       setIsLoading(true);
       // Call API route to check credentials
@@ -49,14 +49,14 @@ export default function AdminLoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          email: formData.email, 
-          password: formData.password 
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         // Store login status in localStorage
         localStorage.setItem('adminLoggedIn', 'true');
@@ -83,7 +83,7 @@ export default function AdminLoginPage() {
             Admin Portal
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Sign in to your RAGE admin account
+            Sign in to your Liars admin account
           </p>
         </div>
 

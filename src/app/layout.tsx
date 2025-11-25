@@ -31,8 +31,8 @@ const playfairDisplay = Playfair_Display({
 });
 
 // export const metadata: Metadata = {
-//   title: 'RAGE: Next-Gen Style',
-//   description: 'The future of fashion is here. Discover next-gen style with RAGE.',
+//   title: 'Liars: Next-Gen Style',
+//   description: 'The future of fashion is here. Discover next-gen style with Liars.',
 // };
 
 export default function RootLayout({
@@ -60,8 +60,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
-        <title>RAGE: Next-Gen Style</title>
-        <meta name="description" content="The future of fashion is here. Discover next-gen style with RAGE." />
+        <title>Liars: Trendy Style</title>
+        <meta name="description" content="The future of fashion is here. Discover next-gen style with Liars." />
         <link rel="icon" href="/favicon.svg" sizes="any" />
       </head>
       <body

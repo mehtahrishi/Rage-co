@@ -59,14 +59,14 @@ export default function CheckoutPage() {
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-        email: '',
-        firstName: '',
-        lastName: '',
-        address: '',
-        apartment: '',
-        city: '',
-        country: 'India',
-        postalCode: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      address: '',
+      apartment: '',
+      city: '',
+      country: 'India',
+      postalCode: '',
     },
   });
 
@@ -74,7 +74,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (user) {
       form.setValue('email', user.email || '');
-      
+
       // Handle name parsing
       if (user.name) {
         const nameParts = user.name.trim().split(' ');
@@ -149,8 +149,8 @@ export default function CheckoutPage() {
   // Generate UPI payment URL
   const generateUpiUrl = () => {
     const amount = finalTotal.toFixed(2); // Use final total with GST
-    const note = 'RAGE Order Payment';
-    return `upi://pay?pa=${upiId}&pn=RAGE&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
+    const note = 'Liars Order Payment';
+    return `upi://pay?pa=${upiId}&pn=Liars&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
   };
 
   // Handle payment confirmation
@@ -159,7 +159,7 @@ export default function CheckoutPage() {
     if (isProcessingPayment) return;
 
     setIsProcessingPayment(true);
-    
+
     try {
       if (!user) {
         toast({
@@ -193,35 +193,35 @@ export default function CheckoutPage() {
           postalCode: form.getValues('postalCode')
         }
       };
-      
+
       console.log('Creating order with data:', orderData);
-      
+
       // Create the order
       const createdOrder = await OrderService.createOrder(orderData);
       console.log('Order created successfully:', createdOrder);
-      
+
       // Show success animation
       setIsPaymentSuccess(true);
-      
+
       setTimeout(async () => {
         setIsPaymentSuccess(false);
         setIsPaymentModalOpen(false);
         setPaymentTimer(60); // Reset timer
         setIsProcessingPayment(false); // Reset processing state
-        
+
         // Clear the cart after successful order creation
         await clearCart();
         console.log('Cart cleared successfully');
-        
+
         setShowLoader(true); // Show custom loader
-        
+
         // Show success toast
         toast({
           title: "Order Placed Successfully!",
           description: "Your order has been placed and you will be redirected to your orders page.",
         });
       }, 2000); // Show success animation for 2 seconds
-      
+
     } catch (error) {
       console.error('Error during checkout process:', error);
       toast({
@@ -244,7 +244,7 @@ export default function CheckoutPage() {
     // Try to get image from Appwrite first
     const appwriteUrl = ImageService.getImageUrl(imageId);
     if (appwriteUrl) return appwriteUrl;
-    
+
     // Fallback to placeholder images
     const placeholderImage = PlaceHolderImages.find(img => img.id === imageId);
     return placeholderImage?.imageUrl || '/placeholder.jpg';
@@ -273,19 +273,19 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-        <div className="container mx-auto px-4 py-24 text-center">
-            <h1 className="text-2xl font-semibold">Your cart is empty</h1>
-            <p className="mt-2 text-muted-foreground">You can't proceed to checkout without any items.</p>
-            <Button asChild className="mt-6">
-                <Link href="/products">Continue Shopping</Link>
-            </Button>
-        </div>
+      <div className="container mx-auto px-4 py-24 text-center">
+        <h1 className="text-2xl font-semibold">Your cart is empty</h1>
+        <p className="mt-2 text-muted-foreground">You can't proceed to checkout without any items.</p>
+        <Button asChild className="mt-6">
+          <Link href="/products">Continue Shopping</Link>
+        </Button>
+      </div>
     )
   }
 
   return (
     <div className="container mx-auto px-4 py-12">
-       <header className="mb-12 text-center">
+      <header className="mb-12 text-center">
         <h1 className="font-headline text-4xl font-bold uppercase tracking-wider md:text-5xl">
           Secure Checkout
         </h1>
@@ -317,9 +317,9 @@ export default function CheckoutPage() {
                 <div>
                   <h2 className="text-2xl font-headline font-semibold mt-8">Shipping Address</h2>
                   <div className="grid grid-cols-2 gap-4 mt-4">
-                    <FormField 
-                      control={form.control} 
-                      name="firstName" 
+                    <FormField
+                      control={form.control}
+                      name="firstName"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>First Name</FormLabel>
@@ -330,9 +330,9 @@ export default function CheckoutPage() {
                         </FormItem>
                       )}
                     />
-                    <FormField 
-                      control={form.control} 
-                      name="lastName" 
+                    <FormField
+                      control={form.control}
+                      name="lastName"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Last Name</FormLabel>
@@ -344,9 +344,9 @@ export default function CheckoutPage() {
                       )}
                     />
                   </div>
-                  <FormField 
-                    control={form.control} 
-                    name="address" 
+                  <FormField
+                    control={form.control}
+                    name="address"
                     render={({ field }) => (
                       <FormItem className="mt-4">
                         <FormLabel>Address</FormLabel>
@@ -357,9 +357,9 @@ export default function CheckoutPage() {
                       </FormItem>
                     )}
                   />
-                  <FormField 
-                    control={form.control} 
-                    name="apartment" 
+                  <FormField
+                    control={form.control}
+                    name="apartment"
                     render={({ field }) => (
                       <FormItem className="mt-4">
                         <FormLabel>Apartment, suite, etc. (optional)</FormLabel>
@@ -371,9 +371,9 @@ export default function CheckoutPage() {
                     )}
                   />
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <FormField 
-                      control={form.control} 
-                      name="city" 
+                    <FormField
+                      control={form.control}
+                      name="city"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>City</FormLabel>
@@ -384,9 +384,9 @@ export default function CheckoutPage() {
                         </FormItem>
                       )}
                     />
-                    <FormField 
-                      control={form.control} 
-                      name="country" 
+                    <FormField
+                      control={form.control}
+                      name="country"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Country</FormLabel>
@@ -397,9 +397,9 @@ export default function CheckoutPage() {
                         </FormItem>
                       )}
                     />
-                    <FormField 
-                      control={form.control} 
-                      name="postalCode" 
+                    <FormField
+                      control={form.control}
+                      name="postalCode"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Postal Code</FormLabel>
@@ -435,10 +435,10 @@ export default function CheckoutPage() {
               return (
                 <div key={item.id} className="flex items-center gap-4 pb-4 border-b last:border-b-0 last:pb-0">
                   <div className="relative h-16 w-16 rounded-md overflow-hidden border">
-                    <Image 
-                      src={imageUrl} 
-                      alt={item.product.name} 
-                      fill 
+                    <Image
+                      src={imageUrl}
+                      alt={item.product.name}
+                      fill
                       className="object-cover"
                       sizes="64px"
                     />
@@ -499,20 +499,20 @@ export default function CheckoutPage() {
             <div className="bg-muted border rounded-lg p-4">
               <h3 className="font-semibold">Important Payment Instructions</h3>
               <p className="text-sm mt-2">
-                Kindly complete your payment using the QR code provided. A timestamp will be recorded to verify your payment on our sales system. 
-                Please note that failure to complete the payment within the allotted time frame will result in automatic order cancellation. 
+                Kindly complete your payment using the QR code provided. A timestamp will be recorded to verify your payment on our sales system.
+                Please note that failure to complete the payment within the allotted time frame will result in automatic order cancellation.
                 You have exactly one minute to complete this transaction.
               </p>
             </div>
             <div className="flex gap-3 pt-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="flex-1"
                 onClick={() => setIsConfirmModalOpen(false)}
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 className="flex-1"
                 onClick={handleConfirmPayment}
               >
@@ -534,9 +534,9 @@ export default function CheckoutPage() {
           </DialogHeader>
           <div className="flex flex-col items-center space-y-6 py-4">
             <div className="p-4 bg-white rounded-lg">
-              <QRCodeSVG 
-                value={generateUpiUrl()} 
-                size={200} 
+              <QRCodeSVG
+                value={generateUpiUrl()}
+                size={200}
                 level="H"
                 includeMargin={true}
               />
@@ -553,15 +553,15 @@ export default function CheckoutPage() {
               </div>
             </div>
             <div className="flex gap-3 w-full">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="flex-1"
                 onClick={handlePaymentCancel}
                 disabled={isProcessingPayment}
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 className="flex-1"
                 onClick={handlePaymentSuccess}
                 disabled={isProcessingPayment}
@@ -583,9 +583,9 @@ export default function CheckoutPage() {
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 260, 
+              transition={{
+                type: "spring",
+                stiffness: 260,
                 damping: 20,
                 duration: 0.5
               }}
@@ -598,7 +598,7 @@ export default function CheckoutPage() {
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.1, type: "spring", stiffness: 300 }}
               />
-              
+
               {/* Checkmark */}
               <motion.svg
                 width="48"
@@ -617,7 +617,7 @@ export default function CheckoutPage() {
                   strokeLinejoin="round"
                 />
               </motion.svg>
-              
+
               {/* Arrows */}
               <motion.div
                 className="absolute inset-0"

@@ -50,7 +50,7 @@ export default function RegisterPage() {
 
   const passwordRequirements = validatePassword(formData.password);
   const passwordsMatch = formData.password === formData.confirmPassword;
-  const isFormValid = 
+  const isFormValid =
     formData.name.trim() &&
     formData.email.trim() &&
     formData.phone.trim() &&
@@ -70,15 +70,15 @@ export default function RegisterPage() {
       setIsLoading(true);
       console.log('Starting registration from form...');
       await register(formData.email, formData.password, formData.name, formData.phone);
-      
+
       toast({
         title: "Account Created Successfully!",
         description: "Please log in with your credentials to continue.",
       });
-      
+
       // Navigate to login page after successful registration
       router.push('/auth/login');
-      
+
     } catch (error: any) {
       console.error('Registration form error:', error);
       setError(error.message || 'Registration failed. Please try again.');
@@ -99,7 +99,7 @@ export default function RegisterPage() {
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <h1 className="font-headline text-3xl font-bold uppercase tracking-wider">
-              Join RAGE
+              Join Liars
             </h1>
             <p className="mt-2 text-muted-foreground">
               Create your account to start shopping
@@ -110,7 +110,7 @@ export default function RegisterPage() {
             <CardHeader>
               <CardTitle>Create Account</CardTitle>
               <CardDescription>
-                Sign up for a new RAGE account to access exclusive deals and track your orders.
+                Sign up for a new Liars account to access exclusive deals and track your orders.
               </CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit}>
@@ -191,7 +191,7 @@ export default function RegisterPage() {
                       )}
                     </Button>
                   </div>
-                  
+
                   {formData.password && (
                     <div className="space-y-1 mt-2">
                       <RequirementItem met={passwordRequirements.length} text="At least 8 characters" />
@@ -230,7 +230,7 @@ export default function RegisterPage() {
                       )}
                     </Button>
                   </div>
-                  
+
                   {formData.confirmPassword && (
                     <RequirementItem met={passwordsMatch} text="Passwords match" />
                   )}

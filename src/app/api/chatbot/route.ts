@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
       apiKey: process.env.GROQ_API_KEY,
     });
 
-    // Create the system prompt with RAGE store information
-    const systemPrompt = `You are a friendly customer support chatbot for RAGE, a trendy streetwear store.
+    // Create the system prompt with Liars store information
+    const systemPrompt = `You are a friendly customer support chatbot for Liars, a trendy streetwear store.
 
 IMPORTANT RULES:
 - Keep responses SHORT (2-3 sentences max)
@@ -37,7 +37,7 @@ IMPORTANT RULES:
 - No markdown formatting, asterisks, or bullet points
 - Be conversational and helpful
 
-RAGE Info:
+Liars Info:
 We sell streetwear - T-shirts, Vests, Pants, Shorts, Baby Tees, and Bandanas for men and women.
 
 Policies:
@@ -68,7 +68,7 @@ Be short, helpful, and friendly!`;
     });
 
     let text = completion.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
-    
+
     // Clean up any markdown formatting
     text = text
       .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
@@ -81,7 +81,7 @@ Be short, helpful, and friendly!`;
 
     // Check if user needs support (bug report, help, issues)
     const supportKeywords = ['bug', 'help', 'support', 'issue', 'problem', 'error', 'broken', 'not working', 'fix'];
-    const needsSupport = supportKeywords.some(keyword => 
+    const needsSupport = supportKeywords.some(keyword =>
       query.toLowerCase().includes(keyword)
     );
 
@@ -106,16 +106,16 @@ Be short, helpful, and friendly!`;
           const ticketData = await ticketResponse.json();
           text = `I've created a support ticket (#${ticketData.ticketId}) for you and sent it to our team. They'll get back to you soon! \n\nIn the meantime, you can also reach us at clothrage@gmail.com if you have any urgent issues.`;
         } else if (ticketResponse.status === 401) {
-          text = `To create a support ticket for your issue, please log in to your account first. I can still help with general questions about RAGE products and policies!`;
+          text = `To create a support ticket for your issue, please log in to your account first. I can still help with general questions about Liars products and policies!`;
         }
       } catch (error) {
         console.error('Failed to create ticket:', error);
         text = `I understand you need help with this issue. For personalized support, please log in to your account or contact us directly at clothrage@gmail.com`;
       }
     }
-    
+
     console.log('Chatbot response:', text);
-    
+
     return NextResponse.json({ response: text });
   } catch (error) {
     console.error('Chatbot API error:', error);

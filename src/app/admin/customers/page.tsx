@@ -30,14 +30,14 @@ export default function CustomersPage() {
         // Fetch real user data from our API route
         const response = await fetch('/api/admin/users');
         const data = await response.json();
-        
+
         if (data.success) {
           // Fetch orders to calculate order count and total spent for each customer
           const ordersResponse = await fetch('/api/admin/orders');
           const ordersData = await ordersResponse.json();
-          
+
           let customerOrderStats: { [key: string]: { orders: number; totalSpent: number } } = {};
-          
+
           if (ordersData.success) {
             // Calculate order stats for each customer
             ordersData.data.forEach((order: any) => {
@@ -49,14 +49,14 @@ export default function CustomersPage() {
               customerOrderStats[userId].totalSpent += order.total || 0;
             });
           }
-          
+
           // Enhance customer data with order statistics
           const customersWithStats = data.data.map((customer: any) => ({
             ...customer,
             orders: customerOrderStats[customer.$id]?.orders || 0,
             totalSpent: customerOrderStats[customer.$id]?.totalSpent || 0,
           }));
-          
+
           setCustomers(customersWithStats);
         } else {
           console.error('Error fetching customers:', data.error);
@@ -139,24 +139,24 @@ export default function CustomersPage() {
 
   const sendEmailToUser = (email: string, name: string) => {
     // Create a mailto link that opens the default email client
-    const subject = encodeURIComponent(`Message from RAGE Administration`);
+    const subject = encodeURIComponent(`Message from Liars Administration`);
     const body = encodeURIComponent(`Hi ${name},
 
-We're reaching out from RAGE Administration.
+We're reaching out from Liars Administration.
 
 Best regards,
-The RAGE Team`);
+The Liars Team`);
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
   };
 
-  const filteredCustomers = customers.filter(customer => 
+  const filteredCustomers = customers.filter(customer =>
     customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Determine avatar background and text color based on theme
   const getAvatarColors = () => {
-    return theme === 'dark' 
+    return theme === 'dark'
       ? { background: 'bg-gray-800', text: 'text-white' }
       : { background: 'bg-gray-200', text: 'text-gray-800' };
   };
@@ -225,23 +225,23 @@ The RAGE Team`);
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">Phone:</span>
                         <span className="text-sm">{(customer.prefs && customer.prefs.phone) || 'N/A'}</span>
                       </div>
-                      
+
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">Join Date:</span>
                         <span className="text-sm">{customer.$createdAt ? new Date(customer.$createdAt).toLocaleDateString() : 'N/A'}</span>
                       </div>
-                      
+
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">Orders:</span>
                         <span className="text-sm">{customer.orders || 0}</span>
                       </div>
-                      
+
                       <div className="flex justify-between items-center pt-2 border-t">
                         <span className="text-sm text-muted-foreground">Total Spent:</span>
                         <span className="font-medium">₹{(customer.totalSpent || 0).toLocaleString()}</span>

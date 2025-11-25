@@ -60,7 +60,7 @@ export function SiteFooter() {
                   `}
                 </style>
               </defs>
-              
+
               <text
                 x="50%"
                 y="50%"
@@ -78,7 +78,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t">
         <div className="container mx-auto flex flex-wrap items-center justify-between px-4 py-6 text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} RAGE. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Liars. All rights reserved.</p>
           <div className="flex space-x-4">
             <Link href="/privacy-policy" className="hover:text-foreground">Privacy Policy</Link>
             <Link href="/terms-of-service" className="hover:text-foreground">Terms of Service</Link>

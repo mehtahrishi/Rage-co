@@ -88,7 +88,7 @@ export function SiteHeader() {
       console.error('Logout error:', error);
     }
   };
-  
+
   if (pathname.startsWith('/admin')) {
     return null;
   }
@@ -101,7 +101,7 @@ export function SiteHeader() {
           <Link
             href="/"
             className="mr-6 flex items-center space-x-2"
-            aria-label="Rage Home"
+            aria-label="Liars Home"
           >
             <div className="relative flex h-10 w-24 items-center justify-center">
               <AnimatePresence initial={false} mode="wait">
@@ -210,7 +210,7 @@ export function SiteHeader() {
           <Link
             href="/"
             className="flex items-center space-x-2"
-            aria-label="Rage Home"
+            aria-label="Liars Home"
           >
             <div className="relative h-10 w-24 flex items-center justify-center">
               <AnimatePresence initial={false} mode="wait">

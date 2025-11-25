@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/carousel';
 
 const announcements = [
-  'Rage: Next-Gen Style',
+  'Liars: Next-Gen Style',
   'The future of fashion is here.',
   'Discover curated collections that define tomorrow.',
   'Free shipping on orders over ₹5000',

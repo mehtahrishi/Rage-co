@@ -8,8 +8,8 @@
  * - SupportChatbotOutput - The return type for the supportChatbot function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const SupportChatbotInputSchema = z.object({
   query: z.string().describe('The query from the user.'),
@@ -27,12 +27,12 @@ export async function supportChatbot(input: SupportChatbotInput): Promise<Suppor
 
 const prompt = ai.definePrompt({
   name: 'supportChatbotPrompt',
-  input: {schema: SupportChatbotInputSchema},
-  output: {schema: SupportChatbotOutputSchema},
+  input: { schema: SupportChatbotInputSchema },
+  output: { schema: SupportChatbotOutputSchema },
   model: 'googleai/gemini-pro',  // Specify model here
-  prompt: `You are a customer support chatbot for RAGE, a trendy online clothing store specializing in streetwear and fashion. Your goal is to answer customer questions about orders, products, returns, shipping, and sizing. Be friendly, helpful, and enthusiastic about fashion.
+  prompt: `You are a customer support chatbot for Liar, a trendy online clothing store specializing in streetwear and fashion. Your goal is to answer customer questions about orders, products, returns, shipping, and sizing. Be friendly, helpful, and enthusiastic about fashion.
 
-  **RAGE Store Information:**
+  **Liar Store Information:**
   
   **Products & Categories:**
   - Men's and Women's clothing
@@ -73,7 +73,7 @@ const supportChatbotFlow = ai.defineFlow(
     outputSchema: SupportChatbotOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );

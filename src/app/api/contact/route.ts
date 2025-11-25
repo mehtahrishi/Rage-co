@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>RAGE Contact Form Submission</title>
+      <title>Liars Contact Form Submission</title>
       <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
         .container { max-width: 700px; margin: 0 auto; background-color: white; }
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     <body>
       <div class="container">
         <div class="header">
-          <h1>RAGE</h1>
+          <h1>Liars</h1>
           <p>📬 New Contact Form Submission</p>
         </div>
         
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
         </div>
         
         <div class="footer">
-          <p>© 2025 RAGE - Streetwear & Fashion</p>
+          <p>© 2025 Liars - Streetwear & Fashion</p>
           <p>This is an automated contact form notification</p>
         </div>
       </div>
@@ -95,9 +95,9 @@ export async function POST(request: NextRequest) {
     const adminMailOptions = {
       from: email, // User's email as sender
       to: 'clothrage@gmail.com', // Your email as recipient
-      subject: `📬 RAGE Contact Form: ${subject}`,
+      subject: `📬 Liars Contact Form: ${subject}`,
       html: emailHTML,
-      text: `New RAGE Contact Form Submission
+      text: `New Liars Contact Form Submission
 
 Name: ${name}
 Email: ${email}
@@ -113,7 +113,7 @@ Submitted: ${new Date().toLocaleString()}`
     <html>
     <head>
       <meta charset="utf-8">
-      <title>RAGE Contact Confirmation</title>
+      <title>Liars Contact Confirmation</title>
       <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
         .container { max-width: 600px; margin: 0 auto; background-color: white; }
@@ -126,12 +126,12 @@ Submitted: ${new Date().toLocaleString()}`
     <body>
       <div class="container">
         <div class="header">
-          <h1>RAGE</h1>
+          <h1>Liars</h1>
           <p>✅ Message Received Successfully</p>
         </div>
         <div class="content">
           <p>Hi ${name},</p>
-          <p>Thank you for contacting RAGE! We've received your message and will get back to you within 24 hours.</p>
+          <p>Thank you for contacting Liars! We've received your message and will get back to you within 24 hours.</p>
           
           <div class="message-box">
             <strong>Subject:</strong> ${subject}<br>
@@ -145,11 +145,11 @@ Submitted: ${new Date().toLocaleString()}`
             <li>🕒 Response Time: Within 24 hours</li>
           </ul>
           
-          <p>Thank you for choosing RAGE!</p>
-          <p>The RAGE Team</p>
+          <p>Thank you for choosing Liars !</p>
+          <p>The Liars Team</p>
         </div>
         <div class="footer">
-          <p>© 2025 RAGE - Streetwear & Fashion</p>
+          <p>© 2025 Liars - Streetwear & Fashion</p>
         </div>
       </div>
     </body>
@@ -159,17 +159,17 @@ Submitted: ${new Date().toLocaleString()}`
     const customerMailOptions = {
       from: process.env.EMAIL_USER || 'clothrage@gmail.com',
       to: email,
-      subject: `✅ RAGE: We've Received Your Message`,
+      subject: `✅ Liars: We've Received Your Message`,
       html: customerEmailHTML,
       text: `Hi ${name},
 
-Thank you for contacting RAGE! We've received your message and will get back to you within 24 hours.
+Thank you for contacting Liars! We've received your message and will get back to you within 24 hours.
 
 Subject: ${subject}
 Message: ${message}
 
 Best regards,
-RAGE Team`
+Liars Team`
     };
 
     // Send emails
@@ -177,7 +177,7 @@ RAGE Team`
       // Send to admin
       await transporter.sendMail(adminMailOptions);
       console.log(`Admin notification for contact form sent successfully`);
-      
+
       // Send confirmation to customer
       await transporter.sendMail(customerMailOptions);
       console.log(`Customer confirmation sent successfully`);
@@ -186,8 +186,8 @@ RAGE Team`
       // Continue anyway - we'll still return success
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       message: 'Message sent successfully! We will contact you soon.'
     });
 

@@ -32,7 +32,7 @@ export function BrandText({ className }: { className?: string }) {
           fill: 'currentColor',
         }}
       >
-        Rage
+        Liars
       </text>
     </svg>
   );

@@ -16,7 +16,7 @@ export default function PrivacyPolicyPage() {
 
         <div className="prose prose-stone dark:prose-invert max-w-4xl mx-auto text-muted-foreground">
           <p>
-            This Privacy Policy describes how RAGE ("we", "us", or "our") collects, uses, and discloses your personal information when you visit, use our services, or make a purchase from our website (the "Site") or otherwise communicate with us (collectively, the "Services").
+            This Privacy Policy describes how Liars ("we", "us", or "our") collects, uses, and discloses your personal information when you visit, use our services, or make a purchase from our website (the "Site") or otherwise communicate with us (collectively, the "Services").
           </p>
 
           <h2 className="text-foreground font-headline text-2xl mt-8">Information We Collect</h2>
@@ -42,12 +42,12 @@ export default function PrivacyPolicyPage() {
           <p>
             We may share your Personal Information with third parties to help us use your Personal Information, as described above. For example, we use a platform to power our online store. We also use analytics to help us understand how our customers use the Site.
           </p>
-          
+
           <h2 className="text-foreground font-headline text-2xl mt-8">Your Rights</h2>
           <p>
             You may have the right to access personal information we hold about you and to ask that your personal information be corrected, updated, or deleted. If you would like to exercise this right, please contact us through the contact information below.
           </p>
-          
+
           <h2 className="text-foreground font-headline text-2xl mt-8">Changes to this Policy</h2>
           <p>
             We may update this privacy policy from time to time in order to reflect, for example, changes to our practices or for other operational, legal or regulatory reasons.

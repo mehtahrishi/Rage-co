@@ -37,14 +37,14 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     // Validate password length before attempting login
     if (formData.password.length < 8 || formData.password.length > 256) {
       setError('Password must be between 8 and 256 characters long.');
       setIsLoading(false);
       return;
     }
-    
+
     try {
       setIsLoading(true);
       await login(formData.email, formData.password);
@@ -69,7 +69,7 @@ export default function LoginPage() {
               Welcome Back
             </h1>
             <p className="mt-2 text-muted-foreground">
-              Sign in to your RAGE account
+              Sign in to your Liars account
             </p>
           </div>
 

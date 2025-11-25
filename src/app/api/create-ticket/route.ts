@@ -14,17 +14,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique ticket ID
-    const ticketId = `RAGE-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+    const ticketId = `Liars-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
 
     // Format chat history for email
     const formatChatHistory = (history: any[]) => {
       if (!history || history.length === 0) return '<p>No chat history available.</p>';
-      
+
       return history.map((msg, index) => `
-        <div style="margin: 10px 0; padding: 10px; border-radius: 8px; ${
-          msg.role === 'user' 
-            ? 'background-color: #e3f2fd; border-left: 3px solid #2196f3;' 
-            : 'background-color: #f3e5f5; border-left: 3px solid #9c27b0;'
+        <div style="margin: 10px 0; padding: 10px; border-radius: 8px; ${msg.role === 'user'
+          ? 'background-color: #e3f2fd; border-left: 3px solid #2196f3;'
+          : 'background-color: #f3e5f5; border-left: 3px solid #9c27b0;'
         }">
           <strong>${msg.role === 'user' ? '👤 Customer' : '🤖 AI Assistant'}:</strong>
           <p style="margin: 5px 0 0 0;">${msg.text}</p>
@@ -39,7 +38,7 @@ export async function POST(request: NextRequest) {
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>RAGE Support Ticket</title>
+      <title>Liars Support Ticket</title>
       <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
         .container { max-width: 700px; margin: 0 auto; background-color: white; }
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
     <body>
       <div class="container">
         <div class="header">
-          <h1>RAGE</h1>
+          <h1>Liars</h1>
           <p>🎫 New Support Ticket Created</p>
         </div>
         
@@ -105,7 +104,7 @@ export async function POST(request: NextRequest) {
         </div>
         
         <div class="footer">
-          <p>© 2025 RAGE - Streetwear & Fashion</p>
+          <p>© 2025 Liars - Streetwear & Fashion</p>
           <p>This is an automated support ticket notification from the AI chatbot system</p>
         </div>
       </div>
@@ -126,9 +125,9 @@ export async function POST(request: NextRequest) {
     const adminMailOptions = {
       from: process.env.EMAIL_USER || 'clothrage@gmail.com',
       to: 'clothrage@gmail.com',
-      subject: `🎫 New RAGE Support Ticket: ${ticketId}`,
+      subject: `🎫 New Liars Support Ticket: ${ticketId}`,
       html: emailHTML,
-      text: `New RAGE Support Ticket: ${ticketId}\n\nCustomer: ${userName} (${userEmail})\nMessage: ${message}\n\nTimestamp: ${new Date(timestamp).toLocaleString()}`
+      text: `New Liars Support Ticket: ${ticketId}\n\nCustomer: ${userName} (${userEmail})\nMessage: ${message}\n\nTimestamp: ${new Date(timestamp).toLocaleString()}`
     };
 
     // Customer confirmation email template
@@ -137,7 +136,7 @@ export async function POST(request: NextRequest) {
     <html>
     <head>
       <meta charset="utf-8">
-      <title>RAGE Support Ticket Confirmation</title>
+      <title>Liars Support Ticket Confirmation</title>
       <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
         .container { max-width: 600px; margin: 0 auto; background-color: white; }
@@ -150,12 +149,12 @@ export async function POST(request: NextRequest) {
     <body>
       <div class="container">
         <div class="header">
-          <h1>RAGE</h1>
+          <h1>Liars</h1>
           <p>✅ Support Ticket Created Successfully</p>
         </div>
         <div class="content">
           <p>Hi ${userName},</p>
-          <p>Thank you for contacting RAGE support! We've received your request and created a support ticket for you.</p>
+          <p>Thank you for contacting Liars support! We've received your request and created a support ticket for you.</p>
           
           <div class="ticket-box">
             <strong>Ticket ID:</strong> ${ticketId}<br>
@@ -174,11 +173,11 @@ export async function POST(request: NextRequest) {
             <li>🕒 Response Time: Within 24 hours</li>
           </ul>
           
-          <p>Thank you for choosing RAGE!</p>
-          <p>The RAGE Support Team</p>
+          <p>Thank you for choosing Liars!</p>
+          <p>The Liars Support Team</p>
         </div>
         <div class="footer">
-          <p>© 2025 RAGE - Streetwear & Fashion</p>
+          <p>© 2025 Liars - Streetwear & Fashion</p>
         </div>
       </div>
     </body>
@@ -188,9 +187,9 @@ export async function POST(request: NextRequest) {
     const customerMailOptions = {
       from: process.env.EMAIL_USER || 'support@rage.com',
       to: userEmail || 'guest@rage.com',
-      subject: `✅ RAGE Support Ticket Created: ${ticketId}`,
+      subject: `✅ Liars Support Ticket Created: ${ticketId}`,
       html: customerEmailHTML,
-      text: `Hi ${userName},\n\nYour RAGE support ticket has been created successfully!\n\nTicket ID: ${ticketId}\nMessage: ${message}\n\nWe'll get back to you within 24 hours.\n\nBest regards,\nRAGE Support Team`
+      text: `Hi ${userName},\n\nYour Liars support ticket has been created successfully!\n\nTicket ID: ${ticketId}\nMessage: ${message}\n\nWe'll get back to you within 24 hours.\n\nBest regards,\nLiars Support Team`
     };
 
     // Send emails
@@ -198,7 +197,7 @@ export async function POST(request: NextRequest) {
       // Send to admin
       await transporter.sendMail(adminMailOptions);
       console.log(`Admin notification for ticket ${ticketId} sent successfully`);
-      
+
       // Send confirmation to customer (only if not guest)
       if (userEmail && userEmail !== 'guest@rage.com') {
         await transporter.sendMail(customerMailOptions);
@@ -209,8 +208,8 @@ export async function POST(request: NextRequest) {
       // Continue anyway - we'll still return the ticket ID
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       ticketId,
       message: 'Support ticket created successfully'
     });

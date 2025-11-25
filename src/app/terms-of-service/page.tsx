@@ -17,7 +17,7 @@ export default function TermsOfServicePage() {
         <div className="prose prose-stone dark:prose-invert max-w-4xl mx-auto text-muted-foreground">
           <h2 className="text-foreground font-headline text-2xl">1. Overview</h2>
           <p>
-            This website is operated by RAGE. Throughout the site, the terms “we”, “us” and “our” refer to RAGE. RAGE offers this website, including all information, tools, and services available from this site to you, the user, conditioned upon your acceptance of all terms, conditions, policies, and notices stated here.
+            This website is operated by Liars. Throughout the site, the terms “we”, “us” and “our” refer to Liars. Liars offers this website, including all information, tools, and services available from this site to you, the user, conditioned upon your acceptance of all terms, conditions, policies, and notices stated here.
           </p>
 
           <h2 className="text-foreground font-headline text-2xl mt-8">2. General Conditions</h2>
@@ -34,8 +34,8 @@ export default function TermsOfServicePage() {
           <p>
             Certain products or services may be available exclusively online through the website. These products or services may have limited quantities and are subject to return or exchange only according to our Return Policy. We have made every effort to display as accurately as possible the colors and images of our products that appear at the store. We cannot guarantee that your computer monitor's display of any color will be accurate.
           </p>
-          
-           <h2 className="text-foreground font-headline text-2xl mt-8">5. Governing Law</h2>
+
+          <h2 className="text-foreground font-headline text-2xl mt-8">5. Governing Law</h2>
           <p>
             These Terms of Service and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the laws of India.
           </p>
