@@ -47,12 +47,34 @@ export default function LoginPage() {
 
     try {
       setIsLoading(true);
+      // First authenticate with Appwrite
       await login(formData.email, formData.password);
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
+
+      // Then send OTP
+      const response = await fetch('/api/auth/otp/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email }),
       });
-      router.push('/'); // Redirect to main landing page after successful login
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send verification code');
+      }
+
+      // Store OTP details for the next step
+      sessionStorage.setItem('otp_email', formData.email);
+      sessionStorage.setItem('otp_hash', data.hash);
+      sessionStorage.setItem('otp_expiry', data.expiry);
+      sessionStorage.removeItem('otp_verified');
+
+      toast({
+        title: "Credentials Verified",
+        description: "Please check your email for the verification code.",
+      });
+
+      router.push('/auth/otp');
     } catch (error: any) {
       console.error('Login error:', error);
       setError(error.message || 'Login failed. Please check your credentials.');
