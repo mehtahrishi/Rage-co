@@ -283,7 +283,8 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="group relative w-full h-[50vh] md:h-[70vh] bg-black overflow-hidden flex justify-center" onMouseLeave={() => setActivePanel('center')}>
+      {/* Hero Section - Desktop (Hover Accordion) */}
+      <section className="hidden md:flex group relative w-full h-[70vh] bg-black overflow-hidden justify-center" onMouseLeave={() => setActivePanel('center')}>
         {/* Left Panel */}
         <motion.div
           onMouseEnter={() => setActivePanel('left')}
@@ -292,7 +293,7 @@ export default function HomePage() {
             opacity: activePanel === 'left' ? 1 : 0.6
           }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          className="hidden md:block relative h-full cursor-pointer overflow-hidden"
+          className="relative h-full cursor-pointer overflow-hidden"
         >
           <div className="absolute inset-0 w-[80vw] h-full left-1/2 -translate-x-1/2">
             <Image
@@ -369,7 +370,7 @@ export default function HomePage() {
             opacity: activePanel === 'right' ? 1 : 0.6
           }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          className="hidden md:block relative h-full cursor-pointer overflow-hidden"
+          className="relative h-full cursor-pointer overflow-hidden"
         >
           <div className="absolute inset-0 w-[80vw] h-full left-1/2 -translate-x-1/2">
             <Image
@@ -397,6 +398,95 @@ export default function HomePage() {
             </Button>
           </div>
         </motion.div>
+      </section>
+
+      {/* Hero Section - Mobile (CSS Scroll Snap) */}
+      <section className="md:hidden w-full h-[50vh] bg-black">
+        {/* Hero Section - Mobile (CSS Scroll Snap) */}
+        <section className="md:hidden w-full h-[50vh] bg-black">
+          <div
+            ref={(el) => {
+              if (el) {
+                // Scroll to the middle slide (index 1) on mount
+                // 85vw is the width of one slide. We want to center the second slide.
+                // The container width is 100vw. The slide is 85vw.
+                // To center the second slide:
+                // Slide 1 width: 85vw
+                // Center of Slide 2 is at: 85vw + (85vw / 2) = 127.5vw
+                // Center of Viewport is at: 50vw
+                // Scroll position = 127.5vw - 50vw = 77.5vw?
+                // Actually, simpler: just scroll past the first slide minus the peek amount.
+                // Let's just scroll to the start of the second slide minus the left peek.
+                // Left peek is (100vw - 85vw) / 2 = 7.5vw.
+                // Start of 2nd slide is at 85vw.
+                // So scrollLeft = 85vw - 7.5vw = 77.5vw.
+                // Let's try a rough calculation or just scrollIntoView on the child.
+                // Better: use a ref on the child and scrollIntoView.
+                // But for now, let's just set scrollLeft in a useEffect.
+                requestAnimationFrame(() => {
+                  el.scrollLeft = el.clientWidth * 0.85 - (el.clientWidth * 0.15) / 2;
+                });
+              }
+            }}
+            className="flex w-full h-full overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
+            {/* Slide 1: Shop Collection */}
+            <div className="relative flex-shrink-0 w-[85vw] h-full snap-center p-2">
+              <div className="relative w-full h-full rounded-lg overflow-hidden">
+                <Image
+                  src="/image copy 9.png"
+                  alt="Left Banner"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black/20" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Button variant="outline" className="bg-black/20 border-white/30 text-white backdrop-blur-sm">
+                    Shop Collection
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Slide 2: Explore */}
+            <div className="relative flex-shrink-0 w-[85vw] h-full snap-center p-2">
+              <div className="relative w-full h-full rounded-lg overflow-hidden">
+                <Image
+                  src="/hero-banner.jpg"
+                  alt="Rage fashion banner"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 z-30 flex h-full flex-col items-center justify-end pb-12">
+                  <Button asChild variant="outline" size="lg" className="bg-black/20 border-white/30 text-white hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-sm">
+                    <Link href="/products">
+                      Explore <ArrowRight className="ml-2" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Slide 3: New Arrivals */}
+            <div className="relative flex-shrink-0 w-[85vw] h-full snap-center p-2">
+              <div className="relative w-full h-full rounded-lg overflow-hidden">
+                <Image
+                  src="/image copy 10.png"
+                  alt="Right Banner"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black/20" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Button variant="outline" className="bg-black/20 border-white/30 text-white backdrop-blur-sm">
+                    New Arrivals
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </section>
 
       {/* Category Navigation Section */}
@@ -570,11 +660,8 @@ export default function HomePage() {
 
       {/* Video Section */}
       {/* Bento Grid Section */}
-      <section className="container mx-auto px-4 py-12">
-        <h2 className="mb-12 text-center font-headline text-3xl font-bold uppercase tracking-wider md:text-4xl">
-          {/* The Collection */}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[300px]">
+      <section className="container mx-auto px-4 pb-0 md:pb-12">
+        <div className="hidden md:grid grid-cols-3 gap-4 auto-rows-[300px]">
           {/* Item 1: Tall (1x2) - Left */}
           <div className="relative group overflow-hidden rounded-lg md:col-span-1 md:row-span-2">
             <Image
@@ -621,6 +708,50 @@ export default function HomePage() {
               Limited Edition
             </div>
           </div>
+        </div>
+
+        {/* Mobile View: Curtain Reveal */}
+        <div className="md:hidden relative h-[45vh] w-full overflow-hidden flex items-center justify-center bg-background">
+          {/* Center Text (Revealed) */}
+          <div className="absolute inset-0 flex items-center justify-center z-0">
+            <TypewriterBrand vertical={true} />
+          </div>
+
+          {/* Left Curtain */}
+          <motion.div
+            initial={{ x: 0 }}
+            whileInView={{ x: "-20%" }}
+            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: false, amount: 0.4 }}
+            className="absolute left-0 top-0 bottom-0 w-[55%] z-10"
+          >
+            <div className="relative w-full h-full">
+              <Image
+                src="/demo-right.jpg"
+                alt="Street Style"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </motion.div>
+
+          {/* Right Curtain */}
+          <motion.div
+            initial={{ x: 0 }}
+            whileInView={{ x: "20%" }}
+            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: false, amount: 0.4 }}
+            className="absolute right-0 top-0 bottom-0 w-[55%] z-10"
+          >
+            <div className="relative w-full h-full">
+              <Image
+                src="/demo-left.png"
+                alt="Limited Edition"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </motion.div>
         </div>
       </section>
 

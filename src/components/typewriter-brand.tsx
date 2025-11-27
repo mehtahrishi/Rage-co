@@ -10,7 +10,12 @@ const font = UnifrakturMaguntia({
     subsets: ['latin']
 });
 
-export function TypewriterBrand() {
+interface TypewriterBrandProps {
+    vertical?: boolean;
+    className?: string;
+}
+
+export function TypewriterBrand({ vertical = false, className = "" }: TypewriterBrandProps) {
     const { resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
@@ -49,9 +54,9 @@ export function TypewriterBrand() {
     };
 
     return (
-        <div className="flex items-center justify-center w-full h-full">
+        <div className={`flex items-center justify-center w-full h-full ${className}`}>
             <motion.div
-                className={`${font.className} ${textColor} text-6xl md:text-8xl tracking-wider`}
+                className={`${font.className} ${textColor} text-6xl md:text-8xl tracking-wider flex ${vertical ? 'flex-col leading-none items-center' : ''}`}
                 variants={container}
                 initial="hidden"
                 whileInView="visible"
