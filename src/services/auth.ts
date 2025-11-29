@@ -110,7 +110,7 @@ export class AuthService {
     try {
       await account.createRecovery(
         email,
-        `${window.location.origin}/reset-password`
+        `${window.location.origin}/auth/reset-password`
       );
     } catch (error) {
       console.error('Password recovery error:', error);

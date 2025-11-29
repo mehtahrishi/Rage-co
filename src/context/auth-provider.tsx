@@ -12,6 +12,8 @@ interface AuthContextType {
   register: (email: string, password: string, name: string, phone?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (name: string) => Promise<void>;
+  sendPasswordRecovery: (email: string) => Promise<void>;
+  completePasswordRecovery: (userId: string, secret: string, newPassword: string) => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -112,6 +114,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const sendPasswordRecovery = async (email: string) => {
+    try {
+      await AuthService.sendPasswordRecovery(email);
+    } catch (error) {
+      console.error('Password recovery error:', error);
+      throw error;
+    }
+  };
+
+  const completePasswordRecovery = async (userId: string, secret: string, newPassword: string) => {
+    try {
+      await AuthService.completePasswordRecovery(userId, secret, newPassword);
+    } catch (error) {
+      console.error('Password recovery completion error:', error);
+      throw error;
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -119,6 +139,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     register,
     logout,
     updateProfile,
+    sendPasswordRecovery,
+    completePasswordRecovery,
     isAuthenticated: !!user,
   };
 
