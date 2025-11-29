@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Twitter, Instagram, Facebook } from 'lucide-react';
+import { Instagram, Mail } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { BrandText } from './brand-text';
@@ -14,14 +14,11 @@ export function SiteFooter() {
           </div>
           <p className="mt-2 text-sm text-muted-foreground">Next-Gen Style</p>
           <div className="mt-4 flex space-x-4">
-            <Link href="#" aria-label="Twitter">
-              <Twitter className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
-            </Link>
-            <Link href="#" aria-label="Instagram">
+            <Link href="https://instagram.com/theliarstore" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <Instagram className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
             </Link>
-            <Link href="#" aria-label="Facebook">
-              <Facebook className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
+            <Link href="mailto:clothrage@gmail.com" aria-label="Email">
+              <Mail className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
             </Link>
           </div>
         </div>

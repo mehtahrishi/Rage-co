@@ -8,18 +8,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 import { useToast } from '@/hooks/use-toast';
 import { AnimatedPage } from '@/components/animated-page';
+import { LoadingOverlay } from '@/components/loading-overlay';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+
+  // Loading state management
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('');
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -41,16 +46,18 @@ export default function LoginPage() {
     // Validate password length before attempting login
     if (formData.password.length < 8 || formData.password.length > 256) {
       setError('Password must be between 8 and 256 characters long.');
-      setIsLoading(false);
       return;
     }
 
     try {
       setIsLoading(true);
-      // First authenticate with Appwrite
+
+      // Stage 1: Authentication
+      setLoadingMessage('Verifying credentials...');
       await login(formData.email, formData.password);
 
-      // Then send OTP
+      // Stage 2: Sending OTP
+      setLoadingMessage('Sending verification code...');
       const response = await fetch('/api/auth/otp/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,21 +76,31 @@ export default function LoginPage() {
       sessionStorage.setItem('otp_expiry', data.expiry);
       sessionStorage.removeItem('otp_verified');
 
+      // Stage 3: Success & Redirect
+      setLoadingMessage('Redirecting to verification...');
+
       toast({
         title: "Credentials Verified",
         description: "Please check your email for the verification code.",
       });
 
+      // Prefetch the OTP page for faster transition
+      router.prefetch('/auth/otp');
       router.push('/auth/otp');
+
+      // Keep loading state true until page unmounts/navigates
     } catch (error: any) {
       console.error('Login error:', error);
       setError(error.message || 'Login failed. Please check your credentials.');
       setIsLoading(false);
+      setLoadingMessage('');
     }
   };
 
   return (
     <AnimatedPage>
+      <LoadingOverlay isVisible={isLoading} message={loadingMessage} />
+
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
@@ -156,14 +173,7 @@ export default function LoginPage() {
               </CardContent>
               <CardFooter className="flex flex-col space-y-4">
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Signing In...
-                    </>
-                  ) : (
-                    'Sign In'
-                  )}
+                  Sign In
                 </Button>
 
                 <div className="text-center text-sm text-muted-foreground">

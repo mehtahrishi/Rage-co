@@ -607,10 +607,22 @@ export default function HomePage() {
             <CarouselContent className='-ml-4'>
               {cardCollections.map((collection) => {
                 const image = PlaceHolderImages.find(img => img.id === collection.imageId);
+                // Map specific categories to broader groups
+                const categoryMap: Record<string, string> = {
+                  'Pants': 'Bottoms',
+                  'Shorts': 'Bottoms',
+                  'Vests': 'Tops',
+                  'Tshirts': 'Tops',
+                  'Baby-tees': 'Tops',
+                  'Long Sleeves': 'Tops',
+                  'Bandanas': 'Accessories',
+                };
+                const targetCategory = categoryMap[collection.handle] || collection.handle;
+
                 return (
                   <CarouselItem key={collection.$id} className="pl-4 basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                     <motion.div variants={itemVariants}>
-                      <Link href={`/products?category=${collection.handle}`} className="group block w-full h-full">
+                      <Link href={`/products?category=${targetCategory}`} className="group block w-full h-full">
                         <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-primary/50">
                           {image && (
                             <Image
@@ -622,6 +634,11 @@ export default function HomePage() {
                             />
                           )}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                          <div className="absolute bottom-4 left-4">
+                            <h3 className="text-xl font-bold text-white uppercase tracking-wider">
+                              {collection.title}
+                            </h3>
+                          </div>
                         </div>
                       </Link>
                     </motion.div>

@@ -30,27 +30,27 @@ export default function Dashboard() {
                 // Fetch real dashboard statistics using AdminService
                 const stats = await AdminService.getDashboardStats();
                 console.log('Received stats:', stats);
-                
+
                 setTotalRevenue(stats.totalRevenue);
                 setTotalOrders(stats.totalSales);
                 setTotalUsers(stats.totalUsers);
-                
+
                 // Fetch total product count
                 const productCount = await ProductService.countProducts();
                 setTotalProducts(productCount);
-                
+
                 // Fetch recent products sorted by creation date (newest first)
-                const products = await ProductService.getProducts({ 
-                  limit: 7, 
-                  sortBy: '$createdAt', 
-                  sortOrder: 'desc' 
+                const products = await ProductService.getProducts({
+                    limit: 7,
+                    sortBy: '$createdAt',
+                    sortOrder: 'desc'
                 });
                 setRecentProducts(products);
-                
+
                 // Generate simple chart data using the stats we just fetched
-                const chartData = generateSimpleChartData(stats.totalSales, stats.totalRevenue);
+                const chartData = generateSimpleChartData(stats.orders || []);
                 setChartData(chartData);
-                
+
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
                 setError(error instanceof Error ? error.message : 'Unknown error');
@@ -70,28 +70,40 @@ export default function Dashboard() {
     }, []);
 
     // Generate simple chart data showing total revenue and orders
-    const generateSimpleChartData = (orders: number, revenue: number) => {
+    // Generate simple chart data showing total revenue and orders
+    const generateSimpleChartData = (ordersData: any[]) => {
         // Simple 12 months from Jan to Dec
         const months = [
             'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
         ];
-        
-        // Create chart data - put all data in current month (October)
-        return months.map((month) => {
-            if (month === 'Oct') { // Current month - show actual data
-                return {
-                    name: month,
-                    orders: orders,
-                    revenue: revenue
-                };
+
+        // Initialize data structure
+        const data = months.map(month => ({
+            name: month,
+            orders: 0,
+            revenue: 0
+        }));
+
+        if (!ordersData || !Array.isArray(ordersData)) {
+            return data;
+        }
+
+        const currentYear = new Date().getFullYear();
+
+        ordersData.forEach(order => {
+            if (!order.$createdAt) return;
+
+            const date = new Date(order.$createdAt);
+            // Filter for current year
+            if (date.getFullYear() === currentYear) {
+                const monthIndex = date.getMonth(); // 0-11
+                data[monthIndex].orders += 1;
+                data[monthIndex].revenue += (order.total || 0);
             }
-            return {
-                name: month,
-                orders: 0,
-                revenue: 0
-            };
         });
+
+        return data;
     };
 
     const getMockChartData = () => {
@@ -166,8 +178,8 @@ export default function Dashboard() {
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                         <h2 className="text-xl font-bold mb-2">Error Loading Dashboard</h2>
                         <p>{error}</p>
-                        <Button 
-                            onClick={() => window.location.reload()} 
+                        <Button
+                            onClick={() => window.location.reload()}
                             className="mt-4"
                         >
                             Retry
@@ -244,7 +256,7 @@ export default function Dashboard() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pl-2">
-                             <ResponsiveContainer width="100%" height={350}>
+                            <ResponsiveContainer width="100%" height={350}>
                                 <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                                     <XAxis
@@ -261,8 +273,6 @@ export default function Dashboard() {
                                         fontSize={12}
                                         tickLine={false}
                                         axisLine={false}
-                                        domain={[0, 15]}
-                                        ticks={[0, 5, 10, 15]}
                                         tickFormatter={(value) => `${value}`}
                                     />
                                     <YAxis
@@ -272,11 +282,9 @@ export default function Dashboard() {
                                         fontSize={12}
                                         tickLine={false}
                                         axisLine={false}
-                                        domain={[0, 10000]}
-                                        ticks={[0, 2500, 5000, 7500, 10000]}
                                         tickFormatter={(value) => `₹${(value / 1000).toFixed(1)}k`}
                                     />
-                                    <Tooltip 
+                                    <Tooltip
                                         formatter={(value, name) => {
                                             if (name === 'Revenue') {
                                                 return [`₹${Number(value).toLocaleString()}`, 'Revenue'];
@@ -284,8 +292,8 @@ export default function Dashboard() {
                                             return [value, 'Orders'];
                                         }}
                                         labelStyle={{ color: 'hsl(var(--foreground))' }}
-                                        contentStyle={{ 
-                                            backgroundColor: 'hsl(var(--background))', 
+                                        contentStyle={{
+                                            backgroundColor: 'hsl(var(--background))',
                                             border: '1px solid hsl(var(--border))',
                                             borderRadius: '8px',
                                             color: 'hsl(var(--foreground))'

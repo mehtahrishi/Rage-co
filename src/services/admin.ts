@@ -2,7 +2,7 @@ import type { Order } from '@/lib/types';
 
 // Admin Database Operations
 export class AdminService {
-  
+
   // Get all users (this calls our API route)
   static async getUsers() {
     try {
@@ -10,11 +10,11 @@ export class AdminService {
       const response = await fetch('/api/admin/users');
       const data = await response.json();
       console.log('Users API response:', data);
-      
+
       if (!data.success) {
         throw new Error(data.error || 'Failed to fetch users');
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -27,11 +27,11 @@ export class AdminService {
     try {
       const response = await fetch('/api/admin/orders');
       const data = await response.json();
-      
+
       if (!data.success) {
         throw new Error(data.error || 'Failed to fetch orders');
       }
-      
+
       return data.data;
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -43,37 +43,38 @@ export class AdminService {
   static async getDashboardStats() {
     try {
       console.log('Fetching dashboard stats...');
-      
+
       // Fetch orders data from API
       console.log('Fetching orders...');
       const ordersData = await AdminService.getOrders();
       console.log('Orders data:', ordersData);
-      
+
       let totalRevenue = 0;
       let totalSales = 0;
-      
+
       ordersData.forEach((order: any) => {
         totalRevenue += order.total || 0;
         totalSales += 1;
       });
-      
+
       // Fetch actual user count from Appwrite
       console.log('Fetching users...');
       const usersResponse = await AdminService.getUsers();
       console.log('Users response:', usersResponse);
       const totalUsers = usersResponse.total || 0;
       console.log('Total users:', totalUsers);
-      
+
       // Placeholder for active users (would require session data)
       const activeUsers = 573; // Placeholder
-      
+
       const stats = {
         totalRevenue,
         totalSales,
         totalUsers,
-        activeUsers
+        activeUsers,
+        orders: ordersData
       };
-      
+
       console.log('Dashboard stats:', stats);
       return stats;
     } catch (error) {
@@ -86,7 +87,7 @@ export class AdminService {
   static async updateOrderStatus(orderId: string, status: string) {
     try {
       console.log(`AdminService: Updating order ${orderId} to status ${status}`);
-      
+
       const response = await fetch('/api/admin/orders', {
         method: 'PUT',
         headers: {
@@ -94,23 +95,23 @@ export class AdminService {
         },
         body: JSON.stringify({ orderId, status }),
       });
-      
+
       console.log('Response status:', response.status);
       console.log('Response ok:', response.ok);
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Error response text:', errorText);
         throw new Error(`HTTP ${response.status}: ${errorText || 'Failed to update order status'}`);
       }
-      
+
       const data = await response.json();
       console.log('Response data:', data);
-      
+
       if (!data.success) {
         throw new Error(data.error || data.details || 'Failed to update order status');
       }
-      
+
       return data.data;
     } catch (error) {
       console.error('Error updating order status:', error);
