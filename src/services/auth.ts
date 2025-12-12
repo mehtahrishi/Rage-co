@@ -14,7 +14,7 @@ export interface RegisterCredentials {
 }
 
 export class AuthService {
-  
+
   // Register new user
   static async register({ email, password, name, phone }: RegisterCredentials) {
     try {
@@ -25,9 +25,9 @@ export class AuthService {
         password,
         name
       );
-      
+
       console.log('User created successfully');
-      
+
       // If phone number is provided, we need to temporarily log in to store it
       if (phone) {
         console.log('Storing phone number in preferences...');
@@ -39,7 +39,7 @@ export class AuthService {
         await account.deleteSession('current');
         console.log('Temporary session ended');
       }
-      
+
       return user;
     } catch (error) {
       console.error('Registration error:', error);
@@ -80,7 +80,14 @@ export class AuthService {
   }
 
   // Update user profile
-  static async updateProfile({ name, email }: { name?: string; email?: string }) {
+  static async updateProfile({ name, email, address, apartment, city, postalCode }: {
+    name?: string;
+    email?: string;
+    address?: string;
+    apartment?: string;
+    city?: string;
+    postalCode?: string;
+  }) {
     try {
       if (name) {
         await account.updateName(name);
@@ -88,6 +95,21 @@ export class AuthService {
       if (email) {
         await account.updateEmail(email, 'password'); // You'd need to handle password verification
       }
+
+      // Update preferences for address
+      if (address !== undefined || apartment !== undefined || city !== undefined || postalCode !== undefined) {
+        const user = await account.get();
+        const currentPrefs = user.prefs || {};
+
+        await account.updatePrefs({
+          ...currentPrefs,
+          ...(address !== undefined && { address }),
+          ...(apartment !== undefined && { apartment }),
+          ...(city !== undefined && { city }),
+          ...(postalCode !== undefined && { postalCode }),
+        });
+      }
+
       return await account.get();
     } catch (error) {
       console.error('Profile update error:', error);

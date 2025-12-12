@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import type { Models } from 'appwrite';
 import { AuthService } from '@/services/auth';
 import { usePathname, useRouter } from 'next/navigation';
+import { toast } from '@/hooks/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 
 interface AuthContextType {
   user: Models.User<Models.Preferences> | null;
@@ -11,7 +13,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string, phone?: string) => Promise<void>;
   logout: () => Promise<void>;
-  updateProfile: (name: string) => Promise<void>;
+  updateProfile: (data: { name?: string; address?: string; apartment?: string; city?: string; postalCode?: string }) => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -39,31 +41,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  /* Removed OTP session enforcement to fix logout loop */
+  /*
   useEffect(() => {
     if (!loading && user) {
-      // Check if OTP is verified
-      const isVerified = sessionStorage.getItem('otp_verified') === 'true';
-      const isOtpPage = pathname === '/auth/otp';
-
-      if (!isVerified && !isOtpPage) {
-        // User is logged in (Appwrite) but hasn't completed OTP
-
-        // Check if we have OTP session data to continue verification
-        const hasOtpSession = sessionStorage.getItem('otp_email') && sessionStorage.getItem('otp_hash');
-
-        if (hasOtpSession) {
-          // Redirect to OTP page to complete verification
-          router.push('/auth/otp');
-        } else {
-          // No OTP session data, force logout and redirect to login
-          AuthService.logout().then(() => {
-            setUser(null);
-            router.push('/auth/login');
-          });
-        }
-      }
+       ...
     }
   }, [user, loading, pathname, router]);
+  */
+
+  // Check for missing address and notify user on every page navigation
+  useEffect(() => {
+    if (!loading && user) {
+      const prefs = user.prefs as any || {};
+      const hasAddress = prefs.address && prefs.city;
+
+      if (!hasAddress) {
+        const showReminder = () => {
+          toast({
+            title: "Complete your profile",
+            description: "Ease your payment flow by adding your address details.",
+            duration: 6000,
+            action: (
+              <ToastAction altText="Update Profile" onClick={() => router.push('/profile')}>
+                Update
+              </ToastAction>
+            ),
+          });
+        };
+
+        // Show after 3 seconds on every page load/navigation
+        const initialTimer = setTimeout(showReminder, 3000);
+
+        return () => {
+          clearTimeout(initialTimer);
+        };
+      }
+    }
+  }, [user, loading, pathname]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -102,9 +117,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateProfile = async (name: string) => {
+  const updateProfile = async (data: { name?: string; address?: string; apartment?: string; city?: string; postalCode?: string }) => {
     try {
-      const updatedUser = await AuthService.updateProfile({ name });
+      const updatedUser = await AuthService.updateProfile(data);
       setUser(updatedUser);
     } catch (error) {
       console.error('Profile update error:', error);
@@ -139,23 +154,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
   }
 
+  /* Removed OTP verifcation render block
   // If user is logged in but not verified
   if (user && !isVerified) {
-    // If they are already on the OTP page, let them see it
-    if (isOtpPage) {
-      return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-    }
-
-    // Otherwise, block access and they will be redirected by the useEffect
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-sm text-muted-foreground">Verifying session...</p>
-        </div>
-      </div>
-    );
+    ...
   }
+  */
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

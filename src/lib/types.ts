@@ -69,6 +69,7 @@ export interface Order extends AppwriteDocument {
   items: OrderItem[];
   total: number;
   status?: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  paymentMethod: 'cod' | 'upi' | 'qr';
   shippingAddress: Address | string; // Can be object or JSON string
 }
 

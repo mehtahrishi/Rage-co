@@ -28,6 +28,9 @@ import { useRouter } from 'next/navigation';
 import { OrderService } from '@/services/orders';
 import { useToast } from '@/hooks/use-toast';
 import { CustomLoader } from '@/components/custom-loader';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Copy, Check, QrCode, Smartphone, Banknote } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -54,7 +57,12 @@ export default function CheckoutPage() {
   const [showAuthLoader, setShowAuthLoader] = useState(true);
   const [paymentTimer, setPaymentTimer] = useState(60); // 1 minute timer
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const upiId = process.env.NEXT_PUBLIC_UPI_ID || 'generationragers@ybl'; // Fallback to your provided UPI ID
+  const [paymentMethod, setPaymentMethod] = useState<'qr' | 'upi' | 'cod'>('qr');
+  const [copied, setCopied] = useState(false);
+  const [hasConsented, setHasConsented] = useState(false);
+
+  // Use environment variable or fallback
+  const upiId = process.env.NEXT_PUBLIC_UPI_ID || 'generationragers@ybl';
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(formSchema),
@@ -88,6 +96,16 @@ export default function CheckoutPage() {
           form.setValue('lastName', '');
         }
       }
+
+      // Populate address from preferences
+      const prefs = user.prefs as any || {};
+      if (prefs.address) form.setValue('address', prefs.address);
+      if (prefs.apartment) form.setValue('apartment', prefs.apartment);
+      if (prefs.city) form.setValue('city', prefs.city);
+      if (prefs.postalCode) form.setValue('postalCode', prefs.postalCode);
+
+      // Additional safety check for user name in case it wasn't set in profile but is in prefs? 
+      // Unlikely, relying on user.name is correct.
     }
   }, [user, form]);
 
@@ -135,15 +153,32 @@ export default function CheckoutPage() {
   }, [showLoader, router]);
 
   function onSubmit(data: CheckoutFormValues) {
-    // Instead of submitting directly, open the confirmation modal
+    // Open confirmation modal appropriate for the payment method
     setIsConfirmModalOpen(true);
   }
 
   // Handle confirmation modal action
   const handleConfirmPayment = () => {
-    setIsConfirmModalOpen(false);
-    setIsPaymentModalOpen(true);
-    setPaymentTimer(60); // Reset timer to 1 minute
+    if (paymentMethod === 'cod') {
+      // For COD, process directly without payment modal
+      handlePaymentSuccess();
+    } else {
+      setIsConfirmModalOpen(false);
+      // For online methods, show payment modal
+      setIsPaymentModalOpen(true);
+      setHasConsented(false);
+      setPaymentTimer(60); // Reset timer to 1 minute
+    }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(upiId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    toast({
+      title: "Copied!",
+      description: "UPI ID copied to clipboard",
+    });
   };
 
   // Generate UPI payment URL
@@ -183,6 +218,7 @@ export default function CheckoutPage() {
           color: item.color
         })),
         total: finalTotal,
+        paymentMethod: paymentMethod, // Add payment method
         shippingAddress: {
           firstName: form.getValues('firstName'),
           lastName: form.getValues('lastName'),
@@ -200,12 +236,28 @@ export default function CheckoutPage() {
       const createdOrder = await OrderService.createOrder(orderData);
       console.log('Order created successfully:', createdOrder);
 
+      // Send confirmation email
+      try {
+        await fetch('/api/orders/email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            order: createdOrder,
+            email: user.email
+          })
+        });
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Don't block flow for email failure
+      }
+
       // Show success animation
       setIsPaymentSuccess(true);
 
       setTimeout(async () => {
         setIsPaymentSuccess(false);
         setIsPaymentModalOpen(false);
+        setIsConfirmModalOpen(false);
         setPaymentTimer(60); // Reset timer
         setIsProcessingPayment(false); // Reset processing state
 
@@ -236,6 +288,7 @@ export default function CheckoutPage() {
   // Handle payment cancellation
   const handlePaymentCancel = () => {
     setIsPaymentModalOpen(false);
+    setHasConsented(false);
     setPaymentTimer(60); // Reset timer
   };
 
@@ -413,12 +466,55 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
+                <Separator />
+
+                <div>
+                  <h2 className="text-2xl font-headline font-semibold mb-4">Payment Method</h2>
+                  <RadioGroup
+                    defaultValue="qr"
+                    value={paymentMethod}
+                    onValueChange={(val) => setPaymentMethod(val as 'qr' | 'upi' | 'cod')}
+                    className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                  >
+                    <div>
+                      <RadioGroupItem value="qr" id="qr" className="peer sr-only" />
+                      <Label
+                        htmlFor="qr"
+                        className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                      >
+                        <QrCode className="mb-3 h-6 w-6" />
+                        <span className="font-semibold">Scan QR</span>
+                      </Label>
+                    </div>
+                    <div>
+                      <RadioGroupItem value="upi" id="upi" className="peer sr-only" />
+                      <Label
+                        htmlFor="upi"
+                        className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                      >
+                        <Smartphone className="mb-3 h-6 w-6" />
+                        <span className="font-semibold">UPI ID</span>
+                      </Label>
+                    </div>
+                    <div>
+                      <RadioGroupItem value="cod" id="cod" className="peer sr-only" />
+                      <Label
+                        htmlFor="cod"
+                        className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                      >
+                        <Banknote className="mb-3 h-6 w-6" />
+                        <span className="font-semibold">Cash on Delivery</span>
+                      </Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Button type="button" variant="outline" asChild className="flex-1 h-12">
                     <Link href="/cart">Back to Cart</Link>
                   </Button>
                   <Button type="submit" size="lg" className="flex-1 h-12">
-                    Continue to Payment
+                    {paymentMethod === 'cod' ? 'Place Order' : 'Continue to Payment'}
                   </Button>
                 </div>
               </form>
@@ -488,70 +584,127 @@ export default function CheckoutPage() {
 
       {/* Confirmation Modal */}
       <Dialog open={isConfirmModalOpen} onOpenChange={setIsConfirmModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent
+          className="sm:max-w-md [&>button]:hidden"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
           <DialogHeader>
-            <DialogTitle>Payment Confirmation</DialogTitle>
+            <DialogTitle>
+              {paymentMethod === 'cod' ? 'Confirm Order' : 'Payment Information'}
+            </DialogTitle>
             <DialogDescription>
-              Please read the following payment instructions carefully
+              {paymentMethod === 'cod'
+                ? 'Please confirm you would like to place this order using Cash on Delivery.'
+                : 'Please review the payment instructions below.'}
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col space-y-4 py-4">
-            <div className="bg-muted border rounded-lg p-4">
-              <h3 className="font-semibold">Important Payment Instructions</h3>
-              <p className="text-sm mt-2">
-                Kindly complete your payment using the QR code provided. A timestamp will be recorded to verify your payment on our sales system.
-                Please note that failure to complete the payment within the allotted time frame will result in automatic order cancellation.
-                You have exactly one minute to complete this transaction.
-              </p>
-            </div>
+            {paymentMethod !== 'cod' && (
+              <div className="bg-muted border rounded-lg p-4">
+                <h3 className="font-semibold">Important Payment Instructions</h3>
+                <p className="text-sm mt-2">
+                  Kindly complete your payment using the
+                  {paymentMethod === 'qr' ? ' QR code provided' : ' UPI ID provided'}.
+                  A timestamp will be recorded to verify your payment.
+                  You have exactly one minute to complete this transaction after confirmation.
+                </p>
+              </div>
+            )}
             <div className="flex gap-3 pt-2">
               <Button
                 variant="outline"
                 className="flex-1"
                 onClick={() => setIsConfirmModalOpen(false)}
+                disabled={isProcessingPayment}
               >
                 Cancel
               </Button>
               <Button
                 className="flex-1"
                 onClick={handleConfirmPayment}
+                disabled={isProcessingPayment}
               >
-                I Confirm
+                {isProcessingPayment
+                  ? 'Processing...'
+                  : (paymentMethod === 'cod' ? 'Place Order' : 'I Understand, Proceed')}
               </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Payment Modal */}
+      {/* Payment Modal (Online Only) */}
       <Dialog open={isPaymentModalOpen} onOpenChange={handlePaymentCancel}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent
+          className="sm:max-w-md [&>button]:hidden"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
           <DialogHeader>
             <DialogTitle>Complete Your Payment</DialogTitle>
             <DialogDescription>
-              Scan the QR code with any UPI app to pay ₹{finalTotal.toFixed(2)}
+              {paymentMethod === 'qr'
+                ? `Scan the QR code to pay ₹${finalTotal.toFixed(2)}`
+                : `Transfer ₹${finalTotal.toFixed(2)} to the UPI ID below`
+              }
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col items-center space-y-6 py-4">
-            <div className="p-4 bg-white rounded-lg">
-              <QRCodeSVG
-                value={generateUpiUrl()}
-                size={200}
-                level="H"
-                includeMargin={true}
-              />
-            </div>
+
+            {paymentMethod === 'qr' ? (
+              <div className="p-4 bg-white rounded-lg">
+                <QRCodeSVG
+                  value={generateUpiUrl()}
+                  size={200}
+                  level="H"
+                  includeMargin={true}
+                />
+              </div>
+            ) : (
+              <div className="w-full bg-muted p-4 rounded-lg flex flex-col gap-2">
+                <Label className="text-xs text-muted-foreground uppercase tracking-wider">Merchant UPI ID</Label>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 bg-background p-3 rounded border font-mono text-sm break-all">
+                    {upiId}
+                  </code>
+                  <Button size="icon" variant="outline" onClick={copyToClipboard} className="h-11 w-11 shrink-0">
+                    {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Open your UPI app and transfer exactly <span className="font-bold text-foreground">₹{finalTotal.toFixed(2)}</span> to this ID.
+                </p>
+              </div>
+            )}
+
             <div className="text-center">
-              <p className="font-semibold">Amount: ₹{finalTotal.toFixed(2)}</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Scan with any UPI app (Google Pay, PhonePe, Paytm, etc.)
-              </p>
-              <div className="mt-2 p-2 bg-red-50 rounded-lg">
+              {paymentMethod === 'qr' && (
+                <>
+                  <p className="font-semibold">Amount: ₹{finalTotal.toFixed(2)}</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Scan with any UPI app (Google Pay, PhonePe, Paytm, etc.)
+                  </p>
+                </>
+              )}
+              <div className="mt-4 p-2 bg-red-50 rounded-lg inline-block">
                 <p className="text-sm font-medium text-red-800">
                   Time remaining: {formatTime(paymentTimer)}
                 </p>
               </div>
             </div>
+
+            <div className="flex items-center space-x-2 w-full bg-muted/50 p-3 rounded-md mb-4 border">
+              <Checkbox
+                id="payment-consent"
+                checked={hasConsented}
+                onCheckedChange={(checked) => setHasConsented(checked as boolean)}
+              />
+              <Label htmlFor="payment-consent" className="text-sm font-medium leading-none cursor-pointer">
+                I confirm that I have made the payment of ₹{finalTotal.toFixed(2)}
+              </Label>
+            </div>
+
             <div className="flex gap-3 w-full">
               <Button
                 variant="outline"
@@ -564,9 +717,9 @@ export default function CheckoutPage() {
               <Button
                 className="flex-1"
                 onClick={handlePaymentSuccess}
-                disabled={isProcessingPayment}
+                disabled={isProcessingPayment || !hasConsented}
               >
-                {isProcessingPayment ? 'Processing...' : 'Payment Done'}
+                {isProcessingPayment ? 'Verifying...' : 'Payment Done'}
               </Button>
             </div>
           </div>
@@ -641,7 +794,7 @@ export default function CheckoutPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              Payment Successful!
+              Order Placed!
             </motion.h3>
             <motion.p
               className="text-gray-300 mt-2"

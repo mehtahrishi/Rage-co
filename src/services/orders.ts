@@ -5,6 +5,7 @@ export interface CreateOrderData {
   userId: string;
   items: OrderItem[];
   total: number;
+  paymentMethod: 'cod' | 'upi' | 'qr';
   shippingAddress: {
     firstName: string;
     lastName: string;
@@ -28,6 +29,8 @@ export class OrderService {
           userId: orderData.userId,
           items: JSON.stringify(orderData.items),
           total: orderData.total,
+          paymentMethod: orderData.paymentMethod,
+          status: 'pending',
           shippingAddress: JSON.stringify(orderData.shippingAddress)
         }
       );
@@ -61,17 +64,17 @@ export class OrderService {
       throw error;
     }
   }
-  
+
   // Get orders for the current user via API route
   static async getMyOrders(): Promise<Order[]> {
     try {
       const response = await fetch('/api/user/orders');
       const data = await response.json();
-      
+
       if (!data.success) {
         throw new Error(data.error || 'Failed to fetch orders');
       }
-      
+
       return data.data;
     } catch (error) {
       console.error('Error fetching user orders:', error);

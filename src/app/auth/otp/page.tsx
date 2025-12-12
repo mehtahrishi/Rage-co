@@ -27,6 +27,12 @@ export default function OtpPage() {
         const storedHash = sessionStorage.getItem('otp_hash');
         const storedExpiry = sessionStorage.getItem('otp_expiry');
 
+        // If already verified, go home
+        if (sessionStorage.getItem('otp_verified') === 'true') {
+            router.push('/');
+            return;
+        }
+
         if (!storedEmail || !storedHash || !storedExpiry) {
             router.push('/auth/login');
             return;
