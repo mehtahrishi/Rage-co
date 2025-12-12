@@ -29,6 +29,7 @@ import { BrandModel } from '@/components/brand-model';
 import { TypewriterBrand } from '@/components/typewriter-brand';
 
 const categories = [
+  { name: "LONG SLEEVES", href: '/products?category=Long-sleeves', key: 'Long-sleeves' },
   { name: "PANTS", href: '/products?category=Pants', key: 'Pants' },
   { name: "VESTS", href: '/products?category=Vests', key: 'Vests' },
   { name: "TSHIRTS", href: '/products?category=Tshirts', key: 'Tshirts' },
@@ -36,6 +37,29 @@ const categories = [
   { name: "SHORTS", href: '/products?category=Shorts', key: 'Shorts' },
   { name: "BANDANAS", href: '/products?category=Bandanas', key: 'Bandanas' },
 ];
+
+const LongSleevesIcon = () => (
+  <motion.svg
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    exit={{ opacity: 0, x: -10 }}
+    transition={{ duration: 0.2 }}
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    className="inline-block mr-2"
+    fill="currentColor"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M8 3 C8 3 10 5 12 5 C14 5 16 3 16 3" />
+    <path d="M16 3 L20 4 C20.5 4.1 21 4.5 21 5 L22 19 L20 19 L17 9 L17 20 C17 20.6 16.6 21 16 21 L8 21 C7.4 21 7 20.6 7 20 L7 9 L4 19 L2 19 L3 5 C3 4.5 3.5 4.1 4 4 L8 3" />
+  </motion.svg>
+);
+
 
 const PantsIcon = () => (
   <motion.svg
@@ -62,15 +86,19 @@ const VestIcon = () => (
     transition={{ duration: 0.2 }}
     width="16"
     height="16"
-    viewBox="0 0 200 200"
+    viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
     className="inline-block mr-2"
     fill="currentColor"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
-    <g>
-      <path d=" M60 20 Q70 10 100 10 Q130 10 140 20 L160 40 L160 180 L40 180 L40 40 L60 20 Z" />
-      <path d=" M80 20 Q100 60 120 20 Z" fill="var(--background)" />
-    </g>
+    <path d="M7 4C7 4 9.5 7 12 7C14.5 7 17 4 17 4" />
+    <path d="M17 4L18 20H6L7 4" />
+    <path d="M7 4C6 6 5 9 6 12" />
+    <path d="M17 4C18 6 19 9 18 12" />
   </motion.svg>
 );
 
@@ -123,16 +151,22 @@ const BabyTeeIcon = () => (
     transition={{ duration: 0.2 }}
     width="16"
     height="16"
-    viewBox="0 0 330 330"
+    viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
     className="inline-block mr-2"
     fill="currentColor"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
-    <path d="M315,10.013h-90.012c-8.284,0-15,6.716-15,15c0,24.799-20.183,44.974-44.99,44.974 c-24.808,0-44.99-20.175-44.99-44.974c0-8.284-6.716-15-15-15H15c-8.284,0-15,6.716-15,15v109.974c0,8.284,6.716,15,15,15h45v155 c0,8.284,6.716,15,15,15h180c8.284,0,15-6.716,15-15v-155h45c8.284,0,15-6.716,15-15V25.013C330,16.729,323.284,10.013,315,10.013z" />
+    <path d="M8 4 C8 4 10 6 12 6 C14 6 16 4 16 4" />
+    <path d="M16 4 L20 5 C20.5 5.1 21 5.5 21 6 L22 19 L20 19 L17 10 L17 12 C17 12.6 16.6 13 16 13 L8 13 C7.4 13 7 12.6 7 12 L7 10 L4 19 L2 19 L3 6 C3 5.5 3.5 5.1 4 5 L8 4" />
   </motion.svg>
 );
 
 const iconMap: { [key: string]: React.ComponentType } = {
+  "LONG SLEEVES": LongSleevesIcon,
   PANTS: PantsIcon,
   VESTS: VestIcon,
   TSHIRTS: TshirtIcon,
@@ -215,9 +249,13 @@ export default function HomePage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const products = await ProductService.getProducts();
+        const products = await ProductService.getProducts({
+          sortBy: '$createdAt',
+          sortOrder: 'desc',
+          limit: 100
+        });
         setAllProducts(products);
-        const trending = await ProductService.getTrendingProducts(8);
+        const trending = await ProductService.getLatestProducts(8);
         setTrendingProducts(trending);
       } catch (error) {
         console.error("Failed to fetch products:", error);

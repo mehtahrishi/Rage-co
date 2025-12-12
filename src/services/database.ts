@@ -29,13 +29,13 @@ export class AdminProductService {
         },
         body: JSON.stringify(productData),
       });
-      
+
       const data = await response.json();
-      
+
       if (!data.success) {
         throw new Error(data.error || 'Failed to create product');
       }
-      
+
       return data.data;
     } catch (error) {
       console.error('Error creating product:', error);
@@ -53,13 +53,13 @@ export class AdminProductService {
         },
         body: JSON.stringify(productData),
       });
-      
+
       const data = await response.json();
-      
+
       if (!data.success) {
         throw new Error(data.error || 'Failed to update product');
       }
-      
+
       return data.data;
     } catch (error) {
       console.error('Error updating product:', error);
@@ -73,13 +73,13 @@ export class AdminProductService {
       const response = await fetch(`/api/admin/products/${productId}`, {
         method: 'DELETE',
       });
-      
+
       const data = await response.json();
-      
+
       if (!data.success) {
         throw new Error(data.error || 'Failed to delete product');
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -92,11 +92,11 @@ export class AdminProductService {
     try {
       const response = await fetch('/api/admin/products');
       const data = await response.json();
-      
+
       if (!data.success) {
         throw new Error(data.error || 'Failed to fetch products');
       }
-      
+
       return data.data;
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -107,7 +107,7 @@ export class AdminProductService {
 
 // Product Database Operations (for public access)
 export class ProductService {
-  
+
   // Get all products with optional filtering and sorting
   static async getProducts(filters?: {
     category?: string;
@@ -121,19 +121,19 @@ export class ProductService {
   }) {
     try {
       const queries = [];
-      
+
       if (filters?.category && filters.category !== 'all') {
         queries.push(Query.equal('category', filters.category));
       }
-      
+
       if (filters?.subCategory && filters.subCategory !== 'all') {
         queries.push(Query.equal('subCategory', filters.subCategory));
       }
-      
+
       if (filters?.maxPrice) {
         queries.push(Query.lessThanEqual('price', filters.maxPrice));
       }
-      
+
       // Add sorting if specified
       if (filters?.sortBy) {
         if (filters.sortOrder === 'desc') {
@@ -142,7 +142,7 @@ export class ProductService {
           queries.push(Query.orderAsc(filters.sortBy));
         }
       }
-      
+
       if (filters?.limit) {
         queries.push(Query.limit(filters.limit));
       }
@@ -170,15 +170,15 @@ export class ProductService {
   }) {
     try {
       const queries: any[] = [];
-      
+
       if (filters?.category && filters.category !== 'all') {
         queries.push(Query.equal('category', filters.category));
       }
-      
+
       if (filters?.subCategory && filters.subCategory !== 'all') {
         queries.push(Query.equal('subCategory', filters.subCategory));
       }
-      
+
       if (filters?.maxPrice) {
         queries.push(Query.lessThanEqual('price', filters.maxPrice));
       }
@@ -222,11 +222,11 @@ export class ProductService {
         CONFIG.COLLECTIONS.PRODUCTS,
         [Query.equal('slug', slug)]
       );
-      
+
       if (response.documents.length === 0) {
         throw new Error('Product not found');
       }
-      
+
       return transformProduct(response.documents[0]);
     } catch (error) {
       console.error('Error fetching product by slug:', error);
@@ -266,6 +266,24 @@ export class ProductService {
       return response.documents.map(transformProduct);
     } catch (error) {
       console.error('Error fetching trending products:', error);
+      throw error;
+    }
+  }
+
+  // Get latest products
+  static async getLatestProducts(limit = 8) {
+    try {
+      const response = await databases.listDocuments(
+        CONFIG.DATABASE_ID,
+        CONFIG.COLLECTIONS.PRODUCTS,
+        [
+          Query.orderDesc('$createdAt'),
+          Query.limit(limit)
+        ]
+      );
+      return response.documents.map(transformProduct);
+    } catch (error) {
+      console.error('Error fetching latest products:', error);
       throw error;
     }
   }
@@ -320,7 +338,7 @@ export class ProductService {
 
 // Collection Database Operations
 export class CollectionService {
-  
+
   static async getCollections() {
     try {
       const response = await databases.listDocuments(
@@ -351,7 +369,7 @@ export class CollectionService {
 
 // Review Database Operations
 export class ReviewService {
-  
+
   static async getProductReviews(productId: string) {
     try {
       const response = await databases.listDocuments(

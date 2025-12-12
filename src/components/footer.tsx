@@ -82,6 +82,37 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
+
+      {/* Massive Brand Footer */}
+      <div className="w-full overflow-hidden border-t bg-background">
+        <div className="w-full flex justify-center items-end leading-none">
+          <svg
+            viewBox="0 0 1200 140"
+            className="w-full h-auto pointer-events-none select-none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <style>
+                {`
+                    @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+                `}
+              </style>
+            </defs>
+            <text
+              x="50%"
+              y="200"
+              textAnchor="middle"
+              className="fill-current text-foreground"
+              style={{
+                fontFamily: "'UnifrakturMaguntia', cursive",
+                fontSize: '240px',
+              }}
+            >
+              Liars
+            </text>
+          </svg>
+        </div>
+      </div>
     </footer>
   );
 }
