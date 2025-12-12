@@ -10,7 +10,7 @@ import { Slider } from '@/components/ui/slider';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -27,7 +27,7 @@ export function ProductsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
+
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
@@ -48,6 +48,8 @@ export function ProductsContent() {
           maxPrice: searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined,
           sizes: searchParams.getAll('size'),
           colors: searchParams.getAll('color'),
+          sortBy: '$createdAt',
+          sortOrder: 'desc' as 'desc',
         };
         const [fetchedProducts, count] = await Promise.all([
           ProductService.getProducts(filters),
@@ -96,16 +98,18 @@ export function ProductsContent() {
     params.set('maxPrice', String(value[0]));
     router.replace(`${pathname}?${params.toString()}`);
   }
-  
+
   const clearFilters = () => {
     router.replace(pathname);
   }
 
   const removeFilter = (filterType: string, value?: string) => {
     const params = new URLSearchParams(searchParams);
-    
+
     if (filterType === 'category') {
       params.delete('category');
+      params.delete('subCategory');
+    } else if (filterType === 'subCategory') {
       params.delete('subCategory');
     } else if (filterType === 'size' && value) {
       const currentSizes = params.getAll('size');
@@ -118,37 +122,41 @@ export function ProductsContent() {
     } else if (filterType === 'price') {
       params.delete('maxPrice');
     }
-    
+
     router.replace(`${pathname}?${params.toString()}`);
   }
 
   const currentMaxPrice = Number(searchParams.get('maxPrice') || MAX_PRICE);
 
   const getCategoryValue = () => {
-    if(categoryParam === 'Tops' || categoryParam === 'Bottoms' || categoryParam === 'Accessories') return categoryParam;
+    if (categoryParam === 'Tops' || categoryParam === 'Bottoms' || categoryParam === 'Accessories') return categoryParam;
     return 'all';
   }
 
   // Get active filters for display
   const activeFilters = useMemo(() => {
     const filters = [];
-    
+
     if (categoryParam) {
       filters.push({ type: 'category', value: categoryParam, label: categoryParam });
     }
-    
+
+    if (subCategoryParam) {
+      filters.push({ type: 'subCategory', value: subCategoryParam, label: subCategoryParam });
+    }
+
     sizes.forEach(size => {
       filters.push({ type: 'size', value: size, label: `Size: ${size}` });
     });
-    
+
     colors.forEach(color => {
       filters.push({ type: 'color', value: color, label: `Color: ${color}` });
     });
-    
+
     if (searchParams.get('maxPrice')) {
       filters.push({ type: 'price', value: 'price', label: `Under ₹${currentMaxPrice}` });
     }
-    
+
     return filters;
   }, [categoryParam, sizes, colors, searchParams]);
 
@@ -171,6 +179,34 @@ export function ProductsContent() {
                 <SelectItem value="Accessories">Accessories</SelectItem>
               </SelectContent>
             </Select>
+
+            {/* SubCategory Filter */}
+            <Select
+              value={subCategoryParam || 'all'}
+              onValueChange={(value) => {
+                const params = new URLSearchParams(searchParams);
+                if (value === 'all') {
+                  params.delete('subCategory');
+                } else {
+                  params.set('subCategory', value);
+                }
+                router.replace(`${pathname}?${params.toString()}`);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Product Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="Tshirts">T-Shirts</SelectItem>
+                <SelectItem value="Vests">Vests</SelectItem>
+                <SelectItem value="Baby-tees">Baby Tees</SelectItem>
+                <SelectItem value="Long-Sleeves">Long Sleeves</SelectItem>
+                <SelectItem value="Pants">Pants</SelectItem>
+                <SelectItem value="Shorts">Shorts</SelectItem>
+                <SelectItem value="Bandanas">Bandanas</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex-1 hidden md:block text-center text-sm text-muted-foreground">
@@ -180,11 +216,11 @@ export function ProductsContent() {
           {/* Price Filter - Moved to Right Corner */}
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Price:</span>
-            <Slider 
-              value={[currentMaxPrice]} 
-              max={MAX_PRICE} 
-              step={10} 
-              onValueChange={handlePriceChange} 
+            <Slider
+              value={[currentMaxPrice]}
+              max={MAX_PRICE}
+              step={10}
+              onValueChange={handlePriceChange}
               className="w-32"
             />
             <span className="text-sm w-16">₹{currentMaxPrice}</span>
@@ -195,12 +231,12 @@ export function ProductsContent() {
         {activeFilters.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {activeFilters.map((filter, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="flex items-center bg-muted rounded-full px-3 py-1 text-sm"
               >
                 <span>{filter.label}</span>
-                <button 
+                <button
                   onClick={() => removeFilter(filter.type, filter.value)}
                   className="ml-2 rounded-full hover:bg-muted-foreground/20 p-1"
                 >

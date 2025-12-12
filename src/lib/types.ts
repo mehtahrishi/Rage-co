@@ -8,7 +8,7 @@ export interface AppwriteDocument extends Models.Document {
 export interface Product extends AppwriteDocument {
   name: string;
   category: 'Tops' | 'Bottoms' | 'Accessories';
-  subCategory: 'Tshirts' | 'Vests' | 'Baby-tees' | 'Pants' | 'Shorts' | 'Bandanas';
+  subCategory: 'Tshirts' | 'Vests' | 'Baby-tees' | 'Pants' | 'Shorts' | 'Bandanas' | 'Long-Sleeves';
   price: number;
   originalPrice?: number;
   rating: number;
@@ -47,7 +47,7 @@ export interface Review extends AppwriteDocument {
 
 // User profile interface
 export interface UserProfile extends AppwriteDocument {
-  email: string;  
+  email: string;
   name: string;
   addresses: Address[];
   wishlist: string[];

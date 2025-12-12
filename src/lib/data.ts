@@ -6,7 +6,7 @@ export const collections: Collection[] = [
   { $id: '3', title: 'T-Shirts', handle: 'Tshirts', imageId: 'category-tshirts', $collectionId: 'collections', $databaseId: 'rage-ecommerce', $createdAt: '', $updatedAt: '', $permissions: [], $sequence: 3 },
   { $id: '5', title: 'Baby Tees', handle: 'Baby-tees', imageId: 'category-baby-tees', $collectionId: 'collections', $databaseId: 'rage-ecommerce', $createdAt: '', $updatedAt: '', $permissions: [], $sequence: 5 },
   { $id: '6', title: 'Shorts', handle: 'Shorts', imageId: 'category-shorts', $collectionId: 'collections', $databaseId: 'rage-ecommerce', $createdAt: '', $updatedAt: '', $permissions: [], $sequence: 6 },
-  { $id: '7', title: 'Long Sleeves', handle: 'Long Sleeves', imageId: 'category-long-sleeves', $collectionId: 'collections', $databaseId: 'rage-ecommerce', $createdAt: '', $updatedAt: '', $permissions: [], $sequence: 7 },
+  { $id: '7', title: 'Long Sleeves', handle: 'Long-Sleeves', imageId: 'category-long-sleeves', $collectionId: 'collections', $databaseId: 'rage-ecommerce', $createdAt: '', $updatedAt: '', $permissions: [], $sequence: 7 },
 ];
 
 export const products: Product[] = [];
