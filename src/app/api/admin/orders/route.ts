@@ -63,14 +63,17 @@ export async function GET(request: NextRequest) {
 
 // Update order status
 export async function PUT(request: NextRequest) {
+  let orderId: string | undefined;
+  let status: string | undefined;
+
   try {
     console.log('PUT request received for order update');
-    
+
     const body = await request.json();
     console.log('Request body:', body);
-    
-    const { orderId, status } = body;
-    
+
+    ({ orderId, status } = body);
+
     if (!orderId || !status) {
       console.log('Missing required fields:', { orderId, status });
       return NextResponse.json(
@@ -99,7 +102,7 @@ export async function PUT(request: NextRequest) {
 
     console.log(`Attempting to update order ${orderId} with status: ${status}`);
     console.log('CONFIG:', { DATABASE_ID: CONFIG.DATABASE_ID, ORDERS_COLLECTION: CONFIG.COLLECTIONS.ORDERS });
-    
+
     // First, try to get the current order to see its structure
     try {
       const currentOrder = await databases.getDocument(
@@ -111,7 +114,7 @@ export async function PUT(request: NextRequest) {
     } catch (getError) {
       console.log('Could not fetch current order:', getError);
     }
-    
+
     // Update order status
     const updatedOrder = await databases.updateDocument(
       CONFIG.DATABASE_ID,
@@ -121,7 +124,7 @@ export async function PUT(request: NextRequest) {
         status: status
       }
     );
-    
+
     console.log('Order updated successfully:', updatedOrder.$id);
 
     return NextResponse.json({
@@ -135,11 +138,11 @@ export async function PUT(request: NextRequest) {
     console.error('Error type:', error.constructor.name);
     console.error('Error code:', error.code);
     console.error('Error type from Appwrite:', error.type);
-    
+
     // More specific error handling
     let errorMessage = 'Failed to update order';
     let statusCode = 500;
-    
+
     if (error.code === 404) {
       errorMessage = 'Order not found';
       statusCode = 404;
@@ -152,7 +155,7 @@ export async function PUT(request: NextRequest) {
     } else if (error.message) {
       errorMessage = error.message;
     }
-    
+
     return NextResponse.json(
       {
         success: false,

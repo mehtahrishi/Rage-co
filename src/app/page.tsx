@@ -230,7 +230,7 @@ export default function HomePage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [trendingProducts, setTrendingProducts] = useState<Product[]>([]);
 
-  const [activeCategory, setActiveCategory] = useState<string | null>("PANTS");
+  const [activeCategory, setActiveCategory] = useState<string | null>("LONG SLEEVES");
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>()
   const [canScrollPrev, setCanScrollPrev] = useState(false)

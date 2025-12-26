@@ -67,6 +67,7 @@ export default function ProductPage() {
 
   const handleLoadingComplete = () => {
     setShowLoader(false);
+    window.scrollTo(0, 0);
   };
 
   if (isLoading || showLoader) {
@@ -76,7 +77,7 @@ export default function ProductPage() {
   if (!product) {
     return <div>Product not found</div>;
   }
-  
+
   const handleAddToCart = async () => {
     if (!selectedSize || !selectedColor) {
       alert('Please select a size and color.');
@@ -116,7 +117,7 @@ export default function ProductPage() {
       imageHint: `${product.name} product image`
     };
   });
-    
+
   const activeImage = productImages.find((img) => img.id === activeImageId) || productImages[0];
 
   const openModal = () => setIsModalOpen(true);
@@ -140,9 +141,9 @@ export default function ProductPage() {
           </div>
           <div className="flex gap-2 overflow-x-auto py-2 w-full justify-center">
             {productImages.map((image) => (
-              <button 
-                key={image.id} 
-                className={cn("relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-md border-2", activeImageId === image.id ? 'border-primary' : 'border-transparent')} 
+              <button
+                key={image.id}
+                className={cn("relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-md border-2", activeImageId === image.id ? 'border-primary' : 'border-transparent')}
                 onClick={() => setActiveImageId(image.id)}
               >
                 <Image
@@ -275,10 +276,10 @@ export default function ProductPage() {
           </Accordion>
         </div>
       </div>
-      
+
       {/* Related Products */}
       <div className="mt-12">
-         <h2 className="mb-6 text-center font-headline text-2xl font-bold uppercase tracking-wider">
+        <h2 className="mb-6 text-center font-headline text-2xl font-bold uppercase tracking-wider">
           You Might Also Like
         </h2>
         {relatedProducts.length > 0 ? (
@@ -296,7 +297,7 @@ export default function ProductPage() {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4" onClick={closeModal}>
           <div className="relative max-w-4xl w-full max-h-[90vh]">
-            <button 
+            <button
               className="absolute top-4 right-4 z-10 bg-black bg-opacity-50 rounded-full p-2 text-white hover:bg-opacity-75 transition-all"
               onClick={(e) => {
                 e.stopPropagation();
@@ -305,9 +306,9 @@ export default function ProductPage() {
             >
               <X className="h-6 w-6" />
             </button>
-            
+
             {/* Left Arrow */}
-            <button 
+            <button
               className="absolute left-2 md:left-4 top-1/2 z-10 bg-black bg-opacity-50 rounded-full p-1.5 md:p-2 text-white hover:bg-opacity-75 transition-all transform -translate-y-1/2"
               onClick={(e) => {
                 e.stopPropagation();
@@ -320,9 +321,9 @@ export default function ProductPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            
+
             {/* Right Arrow */}
-            <button 
+            <button
               className="absolute right-2 md:right-4 top-1/2 z-10 bg-black bg-opacity-50 rounded-full p-1.5 md:p-2 text-white hover:bg-opacity-75 transition-all transform -translate-y-1/2"
               onClick={(e) => {
                 e.stopPropagation();
@@ -335,7 +336,7 @@ export default function ProductPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
-            
+
             <div className="relative w-full h-[80vh] group">
               {activeImage && (
                 <Image
